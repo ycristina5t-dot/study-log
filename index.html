@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>学習記録 — コンクリート診断士</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F7F6F3;
+    --surface: #FFFFFF;
+    --surface2: #F1F0EC;
+    --border: #E8E7E3;
+    --border2: #D3D1CA;
+    --text: #1A1A1A;
+    --text2: #6B6B6B;
+    --text3: #9E9C98;
+    --accent: #2F6B3E;
+    --accent-light: #EAF2EC;
+    --accent2: #C04A22;
+    --accent2-light: #FDF0EB;
+    --yellow: #E8A900;
+    --yellow-light: #FEF7E6;
+    --blue: #2563EB;
+    --blue-light: #EFF4FF;
+    --tag-bg: #E8E7E3;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+  }
+
+- { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+font-family: ‘Noto Sans JP’, sans-serif;
+background: var(–bg);
+color: var(–text);
+min-height: 100vh;
+font-size: 14px;
+line-height: 1.6;
+}
+
+/* ── Layout ── */
+.app { display: flex; min-height: 100vh; }
+
+/* ── Sidebar ── */
+.sidebar {
+width: 240px;
+background: var(–surface2);
+border-right: 1px solid var(–border);
+display: flex;
+flex-direction: column;
+padding: 20px 0;
+position: sticky;
+top: 0;
+height: 100vh;
+overflow-y: auto;
+flex-shrink: 0;
+}
+
+.sidebar-logo {
+padding: 0 16px 20px;
+border-bottom: 1px solid var(–border);
+margin-bottom: 8px;
+}
+
+.sidebar-logo h1 {
+font-size: 13px;
+font-weight: 700;
+letter-spacing: 0.05em;
+color: var(–text);
+line-height: 1.3;
+}
+
+.sidebar-logo p {
+font-size: 11px;
+color: var(–text3);
+margin-top: 2px;
+font-family: ‘Space Mono’, monospace;
+}
+
+.sidebar-section-title {
+font-size: 11px;
+font-weight: 700;
+letter-spacing: 0.08em;
+color: var(–text3);
+text-transform: uppercase;
+padding: 12px 16px 4px;
+}
+
+.sidebar-item {
+display: flex;
+align-items: center;
+gap: 8px;
+padding: 6px 16px;
+cursor: pointer;
+border-radius: 4px;
+margin: 1px 8px;
+font-size: 13px;
+color: var(–text2);
+transition: background 0.1s, color 0.1s;
+}
+
+.sidebar-item:hover { background: var(–border); color: var(–text); }
+.sidebar-item.active { background: var(–surface); color: var(–text); font-weight: 500; }
+
+.sidebar-item .icon { font-size: 15px; width: 18px; text-align: center; flex-shrink: 0; }
+
+.sidebar-badge {
+margin-left: auto;
+background: var(–border2);
+color: var(–text2);
+font-size: 10px;
+font-family: ‘Space Mono’, monospace;
+padding: 1px 5px;
+border-radius: 3px;
+}
+
+.exam-countdown {
+margin: 12px;
+padding: 12px;
+background: var(–accent-light);
+border: 1px solid #B8D9C0;
+border-radius: 8px;
+}
+
+.exam-countdown .label { font-size: 10px; color: var(–accent); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.exam-countdown .days { font-size: 28px; font-family: ‘Space Mono’, monospace; font-weight: 700; color: var(–accent); line-height: 1.1; }
+.exam-countdown .sublabel { font-size: 11px; color: var(–accent); opacity: 0.8; }
+
+/* ── Main ── */
+.main {
+flex: 1;
+min-width: 0;
+padding: 32px 40px;
+max-width: 900px;
+}
+
+/* ── Header ── */
+.page-header {
+margin-bottom: 28px;
+}
+
+.page-title {
+font-size: 26px;
+font-weight: 700;
+letter-spacing: -0.02em;
+color: var(–text);
+margin-bottom: 4px;
+}
+
+.page-subtitle {
+font-size: 13px;
+color: var(–text3);
+}
+
+/* ── Stats Row ── */
+.stats-row {
+display: grid;
+grid-template-columns: repeat(4, 1fr);
+gap: 10px;
+margin-bottom: 28px;
+}
+
+.stat-card {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: 8px;
+padding: 14px 16px;
+box-shadow: var(–shadow);
+}
+
+.stat-label { font-size: 11px; color: var(–text3); letter-spacing: 0.04em; margin-bottom: 4px; }
+.stat-value { font-size: 22px; font-family: ‘Space Mono’, monospace; font-weight: 700; color: var(–text); }
+.stat-unit { font-size: 12px; color: var(–text3); font-family: ‘Noto Sans JP’, sans-serif; }
+.stat-sub { font-size: 11px; color: var(–text3); margin-top: 2px; }
+
+/* ── Section ── */
+.section { margin-bottom: 28px; }
+
+.section-header {
+display: flex;
+align-items: center;
+justify-content: space-between;
+margin-bottom: 12px;
+}
+
+.section-title {
+font-size: 12px;
+font-weight: 700;
+letter-spacing: 0.06em;
+text-transform: uppercase;
+color: var(–text3);
+}
+
+.btn {
+display: inline-flex;
+align-items: center;
+gap: 5px;
+padding: 5px 12px;
+border-radius: 5px;
+font-size: 12px;
+font-family: ‘Noto Sans JP’, sans-serif;
+cursor: pointer;
+border: 1px solid var(–border2);
+background: var(–surface);
+color: var(–text2);
+transition: all 0.1s;
+font-weight: 500;
+}
+
+.btn:hover { background: var(–surface2); color: var(–text); }
+
+.btn-primary {
+background: var(–accent);
+border-color: var(–accent);
+color: white;
+}
+
+.btn-primary:hover { background: #255730; border-color: #255730; color: white; }
+
+/* ── Log Entry Form ── */
+.log-form {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: 10px;
+padding: 20px;
+box-shadow: var(–shadow);
+margin-bottom: 20px;
+}
+
+.form-row { display: flex; gap: 12px; margin-bottom: 12px; align-items: flex-start; flex-wrap: wrap; }
+
+.form-group { display: flex; flex-direction: column; gap: 4px; }
+.form-group.grow { flex: 1; min-width: 140px; }
+
+.form-label { font-size: 11px; font-weight: 600; color: var(–text3); letter-spacing: 0.04em; text-transform: uppercase; }
+
+.form-input, .form-select, .form-textarea {
+background: var(–bg);
+border: 1px solid var(–border2);
+border-radius: 5px;
+padding: 7px 10px;
+font-size: 13px;
+font-family: ‘Noto Sans JP’, sans-serif;
+color: var(–text);
+outline: none;
+transition: border 0.15s;
+width: 100%;
+}
+
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+border-color: var(–accent);
+background: white;
+}
+
+.form-textarea { resize: vertical; min-height: 70px; line-height: 1.6; }
+
+.tag-selector { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+
+.tag-option {
+padding: 3px 10px;
+border-radius: 4px;
+font-size: 12px;
+cursor: pointer;
+border: 1.5px solid transparent;
+transition: all 0.1s;
+user-select: none;
+}
+
+.tag-option:hover { opacity: 0.85; }
+.tag-option.selected { border-color: currentColor; font-weight: 600; }
+
+/* ── Log List ── */
+.log-list { display: flex; flex-direction: column; gap: 8px; }
+
+.log-card {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: 8px;
+padding: 14px 16px;
+box-shadow: var(–shadow);
+display: flex;
+gap: 14px;
+align-items: flex-start;
+transition: box-shadow 0.15s;
+}
+
+.log-card:hover { box-shadow: var(–shadow-md); }
+
+.log-date-block {
+text-align: center;
+flex-shrink: 0;
+width: 42px;
+}
+
+.log-date-block .month { font-size: 10px; color: var(–text3); text-transform: uppercase; letter-spacing: 0.06em; }
+.log-date-block .day { font-size: 22px; font-family: ‘Space Mono’, monospace; font-weight: 700; color: var(–text); line-height: 1; }
+.log-date-block .weekday { font-size: 10px; color: var(–text3); }
+
+.log-body { flex: 1; min-width: 0; }
+
+.log-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
+
+.log-time {
+font-family: ‘Space Mono’, monospace;
+font-size: 12px;
+color: var(–accent);
+font-weight: 700;
+background: var(–accent-light);
+padding: 2px 7px;
+border-radius: 4px;
+}
+
+.tag {
+font-size: 11px;
+padding: 2px 8px;
+border-radius: 4px;
+font-weight: 500;
+}
+
+.log-topics { font-size: 13px; font-weight: 600; color: var(–text); margin-bottom: 4px; }
+.log-memo { font-size: 12px; color: var(–text2); line-height: 1.6; }
+
+.log-actions { display: flex; gap: 4px; margin-left: auto; }
+
+.icon-btn {
+width: 26px;
+height: 26px;
+border-radius: 4px;
+border: none;
+background: transparent;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 14px;
+color: var(–text3);
+transition: background 0.1s, color 0.1s;
+}
+
+.icon-btn:hover { background: var(–surface2); color: var(–text); }
+
+/* ── Progress Section ── */
+.progress-grid {
+display: grid;
+grid-template-columns: repeat(2, 1fr);
+gap: 10px;
+}
+
+.progress-card {
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: 8px;
+padding: 14px 16px;
+box-shadow: var(–shadow);
+}
+
+.progress-label { font-size: 13px; font-weight: 600; color: var(–text); margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
+.progress-pct { font-family: ‘Space Mono’, monospace; font-size: 12px; color: var(–text3); }
+
+.progress-bar-bg {
+height: 6px;
+background: var(–surface2);
+border-radius: 3px;
+overflow: hidden;
+}
+
+.progress-bar-fill {
+height: 100%;
+border-radius: 3px;
+transition: width 0.4s ease;
+}
+
+.progress-sub { font-size: 11px; color: var(–text3); margin-top: 5px; }
+
+/* ── Week Grid ── */
+.week-grid { display: flex; gap: 6px; }
+
+.week-day {
+flex: 1;
+background: var(–surface);
+border: 1px solid var(–border);
+border-radius: 6px;
+padding: 8px 6px;
+text-align: center;
+font-size: 11px;
+}
+
+.week-day .wd-name { color: var(–text3); margin-bottom: 4px; font-weight: 500; }
+.week-day .wd-hours { font-family: ‘Space Mono’, monospace; font-size: 14px; font-weight: 700; color: var(–text3); }
+.week-day.has-study .wd-hours { color: var(–accent); }
+.week-day.today { border-color: var(–accent); }
+.week-day .wd-dot { width: 5px; height: 5px; border-radius: 50%; background: var(–accent); margin: 3px auto 0; }
+
+/* ── Modal ── */
+.modal-overlay {
+position: fixed;
+inset: 0;
+background: rgba(0,0,0,0.35);
+display: flex;
+align-items: center;
+justify-content: center;
+z-index: 1000;
+padding: 20px;
+}
+
+.modal {
+background: white;
+border-radius: 12px;
+width: 100%;
+max-width: 500px;
+padding: 24px;
+box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+}
+
+.modal-title { font-size: 16px; font-weight: 700; margin-bottom: 16px; }
+
+/* ── Empty State ── */
+.empty {
+text-align: center;
+padding: 40px 20px;
+color: var(–text3);
+font-size: 13px;
+}
+
+.empty .empty-icon { font-size: 32px; margin-bottom: 10px; }
+
+/* ── Divider ── */
+.divider { border: none; border-top: 1px solid var(–border); margin: 20px 0; }
+
+/* ── Tabs ── */
+.tabs { display: flex; gap: 2px; background: var(–surface2); border-radius: 7px; padding: 3px; margin-bottom: 20px; }
+
+.tab {
+flex: 1;
+padding: 6px 12px;
+border-radius: 5px;
+font-size: 12px;
+font-weight: 500;
+cursor: pointer;
+text-align: center;
+color: var(–text3);
+transition: all 0.15s;
+border: none;
+background: transparent;
+font-family: ‘Noto Sans JP’, sans-serif;
+}
+
+.tab.active { background: white; color: var(–text); box-shadow: var(–shadow); }
+
+/* ── Hidden ── */
+.hidden { display: none !important; }
+
+@media (max-width: 640px) {
+.main { padding: 20px 16px; }
+.stats-row { grid-template-columns: repeat(2, 1fr); }
+.progress-grid { grid-template-columns: 1fr; }
+.sidebar { display: none; }
+}
+</style>
+
+</head>
+<body>
+
+<div class="app">
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <h1>コンクリート<br>診断士 2026</h1>
+      <p>STUDY TRACKER</p>
+    </div>
+
+```
+<div class="exam-countdown" id="countdown-box">
+  <div class="label">試験まで</div>
+  <div class="days" id="days-left">—</div>
+  <div class="sublabel">日</div>
+</div>
+
+<div class="sidebar-section-title">メニュー</div>
+<div class="sidebar-item active" onclick="showTab('log')">
+  <span class="icon">📝</span> 学習記録
+</div>
+<div class="sidebar-item" onclick="showTab('progress')">
+  <span class="icon">📊</span> 進捗
+</div>
+<div class="sidebar-item" onclick="showTab('keyword')">
+  <span class="icon">🔑</span> キーワード辞書
+</div>
+
+<div class="sidebar-section-title" style="margin-top:12px;">劣化機構</div>
+<div class="sidebar-item" onclick="filterTopic('凍害')">
+  <span class="icon">❄️</span> 凍害
+  <span class="sidebar-badge" id="badge-凍害">0</span>
+</div>
+<div class="sidebar-item" onclick="filterTopic('火害')">
+  <span class="icon">🔥</span> 火害
+  <span class="sidebar-badge" id="badge-火害">0</span>
+</div>
+<div class="sidebar-item" onclick="filterTopic('中性化')">
+  <span class="icon">🧪</span> 中性化
+  <span class="sidebar-badge" id="badge-中性化">0</span>
+</div>
+<div class="sidebar-item" onclick="filterTopic('塩害')">
+  <span class="icon">🌊</span> 塩害
+  <span class="sidebar-badge" id="badge-塩害">0</span>
+</div>
+<div class="sidebar-item" onclick="filterTopic('ASR')">
+  <span class="icon">⚗️</span> ASR
+  <span class="sidebar-badge" id="badge-ASR">0</span>
+</div>
+<div class="sidebar-item" onclick="filterTopic('化学的侵食')">
+  <span class="icon">🧫</span> 化学的侵食
+  <span class="sidebar-badge" id="badge-化学的侵食">0</span>
+</div>
+<div class="sidebar-item" onclick="filterTopic('疲労')">
+  <span class="icon">⚡</span> 疲労
+  <span class="sidebar-badge" id="badge-疲労">0</span>
+</div>
+<div class="sidebar-item" onclick="filterTopic('')">
+  <span class="icon">🔄</span> すべて表示
+</div>
+```
+
+  </nav>
+
+  <!-- Main -->
+
+  <main class="main">
+    <!-- LOG TAB -->
+    <div id="tab-log">
+      <div class="page-header">
+        <h2 class="page-title">学習記録</h2>
+        <p class="page-subtitle" id="today-date">読み込み中...</p>
+      </div>
+
+```
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">累計学習時間</div>
+      <div class="stat-value"><span id="total-hours">0</span><span class="stat-unit">h</span></div>
+      <div class="stat-sub" id="total-sessions">0セッション</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">今週</div>
+      <div class="stat-value"><span id="week-hours">0</span><span class="stat-unit">h</span></div>
+      <div class="stat-sub">週目標: 21h</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">今日</div>
+      <div class="stat-value"><span id="today-hours">0</span><span class="stat-unit">h</span></div>
+      <div class="stat-sub">日目標: 3h</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">連続学習</div>
+      <div class="stat-value"><span id="streak">0</span><span class="stat-unit">日</span></div>
+      <div class="stat-sub" id="streak-sub">がんばれ！</div>
+    </div>
+  </div>
+
+  <!-- This Week -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">今週の学習</span>
+    </div>
+    <div class="week-grid" id="week-grid"></div>
+  </div>
+
+  <!-- Add Form -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">記録を追加</span>
+    </div>
+    <div class="log-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">日付</label>
+          <input type="date" class="form-input" id="input-date" style="width:140px;">
+        </div>
+        <div class="form-group">
+          <label class="form-label">学習時間 (h)</label>
+          <input type="number" class="form-input" id="input-hours" placeholder="3.0" step="0.5" min="0.5" max="12" style="width:100px;">
+        </div>
+        <div class="form-group grow">
+          <label class="form-label">学習内容</label>
+          <input type="text" class="form-input" id="input-topics" placeholder="例: 凍害の入力・WEB講義レビュー">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">劣化機構タグ</label>
+          <div class="tag-selector" id="tag-selector"></div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group" style="flex:1;">
+          <label class="form-label">メモ・気づき</label>
+          <textarea class="form-textarea" id="input-memo" placeholder="学んだこと、課題、次回やること など"></textarea>
+        </div>
+      </div>
+
+      <div style="display:flex;justify-content:flex-end;gap:8px;">
+        <button class="btn" onclick="clearForm()">クリア</button>
+        <button class="btn btn-primary" onclick="addLog()">✚ 記録を保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Log List -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">学習ログ</span>
+      <div style="display:flex;gap:6px;align-items:center;">
+        <span id="filter-label" style="font-size:11px;color:var(--text3);"></span>
+        <button class="btn" onclick="exportCSV()">📥 CSV出力</button>
+      </div>
+    </div>
+    <div class="log-list" id="log-list">
+      <div class="empty"><div class="empty-icon">📖</div>まだ記録がありません。<br>最初の学習記録を追加しましょう！</div>
+    </div>
+  </div>
+</div>
+
+<!-- PROGRESS TAB -->
+<div id="tab-progress" class="hidden">
+  <div class="page-header">
+    <h2 class="page-title">学習進捗</h2>
+    <p class="page-subtitle">4ヶ月計画 (3月〜6月) の進捗状況</p>
+  </div>
+
+  <div class="section">
+    <div class="section-header"><span class="section-title">フェーズ進捗</span></div>
+    <div id="phase-progress"></div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="section">
+    <div class="section-header"><span class="section-title">劣化機構別 学習時間</span></div>
+    <div class="progress-grid" id="topic-progress"></div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="section">
+    <div class="section-header"><span class="section-title">月別学習時間</span></div>
+    <div id="monthly-chart" style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:20px;box-shadow:var(--shadow);"></div>
+  </div>
+</div>
+
+<!-- KEYWORD TAB -->
+<div id="tab-keyword" class="hidden">
+  <div class="page-header">
+    <h2 class="page-title">キーワード辞書</h2>
+    <p class="page-subtitle">論文記述用キーワードを管理</p>
+  </div>
+
+  <div class="log-form" style="margin-bottom:20px;">
+    <div class="form-row">
+      <div class="form-group grow">
+        <label class="form-label">キーワード</label>
+        <input type="text" class="form-input" id="kw-word" placeholder="例: 凍結融解サイクル">
+      </div>
+      <div class="form-group">
+        <label class="form-label">カテゴリ</label>
+        <select class="form-select" id="kw-cat" style="width:120px;">
+          <option>凍害</option>
+          <option>火害</option>
+          <option>中性化</option>
+          <option>塩害</option>
+          <option>ASR</option>
+          <option>診断一般</option>
+          <option>論文構成</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group" style="flex:1;">
+        <label class="form-label">説明・使い方</label>
+        <textarea class="form-textarea" id="kw-desc" placeholder="論文での使いどころ、関連する数値、注意点など" style="min-height:55px;"></textarea>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;">
+      <button class="btn btn-primary" onclick="addKeyword()">✚ 追加</button>
+    </div>
+  </div>
+
+  <div id="keyword-list"></div>
+</div>
+```
+
+  </main>
+</div>
+
+<script>
+// ── State ──
+let logs = JSON.parse(localStorage.getItem('study-logs') || '[]');
+let keywords = JSON.parse(localStorage.getItem('study-keywords') || '[]');
+let selectedTags = [];
+let filterTopic_ = '';
+
+const TOPICS = [
+  { id: '凍害',  label: '❄️ 凍害',  color: '#1D78A8', bg: '#E8F4FB' },
+  { id: '火害',  label: '🔥 火害',  color: '#C04A22', bg: '#FDF0EB' },
+  { id: '中性化',label: '🧪 中性化',color: '#7C3AED', bg: '#F3F0FF' },
+  { id: '塩害',  label: '🌊 塩害',  color: '#0E6B5A', bg: '#E6F7F4' },
+  { id: 'ASR',     label: '⚗️ ASR',     color: '#B45309', bg: '#FEF3C7' },
+  { id: '化学的侵食', label: '🧫 化学的侵食', color: '#6D28D9', bg: '#F5F3FF' },
+  { id: '疲労',    label: '⚡ 疲労',    color: '#0F766E', bg: '#F0FDFA' },
+  { id: '論文',    label: '📝 論文',    color: '#6B6B6B', bg: '#F0F0EE' },
+];
+
+const PHASES = [
+  { label: 'Phase 1 — WEB講義・知識整理', months: ['2026-03'], targetH: 90 },
+  { label: 'Phase 2 — キーワード辞書・論文構造', months: ['2026-04'], targetH: 90 },
+  { label: 'Phase 3 — 論文模擬演習', months: ['2026-05'], targetH: 90 },
+  { label: 'Phase 4 — 弱点強化・最終見直し', months: ['2026-06'], targetH: 90 },
+];
+
+// ── Init ──
+function init() {
+  setDefaultDate();
+  renderTagSelector();
+  renderAll();
+  updateCountdown();
+}
+
+function setDefaultDate() {
+  const d = document.getElementById('input-date');
+  d.value = new Date().toISOString().slice(0, 10);
+}
+
+// ── Countdown ──
+function updateCountdown() {
+  const exam = new Date('2026-07-12');
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const diff = Math.ceil((exam - today) / 86400000);
+  document.getElementById('days-left').textContent = diff;
+  document.getElementById('today-date').textContent =
+    today.toLocaleDateString('ja-JP', {year:'numeric',month:'long',day:'numeric',weekday:'long'});
+}
+
+// ── Tag Selector ──
+function renderTagSelector() {
+  const el = document.getElementById('tag-selector');
+  el.innerHTML = TOPICS.map(t =>
+    `<span class="tag-option" style="color:${t.color};background:${t.bg};" data-id="${t.id}" onclick="toggleTag('${t.id}')">${t.label}</span>`
+  ).join('');
+}
+
+function toggleTag(id) {
+  const idx = selectedTags.indexOf(id);
+  if (idx >= 0) selectedTags.splice(idx, 1);
+  else selectedTags.push(id);
+
+  document.querySelectorAll('.tag-option').forEach(el => {
+    el.classList.toggle('selected', selectedTags.includes(el.dataset.id));
+  });
+}
+
+// ── Add Log ──
+function addLog() {
+  const date  = document.getElementById('input-date').value;
+  const hours = parseFloat(document.getElementById('input-hours').value);
+  const topics = document.getElementById('input-topics').value.trim();
+  const memo  = document.getElementById('input-memo').value.trim();
+
+  if (!date || !hours || !topics) {
+    alert('日付・学習時間・学習内容を入力してください。');
+    return;
+  }
+
+  logs.unshift({
+    id: Date.now(),
+    date,
+    hours,
+    topics,
+    tags: [...selectedTags],
+    memo,
+  });
+
+  save();
+  renderAll();
+  clearForm();
+}
+
+function clearForm() {
+  document.getElementById('input-hours').value = '';
+  document.getElementById('input-topics').value = '';
+  document.getElementById('input-memo').value = '';
+  selectedTags = [];
+  renderTagSelector();
+  setDefaultDate();
+}
+
+// ── Filter ──
+function filterTopic(t) {
+  filterTopic_ = t;
+  document.getElementById('filter-label').textContent = t ? `フィルター: ${t}` : '';
+  renderLogList();
+  document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+}
+
+// ── Render All ──
+function renderAll() {
+  renderStats();
+  renderWeekGrid();
+  renderLogList();
+  renderPhaseProgress();
+  renderTopicProgress();
+  renderMonthlyChart();
+  renderKeywords();
+  updateBadges();
+}
+
+// ── Stats ──
+function renderStats() {
+  const totalH = logs.reduce((s, l) => s + l.hours, 0);
+  document.getElementById('total-hours').textContent = totalH.toFixed(1);
+  document.getElementById('total-sessions').textContent = logs.length + 'セッション';
+
+  const today = new Date().toISOString().slice(0, 10);
+  const weekStart = getWeekStart();
+  const weekH = logs.filter(l => l.date >= weekStart).reduce((s,l) => s+l.hours, 0);
+  const todayH = logs.filter(l => l.date === today).reduce((s,l) => s+l.hours, 0);
+
+  document.getElementById('week-hours').textContent = weekH.toFixed(1);
+  document.getElementById('today-hours').textContent = todayH.toFixed(1);
+
+  // Streak
+  const streak = calcStreak();
+  document.getElementById('streak').textContent = streak;
+  document.getElementById('streak-sub').textContent = streak >= 7 ? '🔥 継続中！' : streak > 0 ? '継続中！' : '今日から再開！';
+}
+
+function getWeekStart() {
+  const d = new Date();
+  const day = d.getDay();
+  d.setDate(d.getDate() - day);
+  return d.toISOString().slice(0, 10);
+}
+
+function calcStreak() {
+  const dates = [...new Set(logs.map(l => l.date))].sort().reverse();
+  if (!dates.length) return 0;
+  let streak = 0;
+  let cur = new Date();
+  cur.setHours(0,0,0,0);
+  for (let i = 0; i < 365; i++) {
+    const s = cur.toISOString().slice(0,10);
+    if (dates.includes(s)) { streak++; cur.setDate(cur.getDate()-1); }
+    else if (i === 0) { cur.setDate(cur.getDate()-1); } // today might not have entry yet
+    else break;
+  }
+  return streak;
+}
+
+// ── Week Grid ──
+function renderWeekGrid() {
+  const el = document.getElementById('week-grid');
+  const days = ['日','月','火','水','木','金','土'];
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const dow = today.getDay();
+
+  let html = '';
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - dow + i);
+    const ds = d.toISOString().slice(0,10);
+    const h = logs.filter(l => l.date === ds).reduce((s,l) => s+l.hours, 0);
+    const isToday = ds === today.toISOString().slice(0,10);
+    const hasStudy = h > 0;
+    html += `<div class="week-day ${hasStudy?'has-study':''} ${isToday?'today':''}">
+      <div class="wd-name">${days[i]}</div>
+      <div class="wd-hours">${h > 0 ? h.toFixed(1) : '—'}</div>
+      ${hasStudy ? '<div class="wd-dot"></div>' : ''}
+    </div>`;
+  }
+  el.innerHTML = html;
+}
+
+// ── Log List ──
+function renderLogList() {
+  const el = document.getElementById('log-list');
+  let filtered = filterTopic_
+    ? logs.filter(l => l.tags && l.tags.includes(filterTopic_))
+    : logs;
+
+  if (!filtered.length) {
+    el.innerHTML = `<div class="empty"><div class="empty-icon">📖</div>${filterTopic_ ? '該当する記録がありません。' : 'まだ記録がありません。<br>最初の学習記録を追加しましょう！'}</div>`;
+    return;
+  }
+
+  el.innerHTML = filtered.map(log => {
+    const d = new Date(log.date + 'T00:00:00');
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const wds = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const tagHtml = (log.tags || []).map(t => {
+      const topic = TOPICS.find(x => x.id === t);
+      return topic ? `<span class="tag" style="background:${topic.bg};color:${topic.color};">${topic.label}</span>` : '';
+    }).join('');
+
+    return `<div class="log-card">
+      <div class="log-date-block">
+        <div class="month">${months[d.getMonth()]}</div>
+        <div class="day">${String(d.getDate()).padStart(2,'0')}</div>
+        <div class="weekday">${wds[d.getDay()]}</div>
+      </div>
+      <div class="log-body">
+        <div class="log-meta">
+          <span class="log-time">${log.hours}h</span>
+          ${tagHtml}
+        </div>
+        <div class="log-topics">${escHtml(log.topics)}</div>
+        ${log.memo ? `<div class="log-memo">${escHtml(log.memo)}</div>` : ''}
+      </div>
+      <div class="log-actions">
+        <button class="icon-btn" onclick="deleteLog(${log.id})" title="削除">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function deleteLog(id) {
+  if (!confirm('この記録を削除しますか？')) return;
+  logs = logs.filter(l => l.id !== id);
+  save();
+  renderAll();
+}
+
+// ── Phase Progress ──
+function renderPhaseProgress() {
+  const el = document.getElementById('phase-progress');
+  el.innerHTML = PHASES.map(p => {
+    const h = logs.filter(l => p.months.some(m => l.date.startsWith(m))).reduce((s,l)=>s+l.hours, 0);
+    const pct = Math.min(100, Math.round(h / p.targetH * 100));
+    const colors = ['#2F6B3E','#7C3AED','#C04A22','#B45309'];
+    const idx = PHASES.indexOf(p);
+    return `<div class="progress-card" style="margin-bottom:10px;">
+      <div class="progress-label">${p.label}<span class="progress-pct">${h.toFixed(1)}h / ${p.targetH}h</span></div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" style="width:${pct}%;background:${colors[idx]};"></div>
+      </div>
+      <div class="progress-sub">${pct}% 完了</div>
+    </div>`;
+  }).join('');
+}
+
+// ── Topic Progress ──
+function renderTopicProgress() {
+  const el = document.getElementById('topic-progress');
+  const target = 20; // hours per topic
+  el.innerHTML = TOPICS.slice(0,7).map(t => {
+    const h = logs.filter(l => (l.tags||[]).includes(t.id)).reduce((s,l)=>s+l.hours,0);
+    const pct = Math.min(100, Math.round(h / target * 100));
+    return `<div class="progress-card">
+      <div class="progress-label">${t.label}<span class="progress-pct">${h.toFixed(1)}h</span></div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" style="width:${pct}%;background:${t.color};"></div>
+      </div>
+      <div class="progress-sub">目標 ${target}h の ${pct}%</div>
+    </div>`;
+  }).join('');
+}
+
+// ── Monthly Chart ──
+function renderMonthlyChart() {
+  const el = document.getElementById('monthly-chart');
+  const months = ['2026-03','2026-04','2026-05','2026-06'];
+  const labels = ['3月','4月','5月','6月'];
+  const data = months.map(m => logs.filter(l => l.date.startsWith(m)).reduce((s,l)=>s+l.hours,0));
+  const max = Math.max(...data, 1);
+
+  el.innerHTML = `<div style="display:flex;align-items:flex-end;gap:16px;height:120px;padding-bottom:24px;position:relative;">
+    ${data.map((h, i) => {
+      const pct = h / max * 100;
+      return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end;">
+        <div style="font-size:11px;color:var(--accent);font-family:'Space Mono',monospace;font-weight:700;">${h > 0 ? h.toFixed(1) + 'h' : ''}</div>
+        <div style="width:100%;background:var(--accent);border-radius:4px 4px 0 0;height:${Math.max(pct,2)}%;opacity:${h>0?1:0.2};transition:height 0.4s;"></div>
+        <div style="font-size:12px;color:var(--text3);position:absolute;bottom:0;">${labels[i]}</div>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+// ── Badges ──
+function updateBadges() {
+  TOPICS.forEach(t => {
+    const el = document.getElementById('badge-' + t.id);
+    if (el) {
+      const count = logs.filter(l => (l.tags||[]).includes(t.id)).length;
+      el.textContent = count;
+    }
+  });
+}
+
+// ── Keywords ──
+function addKeyword() {
+  const word = document.getElementById('kw-word').value.trim();
+  const cat  = document.getElementById('kw-cat').value;
+  const desc = document.getElementById('kw-desc').value.trim();
+  if (!word) { alert('キーワードを入力してください。'); return; }
+  keywords.unshift({ id: Date.now(), word, cat, desc });
+  saveKW();
+  renderKeywords();
+  document.getElementById('kw-word').value = '';
+  document.getElementById('kw-desc').value = '';
+}
+
+function deleteKeyword(id) {
+  keywords = keywords.filter(k => k.id !== id);
+  saveKW();
+  renderKeywords();
+}
+
+function renderKeywords() {
+  const el = document.getElementById('keyword-list');
+  if (!keywords.length) {
+    el.innerHTML = `<div class="empty"><div class="empty-icon">🔑</div>まだキーワードがありません。</div>`;
+    return;
+  }
+
+  const grouped = {};
+  keywords.forEach(k => {
+    if (!grouped[k.cat]) grouped[k.cat] = [];
+    grouped[k.cat].push(k);
+  });
+
+  el.innerHTML = Object.entries(grouped).map(([cat, kws]) => {
+    const topic = TOPICS.find(t => t.id === cat);
+    const color = topic ? topic.color : '#6B6B6B';
+    const bg = topic ? topic.bg : '#F0F0EE';
+    return `<div style="margin-bottom:20px;">
+      <div style="font-size:12px;font-weight:700;color:${color};background:${bg};display:inline-block;padding:3px 10px;border-radius:4px;margin-bottom:8px;letter-spacing:0.04em;">${cat}</div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        ${kws.map(k => `
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:12px 14px;display:flex;gap:12px;align-items:flex-start;box-shadow:var(--shadow);">
+            <div style="flex:1;">
+              <div style="font-size:14px;font-weight:700;color:${color};margin-bottom:3px;">${escHtml(k.word)}</div>
+              ${k.desc ? `<div style="font-size:12px;color:var(--text2);line-height:1.6;">${escHtml(k.desc)}</div>` : ''}
+            </div>
+            <button class="icon-btn" onclick="deleteKeyword(${k.id})">🗑</button>
+          </div>
+        `).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Tab ──
+function showTab(tab) {
+  ['log','progress','keyword'].forEach(t => {
+    document.getElementById('tab-' + t).classList.toggle('hidden', t !== tab);
+  });
+  document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+}
+
+// ── Export CSV ──
+function exportCSV() {
+  const header = '日付,学習時間(h),タグ,内容,メモ';
+  const rows = logs.map(l => [l.date, l.hours, (l.tags||[]).join('/'), `"${l.topics}"`, `"${(l.memo||'').replace(/"/g,'""')}"`].join(','));
+  const csv = [header, ...rows].join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8'}));
+  a.download = '学習記録_コンクリート診断士.csv';
+  a.click();
+}
+
+// ── Helpers ──
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function save() { localStorage.setItem('study-logs', JSON.stringify(logs)); }
+function saveKW() { localStorage.setItem('study-keywords', JSON.stringify(keywords)); }
+
+// ── Seed initial data ──
+if (!logs.length) {
+  logs = [
+    { id: 1, date: '2026-03-08', hours: 3.5, topics: '凍害インプット完了 / 火害インプット途中', tags: ['凍害','火害'], memo: 'コンクリート・鉄筋の加熱・冷却時の温度閾値を要暗記。要テキスト確認。' },
+  ];
+  save();
+}
+
+init();
+</script>
+
+</body>
+</html>
