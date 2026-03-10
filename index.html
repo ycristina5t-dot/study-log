@@ -7,645 +7,317 @@
 <title>学習記録 — コンクリート診断士</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg:#F7F6F3;--surface:#FFFFFF;--surface2:#F1F0EC;--border:#E8E7E3;--border2:#D3D1CA;
-  --text:#1A1A1A;--text2:#6B6B6B;--text3:#9E9C98;
-  --accent:#2F6B3E;--accent-light:#EAF2EC;
-  --accent2:#C04A22;--accent2-light:#FDF0EB;
-  --yellow:#E8A900;--yellow-light:#FEF7E6;
-  --blue:#2563EB;--blue-light:#EFF4FF;
-  --purple:#7C3AED;--purple-light:#F3F0FF;
-  --tag-bg:#E8E7E3;
-  --shadow:0 1px 3px rgba(0,0,0,0.08),0 1px 2px rgba(0,0,0,0.04);
-  --shadow-md:0 4px 12px rgba(0,0,0,0.08),0 2px 4px rgba(0,0,0,0.04);
+:root{
+  --bg:#F7F6F3;--surface:#fff;--s2:#F1F0EC;--border:#E8E7E3;--b2:#D3D1CA;
+  --text:#1A1A1A;--t2:#6B6B6B;--t3:#9E9C98;
+  --green:#2F6B3E;--gl:#EAF2EC;
+  --blue:#2563EB;--bl:#EFF4FF;
+  --purple:#7C3AED;--pl:#F3F0FF;
+  --yellow:#E8A900;--yl:#FEF7E6;
+  --sh:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);
+  --shm:0 4px 12px rgba(0,0,0,.08);
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;line-height:1.6;}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;}
 .app{display:flex;min-height:100vh;}
 
 /* Sidebar */
-.sidebar{width:220px;background:var(–surface2);border-right:1px solid var(–border);display:flex;flex-direction:column;padding:20px 0;position:sticky;top:0;height:100vh;overflow-y:auto;flex-shrink:0;}
-.sidebar-logo{padding:0 16px 16px;border-bottom:1px solid var(–border);margin-bottom:8px;}
-.sidebar-logo h1{font-size:13px;font-weight:700;letter-spacing:0.05em;line-height:1.3;}
-.sidebar-logo p{font-size:11px;color:var(–text3);margin-top:2px;font-family:‘Space Mono’,monospace;}
-.sidebar-section-title{font-size:10px;font-weight:700;letter-spacing:0.08em;color:var(–text3);text-transform:uppercase;padding:10px 16px 4px;}
-.sidebar-item{display:flex;align-items:center;gap:8px;padding:6px 16px;cursor:pointer;border-radius:4px;margin:1px 8px;font-size:13px;color:var(–text2);transition:background 0.1s,color 0.1s;}
-.sidebar-item:hover{background:var(–border);color:var(–text);}
-.sidebar-item.active{background:var(–surface);color:var(–text);font-weight:500;}
-.sidebar-item .icon{font-size:14px;width:18px;text-align:center;flex-shrink:0;}
-.sidebar-badge{margin-left:auto;background:var(–border2);color:var(–text2);font-size:10px;font-family:‘Space Mono’,monospace;padding:1px 5px;border-radius:3px;}
-.exam-countdown{margin:10px 12px;padding:10px 12px;background:var(–accent-light);border:1px solid #B8D9C0;border-radius:8px;}
-.exam-countdown .label{font-size:10px;color:var(–accent);font-weight:700;letter-spacing:0.06em;text-transform:uppercase;}
-.exam-countdown .days{font-size:26px;font-family:‘Space Mono’,monospace;font-weight:700;color:var(–accent);line-height:1.1;}
-.exam-countdown .sublabel{font-size:11px;color:var(–accent);opacity:0.8;}
+.sb{width:220px;background:var(–s2);border-right:1px solid var(–border);display:flex;flex-direction:column;padding:20px 0;position:sticky;top:0;height:100vh;overflow-y:auto;flex-shrink:0;}
+.sb-logo{padding:0 16px 16px;border-bottom:1px solid var(–border);margin-bottom:8px;}
+.sb-logo h1{font-size:13px;font-weight:700;line-height:1.3;}
+.sb-logo p{font-size:11px;color:var(–t3);font-family:‘Space Mono’,monospace;}
+.sb-sec{font-size:10px;font-weight:700;letter-spacing:.08em;color:var(–t3);text-transform:uppercase;padding:10px 16px 4px;}
+.sb-item{display:flex;align-items:center;gap:8px;padding:6px 16px;cursor:pointer;border-radius:4px;margin:1px 8px;font-size:13px;color:var(–t2);transition:background .1s,color .1s;}
+.sb-item:hover{background:var(–border);color:var(–text);}
+.sb-item.active{background:var(–surface);color:var(–text);font-weight:500;}
+.sb-item .ic{font-size:14px;width:18px;text-align:center;flex-shrink:0;}
+.sb-badge{margin-left:auto;background:var(–b2);color:var(–t2);font-size:10px;font-family:‘Space Mono’,monospace;padding:1px 5px;border-radius:3px;}
+.countdown{margin:10px 12px;padding:10px 12px;background:var(–gl);border:1px solid #B8D9C0;border-radius:8px;}
+.countdown .lbl{font-size:10px;color:var(–green);font-weight:700;text-transform:uppercase;}
+.countdown .days{font-size:26px;font-family:‘Space Mono’,monospace;font-weight:700;color:var(–green);line-height:1.1;}
+.countdown .sub{font-size:11px;color:var(–green);opacity:.8;}
 
 /* Main */
-.main{flex:1;min-width:0;padding:28px 32px;max-width:900px;}
-.page-header{margin-bottom:24px;}
-.page-title{font-size:24px;font-weight:700;letter-spacing:-0.02em;margin-bottom:4px;}
-.page-subtitle{font-size:13px;color:var(–text3);}
+.main{flex:1;min-width:0;padding:28px 32px;max-width:960px;}
+.ph{margin-bottom:24px;}
+.ph h2{font-size:24px;font-weight:700;letter-spacing:-.02em;margin-bottom:4px;}
+.ph p{font-size:13px;color:var(–t3);}
 
 /* Stats */
-.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px;}
-.stat-card{background:var(–surface);border:1px solid var(–border);border-radius:8px;padding:12px 14px;box-shadow:var(–shadow);}
-.stat-label{font-size:11px;color:var(–text3);letter-spacing:0.04em;margin-bottom:4px;}
-.stat-value{font-size:20px;font-family:‘Space Mono’,monospace;font-weight:700;}
-.stat-unit{font-size:11px;color:var(–text3);font-family:‘Noto Sans JP’,sans-serif;}
-.stat-sub{font-size:11px;color:var(–text3);margin-top:2px;}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px;}
+.sc{background:var(–surface);border:1px solid var(–border);border-radius:8px;padding:12px 14px;box-shadow:var(–sh);}
+.sc .lbl{font-size:11px;color:var(–t3);letter-spacing:.04em;margin-bottom:4px;}
+.sc .val{font-size:20px;font-family:‘Space Mono’,monospace;font-weight:700;}
+.sc .unit{font-size:11px;color:var(–t3);font-family:‘Noto Sans JP’,sans-serif;}
+.sc .sub{font-size:11px;color:var(–t3);margin-top:2px;}
 
 /* Section */
-.section{margin-bottom:24px;}
-.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
-.section-title{font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(–text3);}
+.sec{margin-bottom:24px;}
+.sec-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.sec-ttl{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(–t3);}
 
 /* Buttons */
-.btn{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:5px;font-size:12px;font-family:‘Noto Sans JP’,sans-serif;cursor:pointer;border:1px solid var(–border2);background:var(–surface);color:var(–text2);transition:all 0.1s;font-weight:500;}
-.btn:hover{background:var(–surface2);color:var(–text);}
-.btn-primary{background:var(–accent);border-color:var(–accent);color:white;}
-.btn-primary:hover{background:#255730;border-color:#255730;color:white;}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:5px;font-size:12px;font-family:‘Noto Sans JP’,sans-serif;cursor:pointer;border:1px solid var(–b2);background:var(–surface);color:var(–t2);transition:all .1s;font-weight:500;}
+.btn:hover{background:var(–s2);color:var(–text);}
+.btn-p{background:var(–green);border-color:var(–green);color:#fff;}
+.btn-p:hover{background:#255730;color:#fff;}
 .btn-sm{padding:3px 8px;font-size:11px;}
 
 /* Form */
-.log-form{background:var(–surface);border:1px solid var(–border);border-radius:10px;padding:18px;box-shadow:var(–shadow);margin-bottom:16px;}
-.form-row{display:flex;gap:12px;margin-bottom:12px;align-items:flex-start;flex-wrap:wrap;}
-.form-group{display:flex;flex-direction:column;gap:4px;}
-.form-group.grow{flex:1;min-width:120px;}
-.form-label{font-size:11px;font-weight:600;color:var(–text3);letter-spacing:0.04em;text-transform:uppercase;}
-.form-input,.form-select,.form-textarea{background:var(–bg);border:1px solid var(–border2);border-radius:5px;padding:7px 10px;font-size:13px;font-family:‘Noto Sans JP’,sans-serif;color:var(–text);outline:none;transition:border 0.15s;width:100%;}
-.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(–accent);background:white;}
-.form-textarea{resize:vertical;min-height:60px;line-height:1.6;}
-.tag-selector{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
-.tag-option{padding:3px 10px;border-radius:4px;font-size:12px;cursor:pointer;border:1.5px solid transparent;transition:all 0.1s;user-select:none;}
-.tag-option:hover{opacity:0.85;}
-.tag-option.selected{border-color:currentColor;font-weight:600;}
+.fc{background:var(–surface);border:1px solid var(–border);border-radius:10px;padding:18px;box-shadow:var(–sh);margin-bottom:16px;}
+.fr{display:flex;gap:12px;margin-bottom:12px;align-items:flex-start;flex-wrap:wrap;}
+.fg{display:flex;flex-direction:column;gap:4px;}
+.fg.grow{flex:1;min-width:120px;}
+.flbl{font-size:11px;font-weight:600;color:var(–t3);letter-spacing:.04em;text-transform:uppercase;}
+input.fi,select.fi,textarea.fi{background:var(–bg);border:1px solid var(–b2);border-radius:5px;padding:7px 10px;font-size:13px;font-family:‘Noto Sans JP’,sans-serif;color:var(–text);outline:none;transition:border .15s;width:100%;}
+input.fi:focus,select.fi:focus,textarea.fi:focus{border-color:var(–green);background:#fff;}
+textarea.fi{resize:vertical;min-height:60px;line-height:1.6;}
 
-/* Form type tabs */
-.form-type-tabs{display:flex;gap:2px;background:var(–surface2);border-radius:7px;padding:3px;margin-bottom:16px;}
-.form-type-tab{flex:1;padding:6px 8px;border-radius:5px;font-size:12px;font-weight:500;cursor:pointer;text-align:center;color:var(–text3);transition:all 0.15s;border:none;background:transparent;font-family:‘Noto Sans JP’,sans-serif;}
-.form-type-tab.active{background:white;color:var(–text);box-shadow:var(–shadow);}
+/* Type tabs */
+.ttabs{display:flex;gap:2px;background:var(–s2);border-radius:7px;padding:3px;margin-bottom:16px;}
+.ttab{flex:1;padding:7px;border-radius:5px;font-size:13px;font-weight:500;cursor:pointer;text-align:center;color:var(–t3);border:none;background:transparent;font-family:‘Noto Sans JP’,sans-serif;transition:all .15s;}
+.ttab.active{background:#fff;color:var(–text);box-shadow:var(–sh);}
 
-/* Filter bar */
-.filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center;}
-.filter-select{background:var(–surface);border:1px solid var(–border2);border-radius:5px;padding:4px 8px;font-size:12px;font-family:‘Noto Sans JP’,sans-serif;color:var(–text);outline:none;cursor:pointer;}
-.filter-label-text{font-size:11px;color:var(–text3);}
+/* Tags */
+.tag-sel{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
+.topt{padding:3px 10px;border-radius:4px;font-size:12px;cursor:pointer;border:1.5px solid transparent;user-select:none;transition:all .1s;}
+.topt:hover{opacity:.85;}
+.topt.sel{border-color:currentColor;font-weight:600;}
+
+/* Filter */
+.fbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center;}
+.fsel{background:var(–surface);border:1px solid var(–b2);border-radius:5px;padding:4px 8px;font-size:12px;font-family:‘Noto Sans JP’,sans-serif;color:var(–text);outline:none;cursor:pointer;}
 
 /* Log list */
-.log-list{display:flex;flex-direction:column;gap:8px;}
-.log-card{background:var(–surface);border:1px solid var(–border);border-radius:8px;padding:12px 14px;box-shadow:var(–shadow);display:flex;gap:12px;align-items:flex-start;transition:box-shadow 0.15s;}
-.log-card:hover{box-shadow:var(–shadow-md);}
-.log-card.type-yonn4{border-left:3px solid var(–blue);}
-.log-card.type-ronbun{border-left:3px solid var(–purple);}
-.log-card.type-study{border-left:3px solid var(–accent);}
-.log-date-block{text-align:center;flex-shrink:0;width:40px;}
-.log-date-block .month{font-size:10px;color:var(–text3);text-transform:uppercase;letter-spacing:0.06em;}
-.log-date-block .day{font-size:20px;font-family:‘Space Mono’,monospace;font-weight:700;line-height:1;}
-.log-date-block .weekday{font-size:10px;color:var(–text3);}
-.log-body{flex:1;min-width:0;}
-.log-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:5px;}
-.log-time{font-family:‘Space Mono’,monospace;font-size:12px;color:var(–accent);font-weight:700;background:var(–accent-light);padding:2px 7px;border-radius:4px;}
-.log-score{font-family:‘Space Mono’,monospace;font-size:12px;font-weight:700;padding:2px 7px;border-radius:4px;}
-.log-score.yonn{color:var(–blue);background:var(–blue-light);}
-.log-score.ronbun{color:var(–purple);background:var(–purple-light);}
-.tag{font-size:11px;padding:2px 7px;border-radius:4px;font-weight:500;}
-.type-badge{font-size:10px;padding:2px 6px;border-radius:3px;font-weight:700;letter-spacing:0.04em;}
-.log-topics{font-size:13px;font-weight:600;margin-bottom:3px;}
-.log-memo{font-size:12px;color:var(–text2);line-height:1.6;}
-.log-actions{display:flex;gap:4px;margin-left:auto;}
-.icon-btn{width:26px;height:26px;border-radius:4px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(–text3);transition:background 0.1s,color 0.1s;}
-.icon-btn:hover{background:var(–surface2);color:var(–text);}
+.ll{display:flex;flex-direction:column;gap:8px;}
+.lc{background:var(–surface);border:1px solid var(–border);border-left:3px solid var(–b2);border-radius:8px;padding:12px 14px;box-shadow:var(–sh);display:flex;gap:12px;align-items:flex-start;}
+.lc:hover{box-shadow:var(–shm);}
+.lc.t-study{border-left-color:var(–green);}
+.lc.t-yonn{border-left-color:var(–blue);}
+.lc.t-ron{border-left-color:var(–purple);}
+.ld{text-align:center;flex-shrink:0;width:40px;}
+.ld .mn{font-size:10px;color:var(–t3);text-transform:uppercase;letter-spacing:.06em;}
+.ld .dy{font-size:20px;font-family:‘Space Mono’,monospace;font-weight:700;line-height:1;}
+.ld .wd{font-size:10px;color:var(–t3);}
+.lb{flex:1;min-width:0;}
+.lm{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:5px;}
+.bdg{font-size:12px;font-weight:700;padding:2px 8px;border-radius:4px;font-family:‘Space Mono’,monospace;}
+.tbdg{font-size:10px;font-weight:700;padding:2px 6px;border-radius:3px;letter-spacing:.04em;}
+.tg{font-size:11px;padding:2px 7px;border-radius:4px;font-weight:500;}
+.lt{font-size:13px;font-weight:600;margin-bottom:3px;}
+.lmemo{font-size:12px;color:var(–t2);line-height:1.6;}
+.la{margin-left:auto;}
+.ibt{width:26px;height:26px;border-radius:4px;border:none;background:transparent;cursor:pointer;font-size:14px;color:var(–t3);}
+.ibt:hover{background:var(–s2);color:var(–text);}
 
 /* Week grid */
-.week-grid{display:flex;gap:6px;}
-.week-day{flex:1;background:var(–surface);border:1px solid var(–border);border-radius:6px;padding:7px 5px;text-align:center;font-size:11px;}
-.week-day .wd-name{color:var(–text3);margin-bottom:3px;font-weight:500;}
-.week-day .wd-hours{font-family:‘Space Mono’,monospace;font-size:13px;font-weight:700;color:var(–text3);}
-.week-day.has-study .wd-hours{color:var(–accent);}
-.week-day.today{border-color:var(–accent);}
-.week-day .wd-dot{width:4px;height:4px;border-radius:50%;background:var(–accent);margin:3px auto 0;}
+.wg{display:flex;gap:6px;}
+.wd-cell{flex:1;background:var(–surface);border:1px solid var(–border);border-radius:6px;padding:7px 5px;text-align:center;font-size:11px;}
+.wd-cell .wdn{color:var(–t3);margin-bottom:3px;font-weight:500;}
+.wd-cell .wdh{font-family:‘Space Mono’,monospace;font-size:13px;font-weight:700;color:var(–t3);}
+.wd-cell.hs .wdh{color:var(–green);}
+.wd-cell.td{border-color:var(–green);}
+.dot{width:4px;height:4px;border-radius:50%;background:var(–green);margin:3px auto 0;}
 
 /* Progress */
-.progress-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
-.progress-card{background:var(–surface);border:1px solid var(–border);border-radius:8px;padding:12px 14px;box-shadow:var(–shadow);}
-.progress-label{font-size:13px;font-weight:600;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;}
-.progress-pct{font-family:‘Space Mono’,monospace;font-size:12px;color:var(–text3);}
-.progress-bar-bg{height:6px;background:var(–surface2);border-radius:3px;overflow:hidden;}
-.progress-bar-fill{height:100%;border-radius:3px;transition:width 0.4s ease;}
-.progress-sub{font-size:11px;color:var(–text3);margin-top:4px;}
+.pg{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+.pc{background:var(–surface);border:1px solid var(–border);border-radius:8px;padding:12px 14px;box-shadow:var(–sh);}
+.plbl{font-size:13px;font-weight:600;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;}
+.ppct{font-family:‘Space Mono’,monospace;font-size:12px;color:var(–t3);}
+.pbg{height:6px;background:var(–s2);border-radius:3px;overflow:hidden;}
+.pf{height:100%;border-radius:3px;transition:width .4s;}
+.psub{font-size:11px;color:var(–t3);margin-top:4px;}
 
-/* Schedule tab */
-.schedule-list{display:flex;flex-direction:column;gap:6px;}
-.schedule-item{background:var(–surface);border:1px solid var(–border);border-radius:7px;padding:10px 14px;display:flex;align-items:center;gap:12px;box-shadow:var(–shadow);}
-.schedule-item.done{opacity:0.55;border-color:var(–accent);background:var(–accent-light);}
-.schedule-item.today-plan{border-color:var(–yellow);background:var(–yellow-light);}
-.schedule-item .sched-date{font-family:‘Space Mono’,monospace;font-size:11px;font-weight:700;color:var(–text3);width:80px;flex-shrink:0;}
-.schedule-item .sched-content{flex:1;font-size:13px;}
-.schedule-item .sched-type{font-size:10px;padding:2px 6px;border-radius:3px;font-weight:700;flex-shrink:0;}
-.schedule-item .sched-check{font-size:16px;flex-shrink:0;}
-.schedule-month-label{font-size:12px;font-weight:700;color:var(–text3);letter-spacing:0.06em;text-transform:uppercase;padding:8px 0 4px;border-bottom:1px solid var(–border);margin-bottom:6px;}
+/* Bar chart */
+.bch{background:var(–surface);border:1px solid var(–border);border-radius:8px;padding:16px;box-shadow:var(–sh);}
 
-/* Tabs */
-.tabs{display:flex;gap:2px;background:var(–surface2);border-radius:7px;padding:3px;margin-bottom:20px;}
-.tab{flex:1;padding:6px 12px;border-radius:5px;font-size:12px;font-weight:500;cursor:pointer;text-align:center;color:var(–text3);transition:all 0.15s;border:none;background:transparent;font-family:‘Noto Sans JP’,sans-serif;}
-.tab.active{background:white;color:var(–text);box-shadow:var(–shadow);}
+/* Schedule */
+.si{background:var(–surface);border:1px solid var(–border);border-radius:7px;padding:9px 12px;display:flex;align-items:center;gap:10px;box-shadow:var(–sh);margin-bottom:6px;}
+.si.done{opacity:.5;background:var(–gl);border-color:#B8D9C0;}
+.si.tday{border-color:var(–yellow);background:var(–yl);}
+.sddate{font-family:‘Space Mono’,monospace;font-size:11px;font-weight:700;color:var(–t3);width:74px;flex-shrink:0;}
+.sdcont{flex:1;font-size:13px;}
+.sdtype{font-size:10px;padding:2px 6px;border-radius:3px;font-weight:700;flex-shrink:0;}
+.mlbl{font-size:11px;font-weight:700;color:var(–t3);letter-spacing:.06em;text-transform:uppercase;padding:8px 0 4px;border-bottom:1px solid var(–border);margin-bottom:6px;}
 
-/* Empty / Divider */
-.empty{text-align:center;padding:32px 20px;color:var(–text3);font-size:13px;}
-.empty .empty-icon{font-size:28px;margin-bottom:8px;}
-.divider{border:none;border-top:1px solid var(–border);margin:20px 0;}
+.kc{background:var(–surface);border:1px solid var(–border);border-radius:7px;padding:12px 14px;display:flex;gap:12px;align-items:flex-start;box-shadow:var(–sh);margin-bottom:6px;}
+.empty{text-align:center;padding:32px 20px;color:var(–t3);font-size:13px;}
+.empty .ei{font-size:28px;margin-bottom:8px;}
+.dvd{border:none;border-top:1px solid var(–border);margin:20px 0;}
 .hidden{display:none!important;}
-
-/* Keyword */
-.kw-card{background:var(–surface);border:1px solid var(–border);border-radius:7px;padding:12px 14px;display:flex;gap:12px;align-items:flex-start;box-shadow:var(–shadow);}
-
-@media(max-width:640px){
-.main{padding:16px 14px;}
-.stats-row{grid-template-columns:repeat(2,1fr);}
-.progress-grid{grid-template-columns:1fr;}
-.sidebar{display:none;}
-}
+@media(max-width:640px){.main{padding:16px 12px;}.stats{grid-template-columns:repeat(2,1fr);}.pg{grid-template-columns:1fr;}.sb{display:none;}}
 </style>
 
 </head>
 <body>
 <div class="app">
-  <!-- Sidebar -->
-  <nav class="sidebar">
-    <div class="sidebar-logo">
-      <h1>コンクリート<br>診断士 2026</h1>
-      <p>STUDY TRACKER</p>
-    </div>
-    <div class="exam-countdown">
-      <div class="label">試験まで</div>
-      <div class="days" id="days-left">—</div>
-      <div class="sublabel">日</div>
-    </div>
-    <div class="sidebar-section-title">メニュー</div>
-    <div class="sidebar-item active" onclick="showTab('log')"><span class="icon">📝</span>学習記録</div>
-    <div class="sidebar-item" onclick="showTab('kakomon')"><span class="icon">📋</span>過去問</div>
-    <div class="sidebar-item" onclick="showTab('progress')"><span class="icon">📊</span>進捗</div>
-    <div class="sidebar-item" onclick="showTab('schedule')"><span class="icon">📅</span>予定</div>
-    <div class="sidebar-item" onclick="showTab('keyword')"><span class="icon">🔑</span>キーワード辞書</div>
-    <div class="sidebar-section-title" style="margin-top:10px;">劣化機構</div>
-    <div class="sidebar-item" onclick="setTopicFilter('凍害')"><span class="icon">❄️</span>凍害<span class="sidebar-badge" id="badge-凍害">0</span></div>
-    <div class="sidebar-item" onclick="setTopicFilter('火害')"><span class="icon">🔥</span>火害<span class="sidebar-badge" id="badge-火害">0</span></div>
-    <div class="sidebar-item" onclick="setTopicFilter('中性化')"><span class="icon">🧪</span>中性化<span class="sidebar-badge" id="badge-中性化">0</span></div>
-    <div class="sidebar-item" onclick="setTopicFilter('塩害')"><span class="icon">🌊</span>塩害<span class="sidebar-badge" id="badge-塩害">0</span></div>
-    <div class="sidebar-item" onclick="setTopicFilter('ASR')"><span class="icon">⚗️</span>ASR<span class="sidebar-badge" id="badge-ASR">0</span></div>
-    <div class="sidebar-item" onclick="setTopicFilter('化学的侵食')"><span class="icon">🧫</span>化学的侵食<span class="sidebar-badge" id="badge-化学的侵食">0</span></div>
-    <div class="sidebar-item" onclick="setTopicFilter('疲労')"><span class="icon">⚡</span>疲労<span class="sidebar-badge" id="badge-疲労">0</span></div>
-    <div class="sidebar-item" onclick="setTopicFilter('')"><span class="icon">🔄</span>すべて表示</div>
-  </nav>
 
-  <main class="main">
-    <!-- LOG TAB -->
-    <div id="tab-log">
-      <div class="page-header">
-        <h2 class="page-title">学習記録</h2>
-        <p class="page-subtitle" id="today-date"></p>
+<!-- Sidebar -->
+
+<nav class="sb">
+  <div class="sb-logo"><h1>コンクリート<br>診断士 2026</h1><p>STUDY TRACKER</p></div>
+  <div class="countdown"><div class="lbl">試験まで</div><div class="days" id="daysLeft">—</div><div class="sub">日</div></div>
+  <div class="sb-sec">メニュー</div>
+  <div class="sb-item active" onclick="showTab('log')"><span class="ic">📝</span>学習記録</div>
+  <div class="sb-item" onclick="showTab('progress')"><span class="ic">📊</span>進捗</div>
+  <div class="sb-item" onclick="showTab('schedule')"><span class="ic">📅</span>予定</div>
+  <div class="sb-item" onclick="showTab('keyword')"><span class="ic">🔑</span>キーワード辞書</div>
+  <div class="sb-sec" style="margin-top:10px;">劣化機構・種別</div>
+  <div class="sb-item" onclick="setF('凍害')"><span class="ic">❄️</span>凍害<span class="sb-badge" id="b-凍害">0</span></div>
+  <div class="sb-item" onclick="setF('火害')"><span class="ic">🔥</span>火害<span class="sb-badge" id="b-火害">0</span></div>
+  <div class="sb-item" onclick="setF('中性化')"><span class="ic">🧪</span>中性化<span class="sb-badge" id="b-中性化">0</span></div>
+  <div class="sb-item" onclick="setF('塩害')"><span class="ic">🌊</span>塩害<span class="sb-badge" id="b-塩害">0</span></div>
+  <div class="sb-item" onclick="setF('ASR')"><span class="ic">⚗️</span>ASR<span class="sb-badge" id="b-ASR">0</span></div>
+  <div class="sb-item" onclick="setF('化学的侵食')"><span class="ic">🧫</span>化学的侵食<span class="sb-badge" id="b-化学的侵食">0</span></div>
+  <div class="sb-item" onclick="setF('疲労')"><span class="ic">⚡</span>疲労<span class="sb-badge" id="b-疲労">0</span></div>
+  <div class="sb-item" onclick="setF('過去問四択')"><span class="ic">📋</span>過去問四択<span class="sb-badge" id="b-過去問四択">0</span></div>
+  <div class="sb-item" onclick="setF('論文')"><span class="ic">✍️</span>論文<span class="sb-badge" id="b-論文">0</span></div>
+  <div class="sb-item" onclick="setF('')"><span class="ic">🔄</span>すべて表示</div>
+</nav>
+
+<main class="main">
+
+<!-- ===== 学習記録タブ ===== -->
+
+<div id="tab-log">
+  <div class="ph"><h2>学習記録</h2><p id="todayStr"></p></div>
+
+  <div class="stats">
+    <div class="sc"><div class="lbl">累計学習時間</div><div class="val"><span id="sTot">0</span><span class="unit">h</span></div><div class="sub" id="sSess">0セッション</div></div>
+    <div class="sc"><div class="lbl">今週</div><div class="val"><span id="sWeek">0</span><span class="unit">h</span></div><div class="sub">週目標: 21h</div></div>
+    <div class="sc"><div class="lbl">今日</div><div class="val"><span id="sToday">0</span><span class="unit">h</span></div><div class="sub">日目標: 3h</div></div>
+    <div class="sc"><div class="lbl">連続学習</div><div class="val"><span id="sStreak">0</span><span class="unit">日</span></div><div class="sub" id="sStreakSub">がんばれ！</div></div>
+  </div>
+
+  <div class="sec"><div class="sec-hd"><span class="sec-ttl">今週の学習</span></div><div class="wg" id="weekGrid"></div></div>
+
+  <!-- 記録フォーム -->
+
+  <div class="sec">
+    <div class="sec-hd"><span class="sec-ttl">記録を追加</span></div>
+    <div class="fc">
+      <!-- タイプ切替 -->
+      <div class="ttabs">
+        <button class="ttab active" id="tt-study" onclick="setType('study')">📚 学習記録</button>
+        <button class="ttab" id="tt-yonn" onclick="setType('yonn')">📋 過去問四択</button>
+        <button class="ttab" id="tt-ron" onclick="setType('ron')">✍️ 論文</button>
       </div>
 
 ```
-  <div class="stats-row">
-    <div class="stat-card">
-      <div class="stat-label">累計学習時間</div>
-      <div class="stat-value"><span id="total-hours">0</span><span class="stat-unit">h</span></div>
-      <div class="stat-sub" id="total-sessions">0セッション</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">今週</div>
-      <div class="stat-value"><span id="week-hours">0</span><span class="stat-unit">h</span></div>
-      <div class="stat-sub">週目標: 21h</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">今日</div>
-      <div class="stat-value"><span id="today-hours">0</span><span class="stat-unit">h</span></div>
-      <div class="stat-sub">日目標: 3h</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">連続学習</div>
-      <div class="stat-value"><span id="streak">0</span><span class="stat-unit">日</span></div>
-      <div class="stat-sub" id="streak-sub">がんばれ！</div>
-    </div>
+  <!-- 共通: 日付 -->
+  <div class="fr">
+    <div class="fg"><label class="flbl">日付</label><input type="date" class="fi" id="fDate" style="width:140px;"></div>
+
+    <!-- 学習: 時間 -->
+    <div class="fg" id="fg-hours"><label class="flbl">学習時間(h)</label><input type="number" class="fi" id="fHours" placeholder="3.0" step="0.5" min="0.5" max="12" style="width:90px;"></div>
+
+    <!-- 四択: 問題数・正答数・正答率・採点 -->
+    <div class="fg hidden" id="fg-yq"><label class="flbl">実施問題数</label><input type="number" class="fi" id="fYQ" placeholder="20" min="1" max="300" style="width:85px;" oninput="calcYR()"></div>
+    <div class="fg hidden" id="fg-ya"><label class="flbl">正答数</label><input type="number" class="fi" id="fYA" placeholder="16" min="0" max="300" style="width:80px;" oninput="calcYR()"></div>
+    <div class="fg hidden" id="fg-yr"><label class="flbl">正答率</label><input type="text" class="fi" id="fYR" placeholder="自動計算" style="width:80px;" readonly></div>
+
+    <!-- 論文: 年度・問題・採点 -->
+    <div class="fg hidden" id="fg-ry"><label class="flbl">年度（4桁）</label><input type="number" class="fi" id="fRY" placeholder="2024" min="2000" max="2099" style="width:100px;"></div>
+    <div class="fg hidden" id="fg-rp"><label class="flbl">部門</label><select class="fi" id="fRP" style="width:86px;"><option>建築</option><option>土木</option></select></div>
+    <div class="fg hidden" id="fg-rs"><label class="flbl">採点（/10点）</label><input type="number" class="fi" id="fRS" placeholder="7" min="0" max="10" step="0.5" style="width:90px;"></div>
+
+    <!-- 共通: 内容 -->
+    <div class="fg grow"><label class="flbl" id="topicsLabel">学習内容</label><input type="text" class="fi" id="fTopics" placeholder="例: 火害インプット・WEB講義レビュー"></div>
   </div>
 
-  <!-- Week Grid -->
-  <div class="section">
-    <div class="section-header"><span class="section-title">今週の学習</span></div>
-    <div class="week-grid" id="week-grid"></div>
+  <div class="fr"><div class="fg" style="flex:1;"><label class="flbl">タグ</label><div class="tag-sel" id="fTags"></div></div></div>
+  <div class="fr"><div class="fg" style="flex:1;"><label class="flbl">メモ・気づき</label><textarea class="fi" id="fMemo" placeholder="学んだこと、課題、次回やること など"></textarea></div></div>
+  <div style="display:flex;justify-content:flex-end;gap:8px;"><button class="btn" onclick="clearF()">クリア</button><button class="btn btn-p" onclick="addLog()">✚ 記録を保存</button></div>
+</div>
+```
+
   </div>
 
-  <!-- Add Form -->
-  <div class="section">
-    <div class="section-header"><span class="section-title">記録を追加</span></div>
-    <div class="log-form">
-      <div class="form-type-tabs">
-        <button class="form-type-tab active" onclick="setFormType('study')">📚 学習記録</button>
-        <button class="form-type-tab" onclick="setFormType('yonn4')">📋 過去問四択</button>
-        <button class="form-type-tab" onclick="setFormType('ronbun')">✍️ 過去問論文</button>
-      </div>
+  <!-- ログ一覧 -->
 
-      <!-- 共通: 日付 -->
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">日付</label>
-          <input type="date" class="form-input" id="input-date" style="width:140px;">
-        </div>
-        <!-- 学習記録用 -->
-        <div class="form-group" id="fg-hours">
-          <label class="form-label">学習時間 (h)</label>
-          <input type="number" class="form-input" id="input-hours" placeholder="3.0" step="0.5" min="0.5" max="12" style="width:90px;">
-        </div>
-        <!-- 過去問四択用 -->
-        <div class="form-group hidden" id="fg-yonn">
-          <label class="form-label">実施問題数</label>
-          <input type="number" class="form-input" id="input-yonn-q" placeholder="20" min="1" max="200" style="width:80px;">
-        </div>
-        <div class="form-group hidden" id="fg-yonn2">
-          <label class="form-label">正答数</label>
-          <input type="number" class="form-input" id="input-yonn-a" placeholder="16" min="0" max="200" style="width:80px;" oninput="calcRate()">
-        </div>
-        <div class="form-group hidden" id="fg-yonn3">
-          <label class="form-label">正答率</label>
-          <input type="text" class="form-input" id="input-yonn-rate" placeholder="自動計算" style="width:80px;" readonly>
-        </div>
-        <!-- 論文用 -->
-        <div class="form-group hidden" id="fg-ronbun-year">
-          <label class="form-label">年度</label>
-          <select class="form-select" id="input-ronbun-year" style="width:100px;">
-            <option value="2024">2024年度</option>
-            <option value="2023">2023年度</option>
-            <option value="2022">2022年度</option>
-            <option value="2021">2021年度</option>
-            <option value="2020">2020年度</option>
-            <option value="2019">2019年度</option>
-            <option value="その他">その他</option>
-          </select>
-        </div>
-        <div class="form-group hidden" id="fg-ronbun-grade">
-          <label class="form-label">採点（/10点）</label>
-          <input type="number" class="form-input" id="input-ronbun-grade" placeholder="7" min="0" max="10" step="0.5" style="width:90px;">
-        </div>
-
-      <div class="form-row">
-        <div class="form-group" style="flex:1;">
-          <label class="form-label">劣化機構タグ</label>
-          <div class="tag-selector" id="tag-selector"></div>
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group" style="flex:1;">
-          <label class="form-label">メモ・気づき</label>
-          <textarea class="form-textarea" id="input-memo" placeholder="学んだこと、課題、次回やること など"></textarea>
-        </div>
-      </div>
-
-      <div style="display:flex;justify-content:flex-end;gap:8px;">
-        <button class="btn" onclick="clearForm()">クリア</button>
-        <button class="btn btn-primary" onclick="addLog()">✚ 記録を保存</button>
-      </div>
+  <div class="sec">
+    <div class="sec-hd"><span class="sec-ttl">学習ログ</span><button class="btn btn-sm" onclick="expCSV()">📥 CSV</button></div>
+    <div class="fbar">
+      <span style="font-size:11px;color:var(--t3);">期間:</span>
+      <select class="fsel" id="fPeriod" onchange="renderList()"><option value="all">全期間</option><option value="week">今週</option><option value="month">今月</option><option value="last">先月</option></select>
+      <span style="font-size:11px;color:var(--t3);">タイプ:</span>
+      <select class="fsel" id="fType" onchange="renderList()"><option value="all">すべて</option><option value="study">📚 学習</option><option value="yonn">📋 四択</option><option value="ron">✍️ 論文</option></select>
+      <span style="font-size:11px;color:var(--t3);" id="tagFLabel"></span>
     </div>
-  </div>
-
-  <!-- Filter + Log List -->
-  <div class="section">
-    <div class="section-header">
-      <span class="section-title">学習ログ</span>
-      <button class="btn btn-sm" onclick="exportCSV()">📥 CSV出力</button>
-    </div>
-    <div class="filter-bar">
-      <span class="filter-label-text">期間:</span>
-      <select class="filter-select" id="filter-period" onchange="renderLogList()">
-        <option value="all">全期間</option>
-        <option value="week">今週</option>
-        <option value="month">今月</option>
-        <option value="last_month">先月</option>
-      </select>
-      <span class="filter-label-text">タイプ:</span>
-      <select class="filter-select" id="filter-type" onchange="renderLogList()">
-        <option value="all">すべて</option>
-        <option value="study">📚 学習記録</option>
-        <option value="yonn4">📋 過去問四択</option>
-        <option value="ronbun">✍️ 過去問論文</option>
-      </select>
-      <span class="filter-label-text" id="filter-topic-label"></span>
-    </div>
-    <div class="log-list" id="log-list"></div>
+    <div class="ll" id="logList"></div>
   </div>
 </div>
 
+<!-- ===== 進捗タブ ===== -->
 
-<!-- KAKOMON TAB -->
-<div id="tab-kakomon" class="hidden">
-  <div class="page-header">
-    <h2 class="page-title">過去問</h2>
-    <p class="page-subtitle" id="kakomon-subtitle"></p>
-  </div>
-
-  <!-- サブタブ -->
-  <div style="display:flex;gap:2px;background:var(--surface2);border-radius:7px;padding:3px;margin-bottom:20px;">
-    <button id="subtab-yonn" style="flex:1;padding:7px;border-radius:5px;font-size:13px;font-weight:500;cursor:pointer;text-align:center;background:white;color:var(--text);box-shadow:var(--shadow);border:none;font-family:inherit;" onclick="setKakomonTab('yonn4')">📋 四択</button>
-    <button id="subtab-ron" style="flex:1;padding:7px;border-radius:5px;font-size:13px;font-weight:500;cursor:pointer;text-align:center;background:transparent;color:var(--text3);border:none;font-family:inherit;" onclick="setKakomonTab('ronbun')">✍️ 論文</button>
-  </div>
-
-  <!-- 四択パネル -->
-  <div id="kakomon-yonn4-panel">
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;">
-      <div class="stat-card">
-        <div class="stat-label">四択 総回数</div>
-        <div class="stat-value"><span id="yonn-count">0</span><span class="stat-unit">回</span></div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">累計 正答率</div>
-        <div class="stat-value"><span id="yonn-avg-rate">—</span><span class="stat-unit">%</span></div>
-        <div class="stat-sub">累計 <span id="yonn-total-correct">0</span>/<span id="yonn-total-q">0</span>問</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">最高正答率</div>
-        <div class="stat-value"><span id="yonn-best">—</span><span class="stat-unit">%</span></div>
-      </div>
-    </div>
-
-    <div class="section">
-      <div class="section-header"><span class="section-title">記録を追加</span></div>
-      <div class="log-form">
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">日付</label>
-            <input type="date" class="form-input" id="yonn-date" style="width:140px;">
-          </div>
-          <div class="form-group">
-            <label class="form-label">実施問題数</label>
-            <input type="number" class="form-input" id="yonn-q" placeholder="20" min="1" max="300" style="width:80px;" oninput="calcYonnRate()">
-          </div>
-          <div class="form-group">
-            <label class="form-label">正答数</label>
-            <input type="number" class="form-input" id="yonn-a" placeholder="16" min="0" max="300" style="width:80px;" oninput="calcYonnRate()">
-          </div>
-          <div class="form-group">
-            <label class="form-label">正答率</label>
-            <input type="text" class="form-input" id="yonn-rate-display" placeholder="自動計算" style="width:80px;" readonly>
-          </div>
-          <div class="form-group grow">
-            <label class="form-label">分野・内容</label>
-            <input type="text" class="form-input" id="yonn-topics" placeholder="例: 塩害・中性化 分野別">
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group" style="flex:1;">
-            <label class="form-label">劣化機構タグ</label>
-            <div class="tag-selector" id="yonn-tag-selector"></div>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group" style="flex:1;">
-            <label class="form-label">メモ・気づき</label>
-            <textarea class="form-textarea" id="yonn-memo" placeholder="間違えた問題、気づきなど"></textarea>
-          </div>
-        </div>
-        <div style="display:flex;justify-content:flex-end;gap:8px;">
-          <button class="btn" onclick="clearYonnForm()">クリア</button>
-          <button class="btn btn-primary" onclick="addYonnLog()">✚ 記録を保存</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="section">
-      <div class="section-header"><span class="section-title">正答率 推移</span></div>
-      <div id="yonn-chart" style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;box-shadow:var(--shadow);"></div>
-    </div>
-
-    <div class="section">
-      <div class="section-header"><span class="section-title">四択 ログ</span></div>
-      <div class="filter-bar">
-        <span style="font-size:11px;color:var(--text3);">期間:</span>
-        <select class="filter-select" id="yonn-filter-period" onchange="renderYonnList()">
-          <option value="all">全期間</option>
-          <option value="month">今月</option>
-          <option value="last_month">先月</option>
-        </select>
-      </div>
-      <div class="log-list" id="yonn-list"></div>
-    </div>
-  </div>
-
-  <!-- 論文パネル -->
-  <div id="kakomon-ronbun-panel" class="hidden">
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;">
-      <div class="stat-card">
-        <div class="stat-label">論文 総回数</div>
-        <div class="stat-value"><span id="ron-count">0</span><span class="stat-unit">回</span></div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">平均点</div>
-        <div class="stat-value"><span id="ron-avg">—</span><span class="stat-unit">/10</span></div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">最高点</div>
-        <div class="stat-value"><span id="ron-best">—</span><span class="stat-unit">/10</span></div>
-      </div>
-    </div>
-
-    <div class="section">
-      <div class="section-header"><span class="section-title">記録を追加</span></div>
-      <div class="log-form">
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">日付</label>
-            <input type="date" class="form-input" id="ron-date" style="width:140px;">
-          </div>
-          <div class="form-group">
-            <label class="form-label">年度</label>
-            <select class="form-select" id="ron-year" style="width:110px;">
-              <option value="2024">2024年度</option>
-              <option value="2023">2023年度</option>
-              <option value="2022">2022年度</option>
-              <option value="2021">2021年度</option>
-              <option value="2020">2020年度</option>
-              <option value="2019">2019年度</option>
-              <option value="2018">2018年度</option>
-              <option value="その他">その他</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">問題番号</label>
-            <select class="form-select" id="ron-problem" style="width:80px;">
-              <option>問題Ⅰ</option><option>問題Ⅱ</option><option>問題Ⅲ</option><option>全体</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">採点（/10点）</label>
-            <input type="number" class="form-input" id="ron-score" placeholder="7" min="0" max="10" step="0.5" style="width:90px;">
-          </div>
-          <div class="form-group grow">
-            <label class="form-label">内容・テーマ</label>
-            <input type="text" class="form-input" id="ron-topics" placeholder="例: 海岸沿いRC構造物の診断">
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group" style="flex:1;">
-            <label class="form-label">劣化機構タグ</label>
-            <div class="tag-selector" id="ron-tag-selector"></div>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group" style="flex:1;">
-            <label class="form-label">講師フィードバック・気づき</label>
-            <textarea class="form-textarea" id="ron-memo" placeholder="フィードバック内容、改善点など"></textarea>
-          </div>
-        </div>
-        <div style="display:flex;justify-content:flex-end;gap:8px;">
-          <button class="btn" onclick="clearRonForm()">クリア</button>
-          <button class="btn btn-primary" onclick="addRonLog()">✚ 記録を保存</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="section">
-      <div class="section-header"><span class="section-title">点数 推移（10点満点）</span></div>
-      <div id="ron-chart" style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;box-shadow:var(--shadow);"></div>
-    </div>
-
-    <div class="section">
-      <div class="section-header"><span class="section-title">論文 ログ</span></div>
-      <div class="filter-bar">
-        <span style="font-size:11px;color:var(--text3);">期間:</span>
-        <select class="filter-select" id="ron-filter-period" onchange="renderRonList()">
-          <option value="all">全期間</option>
-          <option value="month">今月</option>
-          <option value="last_month">先月</option>
-        </select>
-      </div>
-      <div class="log-list" id="ron-list"></div>
-    </div>
-  </div>
-</div>
-
-<!-- PROGRESS TAB -->
 <div id="tab-progress" class="hidden">
-  <div class="page-header">
-    <h2 class="page-title">学習進捗</h2>
-    <p class="page-subtitle">3月〜7月 フェーズ別・機構別の進捗</p>
-  </div>
-  <div class="section">
-    <div class="section-header"><span class="section-title">フェーズ進捗</span></div>
-    <div id="phase-progress"></div>
-  </div>
-  <hr class="divider">
-  <div class="section">
-    <div class="section-header"><span class="section-title">過去問四択 成績推移</span></div>
-    <div id="yonn-chart"></div>
-  </div>
-  <hr class="divider">
-  <div class="section">
-    <div class="section-header"><span class="section-title">劣化機構別 学習時間</span></div>
-    <div class="progress-grid" id="topic-progress"></div>
-  </div>
-  <hr class="divider">
-  <div class="section">
-    <div class="section-header"><span class="section-title">月別学習時間</span></div>
-    <div id="monthly-chart" style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:20px;box-shadow:var(--shadow);"></div>
-  </div>
+  <div class="ph"><h2>学習進捗</h2><p>フェーズ別・機構別の進捗</p></div>
+  <div class="sec"><div class="sec-hd"><span class="sec-ttl">フェーズ進捗</span></div><div id="phaseProg"></div></div>
+  <hr class="dvd">
+  <div class="sec"><div class="sec-hd"><span class="sec-ttl">劣化機構別 学習時間</span></div><div class="pg" id="topicProg"></div></div>
+  <hr class="dvd">
+  <div class="sec"><div class="sec-hd"><span class="sec-ttl">月別学習時間</span></div><div class="bch" id="monthChart"></div></div>
+  <hr class="dvd">
+  <div class="sec"><div class="sec-hd"><span class="sec-ttl">過去問四択 正答率推移</span></div><div class="bch" id="yonnChart"></div></div>
+  <hr class="dvd">
+  <div class="sec"><div class="sec-hd"><span class="sec-ttl">論文 採点推移（10点満点）</span></div><div class="bch" id="ronChart"></div></div>
 </div>
 
-<!-- SCHEDULE TAB -->
+<!-- ===== 予定タブ ===== -->
+
 <div id="tab-schedule" class="hidden">
-  <div class="page-header">
-    <h2 class="page-title">学習予定</h2>
-    <p class="page-subtitle">計画 vs 実績　✅=実施済　⬜=未実施</p>
+  <div class="ph"><h2>学習予定</h2><p>✅ 実施済　⬜ 未実施</p></div>
+  <div class="fbar">
+    <select class="fsel" id="sfStatus" onchange="renderSched()"><option value="all">全期間</option><option value="remaining">未実施のみ</option><option value="done">実施済のみ</option></select>
+    <select class="fsel" id="sfMonth" onchange="renderSched()"><option value="all">全月</option><option value="2026-03">3月</option><option value="2026-04">4月</option><option value="2026-05">5月</option><option value="2026-06">6月</option><option value="2026-07">7月</option></select>
   </div>
-  <div class="filter-bar">
-    <span class="filter-label-text">表示:</span>
-    <select class="filter-select" id="sched-filter" onchange="renderSchedule()">
-      <option value="all">全期間</option>
-      <option value="remaining">未実施のみ</option>
-      <option value="done">実施済のみ</option>
-    </select>
-    <select class="filter-select" id="sched-month" onchange="renderSchedule()">
-      <option value="all">全月</option>
-      <option value="2026-03">3月</option>
-      <option value="2026-04">4月</option>
-      <option value="2026-05">5月</option>
-      <option value="2026-06">6月</option>
-      <option value="2026-07">7月</option>
-    </select>
-  </div>
-  <div id="schedule-list"></div>
+  <div id="schedList"></div>
 </div>
 
-<!-- KEYWORD TAB -->
+<!-- ===== キーワードタブ ===== -->
+
 <div id="tab-keyword" class="hidden">
-  <div class="page-header">
-    <h2 class="page-title">キーワード辞書</h2>
-    <p class="page-subtitle">論文記述用キーワードを管理</p>
+  <div class="ph"><h2>キーワード辞書</h2><p>論文記述用キーワードを管理</p></div>
+  <div class="fc" style="margin-bottom:16px;">
+    <div class="fr">
+      <div class="fg grow"><label class="flbl">キーワード</label><input type="text" class="fi" id="kwWord" placeholder="例: 凍結融解サイクル"></div>
+      <div class="fg"><label class="flbl">カテゴリ</label><select class="fi" id="kwCat" style="width:130px;"><option>凍害</option><option>火害</option><option>中性化</option><option>塩害</option><option>ASR</option><option>化学的侵食</option><option>疲労</option><option>複合劣化</option><option>診断一般</option><option>論文構成</option></select></div>
+    </div>
+    <div class="fr"><div class="fg" style="flex:1;"><label class="flbl">説明・使い方</label><textarea class="fi" id="kwDesc" placeholder="論文での使いどころ、関連する数値、注意点など" style="min-height:50px;"></textarea></div></div>
+    <div style="display:flex;justify-content:flex-end;"><button class="btn btn-p" onclick="addKW()">✚ 追加</button></div>
   </div>
-  <div class="log-form" style="margin-bottom:16px;">
-    <div class="form-row">
-      <div class="form-group grow">
-        <label class="form-label">キーワード</label>
-        <input type="text" class="form-input" id="kw-word" placeholder="例: 凍結融解サイクル">
-      </div>
-      <div class="form-group">
-        <label class="form-label">カテゴリ</label>
-        <select class="form-select" id="kw-cat" style="width:120px;">
-          <option>凍害</option><option>火害</option><option>中性化</option><option>塩害</option>
-          <option>ASR</option><option>化学的侵食</option><option>疲労</option><option>複合劣化</option>
-          <option>診断一般</option><option>論文構成</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group" style="flex:1;">
-        <label class="form-label">説明・使い方</label>
-        <textarea class="form-textarea" id="kw-desc" placeholder="論文での使いどころ、関連する数値、注意点など" style="min-height:50px;"></textarea>
-      </div>
-    </div>
-    <div style="display:flex;justify-content:flex-end;">
-      <button class="btn btn-primary" onclick="addKeyword()">✚ 追加</button>
-    </div>
-  </div>
-  <div id="keyword-list"></div>
+  <div id="kwList"></div>
 </div>
-```
 
-  </main>
+</main>
 </div>
 
 <script>
-// ── State ──
-let logs = JSON.parse(localStorage.getItem('study-logs-v2') || 'null');
-let keywords = JSON.parse(localStorage.getItem('study-keywords') || '[]');
-let currentFormType = 'study';
-let topicFilter = '';
-
-// ── Constants ──
-const TOPICS = [
-  {id:'凍害',  label:'❄️ 凍害',  color:'#1D78A8',bg:'#E8F4FB'},
-  {id:'火害',  label:'🔥 火害',  color:'#C04A22',bg:'#FDF0EB'},
-  {id:'中性化',label:'🧪 中性化',color:'#7C3AED',bg:'#F3F0FF'},
-  {id:'塩害',  label:'🌊 塩害',  color:'#0E6B5A',bg:'#E6F7F4'},
-  {id:'ASR',   label:'⚗️ ASR',   color:'#B45309',bg:'#FEF3C7'},
+// ===== 定数 =====
+const TOPICS=[
+  {id:'凍害',    label:'❄️ 凍害',    color:'#1D78A8',bg:'#E8F4FB'},
+  {id:'火害',    label:'🔥 火害',    color:'#C04A22',bg:'#FDF0EB'},
+  {id:'中性化',  label:'🧪 中性化',  color:'#7C3AED',bg:'#F3F0FF'},
+  {id:'塩害',    label:'🌊 塩害',    color:'#0E6B5A',bg:'#E6F7F4'},
+  {id:'ASR',     label:'⚗️ ASR',     color:'#B45309',bg:'#FEF3C7'},
   {id:'化学的侵食',label:'🧫 化学的侵食',color:'#6D28D9',bg:'#F5F3FF'},
-  {id:'疲労',  label:'⚡ 疲労',  color:'#0F766E',bg:'#F0FDFA'},
+  {id:'疲労',    label:'⚡ 疲労',    color:'#0F766E',bg:'#F0FDFA'},
   {id:'複合劣化',label:'🔄 複合劣化',color:'#92400E',bg:'#FEF9C3'},
-  {id:'論文',  label:'📝 論文',  color:'#6B6B6B',bg:'#F0F0EE'},
+  {id:'過去問四択',label:'📋 四択',  color:'#2563EB',bg:'#EFF4FF'},
+  {id:'論文',    label:'✍️ 論文',    color:'#7C3AED',bg:'#F3F0FF'},
 ];
-
-const PHASES = [
-  {label:'Phase 1 — インプット完走',months:['2026-03'],targetH:58},
-  {label:'Phase 2 — インプット定着・論文週1',months:['2026-04'],targetH:83},
+const PHASES=[
+  {label:'Phase 1 — インプット完走',   months:['2026-03'],targetH:58},
+  {label:'Phase 2 — 定着・論文週1',    months:['2026-04'],targetH:83},
   {label:'Phase 3 — 過去問集中・論文週2',months:['2026-05'],targetH:83},
-  {label:'Phase 4 — 仕上げ・模擬試験',months:['2026-06'],targetH:83},
-  {label:'Phase 5 — 最終調整',months:['2026-07'],targetH:33},
+  {label:'Phase 4 — 仕上げ・模擬試験', months:['2026-06'],targetH:83},
+  {label:'Phase 5 — 最終調整',         months:['2026-07'],targetH:33},
 ];
-
-// 予定スケジュールデータ
-const SCHEDULE_DATA = [
-  // 3月
+const SCHED=[
   {date:'2026-03-11',type:'インプット',content:'化学的侵食 劣化メカニズム・影響因子'},
   {date:'2026-03-12',type:'インプット',content:'化学的侵食 変状・調査手法・補修'},
   {date:'2026-03-13',type:'インプット',content:'疲労 劣化メカニズム〜調査手法'},
-  {date:'2026-03-14',type:'インプット',content:'疲労 補修・対策 インプット完了'},
+  {date:'2026-03-14',type:'インプット',content:'疲労 補修・対策'},
   {date:'2026-03-15',type:'四択',content:'中性化 過去問四択'},
   {date:'2026-03-16',type:'四択',content:'塩害 過去問四択'},
   {date:'2026-03-17',type:'四択',content:'ASR 過去問四択'},
@@ -663,43 +335,24 @@ const SCHEDULE_DATA = [
   {date:'2026-03-29',type:'論文',content:'論文 時間計測練習②（2022年度）'},
   {date:'2026-03-30',type:'論文',content:'論文 翌日レビュー + 全体整理'},
   {date:'2026-03-31',type:'バッファ',content:'遅れ回収 or 弱点補強'},
-  // 4月
   {date:'2026-04-01',type:'四択',content:'中性化 総復習 + 過去問四択'},
-  {date:'2026-04-02',type:'四択',content:'塩害 総復習 + 過去問四択'},
   {date:'2026-04-03',type:'四択',content:'ASR 総復習 + 過去問四択'},
-  {date:'2026-04-04',type:'四択',content:'凍害 総復習 + 過去問四択'},
   {date:'2026-04-05',type:'四択',content:'火害 総復習 + 過去問四択'},
-  {date:'2026-04-06',type:'四択',content:'化学的侵食 総復習 + 過去問四択'},
   {date:'2026-04-07',type:'ミックス',content:'疲労 復習 + 論文キーワード確認'},
-  {date:'2026-04-08',type:'ミックス',content:'複合劣化 復習 + 論文キーワード確認'},
   {date:'2026-04-09',type:'論文',content:'論文 練習①（2021年度）'},
-  {date:'2026-04-10',type:'論文',content:'論文 翌日レビュー + 採点・修正'},
   {date:'2026-04-11',type:'四択',content:'過去問四択 弱点分野集中①'},
-  {date:'2026-04-12',type:'四択',content:'過去問四択 弱点分野集中②'},
-  {date:'2026-04-13',type:'バッファ',content:'整理・遅れ回収'},
   {date:'2026-04-14',type:'四択',content:'全機構 調査手法 過去問①'},
-  {date:'2026-04-15',type:'四択',content:'全機構 調査手法 過去問②'},
   {date:'2026-04-16',type:'論文',content:'論文 練習②（2020年度）'},
-  {date:'2026-04-17',type:'論文',content:'論文 翌日レビュー + 採点・修正'},
-  {date:'2026-04-18',type:'ミックス',content:'過去問四択 分野横断① + 論文キーワード確認'},
-  {date:'2026-04-19',type:'ミックス',content:'過去問四択 分野横断② + 論文テンプレ確認'},
-  {date:'2026-04-20',type:'バッファ',content:'整理・弱点メモ'},
+  {date:'2026-04-18',type:'ミックス',content:'過去問四択 + 論文キーワード確認'},
   {date:'2026-04-21',type:'論文',content:'キーワード辞書 最終整理'},
-  {date:'2026-04-22',type:'四択',content:'過去問四択 弱点集中③'},
   {date:'2026-04-23',type:'論文',content:'論文 練習③（2019年度）'},
-  {date:'2026-04-24',type:'論文',content:'論文 翌日レビュー + 採点・修正'},
-  {date:'2026-04-25',type:'ミックス',content:'フラッシュカード全機構 + 論文構成復習'},
-  {date:'2026-04-26',type:'四択',content:'過去問四択 総まとめ'},
-  {date:'2026-04-27',type:'バッファ',content:'整理・弱点メモ'},
+  {date:'2026-04-25',type:'ミックス',content:'フラッシュカード + 論文構成復習'},
   {date:'2026-04-28',type:'論文',content:'論文 練習④（自由テーマ）'},
-  {date:'2026-04-29',type:'論文',content:'論文 翌日レビュー'},
   {date:'2026-04-30',type:'ミックス',content:'4月振り返り + 正答率確認'},
-  // 5月（週別）
   {date:'2026-05-01',type:'四択',content:'過去問四択 集中①（中性化）'},
   {date:'2026-05-05',type:'論文',content:'論文 練習⑤（2018年度）'},
   {date:'2026-05-07',type:'四択',content:'過去問四択 集中②（凍害）'},
   {date:'2026-05-11',type:'論文',content:'論文 練習⑥（2017年度）'},
-  {date:'2026-05-14',type:'四択',content:'弱点分野 再集中①'},
   {date:'2026-05-16',type:'論文',content:'論文 練習⑦（週2回目）'},
   {date:'2026-05-18',type:'四択',content:'模擬形式 四択（時間計測）①'},
   {date:'2026-05-20',type:'論文',content:'論文 練習⑧（2016年度）'},
@@ -707,7 +360,6 @@ const SCHEDULE_DATA = [
   {date:'2026-05-24',type:'論文',content:'論文 練習⑨（週2回目）'},
   {date:'2026-05-28',type:'論文',content:'論文 練習⑩（自由テーマ）'},
   {date:'2026-05-30',type:'ミックス',content:'5月振り返り + 正答率確認'},
-  // 6月（週別）
   {date:'2026-06-01',type:'四択',content:'全機構 総復習 四択①'},
   {date:'2026-06-06',type:'論文',content:'論文 練習⑪（模擬試験形式）'},
   {date:'2026-06-09',type:'ミックス',content:'模擬試験形式①（四択+論文）'},
@@ -717,7 +369,6 @@ const SCHEDULE_DATA = [
   {date:'2026-06-21',type:'ミックス',content:'模擬試験形式③（最終チェック）'},
   {date:'2026-06-26',type:'論文',content:'論文 最終練習（時間計測）'},
   {date:'2026-06-28',type:'ミックス',content:'全体ペース確認 + 弱点最終チェック'},
-  // 7月
   {date:'2026-07-01',type:'四択',content:'弱点確認 四択（軽め）'},
   {date:'2026-07-02',type:'論文',content:'論文テンプレ暗記 最終確認'},
   {date:'2026-07-03',type:'ミックス',content:'暗記カード確認 + 論文構成復習'},
@@ -725,730 +376,314 @@ const SCHEDULE_DATA = [
   {date:'2026-07-07',type:'バッファ',content:'前日：暗記カードのみ・早めに就寝 🎯'},
 ];
 
-// ── Seed data (only if empty) ──
+// ===== State =====
+let logs = JSON.parse(localStorage.getItem('cl-logs') || 'null');
+let kws  = JSON.parse(localStorage.getItem('cl-kws')  || '[]');
+let tagF = '';
+let curType = 'study';
+
 if (!logs) {
   logs = [
-    {id:1,date:'2026-03-08',hours:3.5,type:'study',topics:'凍害インプット完了 / 火害インプット途中',tags:['凍害','火害'],memo:'コンクリート・鉄筋の加熱・冷却時の温度閾値を要暗記。要テキスト確認。'},
-    {id:2,date:'2026-03-09',hours:2.5,type:'study',topics:'火害インプット終了 / 論文2024年度推敲実施',tags:['火害','論文'],memo:'推敲効果的！別日にやると尚良いと実感'},
-    {id:3,date:'2026-03-10',hours:3.0,type:'study',topics:'火害劣化メカニズム終了、調査手法「強度」インプット論文推敲2024提出済',tags:['火害','論文'],memo:''},
+    {id:1,date:'2026-03-08',type:'study',hours:3.5,topics:'凍害インプット完了 / 火害インプット途中',tags:['凍害','火害'],memo:'コンクリート・鉄筋の加熱・冷却時の温度閾値を要暗記。要テキスト確認。'},
+    {id:2,date:'2026-03-09',type:'study',hours:2.5,topics:'火害インプット終了 / 論文2024年度推敲実施',tags:['火害','論文'],memo:'推敲効果的！別日にやると尚良いと実感'},
+    {id:3,date:'2026-03-10',type:'study',hours:3.0,topics:'火害劣化メカニズム終了、調査手法「強度」インプット / 論文推敲2024提出済',tags:['火害','論文'],memo:''},
   ];
-  save();
+  saveLogs();
 }
 
-// ── Date helpers (timezone-safe) ──
-function dateStr(d) {
-  const y = d.getFullYear();
-  const m = String(d.getMonth()+1).padStart(2,'0');
-  const day = String(d.getDate()).padStart(2,'0');
-  return `${y}-${m}-${day}`;
+// ===== Helpers =====
+const MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const WDS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const WDJ=['日','月','火','水','木','金','土'];
+function dStr(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function pd(s){return new Date(s+'T00:00:00');}
+function today(){return dStr(new Date());}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function saveLogs(){localStorage.setItem('cl-logs',JSON.stringify(logs));}
+function saveKWs(){localStorage.setItem('cl-kws',JSON.stringify(kws));}
+function wkStart(){const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-d.getDay());return dStr(d);}
+function lastMo(){const d=new Date();d.setDate(1);d.setMonth(d.getMonth()-1);return dStr(d).slice(0,7);}
+
+// ===== Init =====
+function init(){
+  const t=new Date();
+  document.getElementById('todayStr').textContent=t.getFullYear()+'年'+(t.getMonth()+1)+'月'+t.getDate()+'日 '+WDJ[t.getDay()]+'曜日';
+  const exam=new Date('2026-07-12T00:00:00');
+  document.getElementById('daysLeft').textContent=Math.max(0,Math.ceil((exam-t)/86400000));
+  document.getElementById('fDate').value=today();
+  mkTags('fTags');
+  renderAll();
 }
-function parseDate(s) { return new Date(s + 'T00:00:00'); }
-function todayStr() { return dateStr(new Date()); }
 
-
-// ── Yonn/Ron state ──
-let yonnLogs = JSON.parse(localStorage.getItem('sl-yonn4') || '[]');
-let ronLogs  = JSON.parse(localStorage.getItem('sl-ron')   || '[]');
-
-function saveYonn(){ localStorage.setItem('sl-yonn4', JSON.stringify(yonnLogs)); }
-function saveRon(){  localStorage.setItem('sl-ron',   JSON.stringify(ronLogs));  }
-
-function getLastMonthYm(){
-  const d=new Date();d.setDate(1);d.setMonth(d.getMonth()-1);
-  const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0');
-  return y+'-'+m;
+function renderAll(){
+  renderStats();renderWeek();renderList();
+  renderPhaseProg();renderTopicProg();renderMonthChart();renderYonnChart();renderRonChart();
+  renderSched();renderKWs();updateBadges();
 }
 
-function renderTagSelectorNew(el_id){
-  const el=document.getElementById(el_id);
-  if(!el)return;
+// ===== Type selector =====
+function setType(t){
+  curType=t;
+  ['study','yonn','ron'].forEach(x=>document.getElementById('tt-'+x).classList.toggle('active',x===t));
+  const showStudy=t==='study',showYonn=t==='yonn',showRon=t==='ron';
+  document.getElementById('fg-hours').classList.toggle('hidden',!showStudy);
+  ['fg-yq','fg-ya','fg-yr'].forEach(id=>document.getElementById(id).classList.toggle('hidden',!showYonn));
+  ['fg-ry','fg-rp','fg-rs'].forEach(id=>document.getElementById(id).classList.toggle('hidden',!showRon));
+  const pl={study:'例: 火害インプット・WEB講義レビュー',yonn:'例: 塩害・中性化 分野別',ron:'例: 海岸沿いRC構造物の診断'};
+  document.getElementById('fTopics').placeholder=pl[t];
+  document.getElementById('topicsLabel').textContent=t==='study'?'学習内容':'分野・内容';
+}
+
+function calcYR(){
+  const q=parseFloat(document.getElementById('fYQ').value)||0,a=parseFloat(document.getElementById('fYA').value)||0;
+  document.getElementById('fYR').value=q>0?Math.round(a/q*100)+'%':'';
+}
+
+// ===== Tag selector =====
+function mkTags(elId){
+  const el=document.getElementById(elId);if(!el)return;
   el.dataset.sel='[]';
-  el.innerHTML=TOPICS.map(t=>
-    `<span class="tag-option" style="color:${t.color};background:${t.bg};" data-id="${t.id}" onclick="toggleTagNew('${el_id}','${t.id}')">${t.label}</span>`
-  ).join('');
+  el.innerHTML=TOPICS.map(t=>`<span class="topt" style="color:${t.color};background:${t.bg};" data-id="${t.id}" onclick="toggleT('${elId}','${t.id}')">${t.label}</span>`).join('');
 }
-function toggleTagNew(el_id,id){
-  const el=document.getElementById(el_id);
+function toggleT(elId,id){
+  const el=document.getElementById(elId);
   const sel=JSON.parse(el.dataset.sel||'[]');
-  const idx=sel.indexOf(id);if(idx>=0)sel.splice(idx,1);else sel.push(id);
+  const i=sel.indexOf(id);if(i>=0)sel.splice(i,1);else sel.push(id);
   el.dataset.sel=JSON.stringify(sel);
-  el.querySelectorAll('.tag-option').forEach(e=>e.classList.toggle('selected',sel.includes(e.dataset.id)));
+  el.querySelectorAll('.topt').forEach(e=>e.classList.toggle('sel',sel.includes(e.dataset.id)));
 }
-function getTagsNew(el_id){return JSON.parse(document.getElementById(el_id)?.dataset.sel||'[]');}
+function getTags(elId){return JSON.parse(document.getElementById(elId)?.dataset.sel||'[]');}
 
-function calcYonnRate(){
-  const q=parseFloat(document.getElementById('yonn-q').value)||0;
-  const a=parseFloat(document.getElementById('yonn-a').value)||0;
-  document.getElementById('yonn-rate-display').value=q>0?Math.round(a/q*100)+'%':'';
+// ===== Add log =====
+function addLog(){
+  const date=document.getElementById('fDate').value;
+  const topics=document.getElementById('fTopics').value.trim();
+  const memo=document.getElementById('fMemo').value.trim();
+  const tags=getTags('fTags');
+  if(!date||!topics){alert('日付と内容を入力してください。');return;}
+
+  const entry={id:Date.now(),date,type:curType,topics,tags,memo};
+
+  if(curType==='study'){
+    const h=parseFloat(document.getElementById('fHours').value);
+    if(!h){alert('学習時間を入力してください。');return;}
+    entry.hours=h;
+  } else if(curType==='yonn'){
+    const q=parseFloat(document.getElementById('fYQ').value);
+    const a=parseFloat(document.getElementById('fYA').value);
+    const s=parseFloat(document.getElementById('fYS').value);
+    if(!q||isNaN(a)){alert('実施問題数と正答数を入力してください。');return;}
+    entry.q=q; entry.a=a;
+    if(!isNaN(s)&&s>=0&&s<=10) entry.score=s;
+    entry.hours=0;
+  } else if(curType==='ron'){
+    const s=parseFloat(document.getElementById('fRS').value);
+    if(isNaN(s)){alert('採点を入力してください。');return;}
+    if(s<0||s>10){alert('採点は0〜10で入力してください。');return;}
+    entry.score=s;
+    entry.year=document.getElementById('fRY').value;
+    entry.prob=document.getElementById('fRP').value;
+    entry.hours=0;
+  }
+
+  logs.unshift(entry);saveLogs();renderAll();clearF();
 }
 
-function addYonnLog(){
-  const date=document.getElementById('yonn-date').value;
-  const q=parseFloat(document.getElementById('yonn-q').value);
-  const a=parseFloat(document.getElementById('yonn-a').value);
-  const topics=document.getElementById('yonn-topics').value.trim();
-  const memo=document.getElementById('yonn-memo').value.trim();
-  const tags=getTagsNew('yonn-tag-selector');
-  if(!date||!q||isNaN(a)||!topics){alert('日付・問題数・正答数・内容を入力してください。');return;}
-  yonnLogs.unshift({id:Date.now(),date,q,a,topics,tags,memo});
-  saveYonn();renderYonnStats();renderYonnChart();renderYonnList();
-  clearYonnForm();
+function clearF(){
+  ['fHours','fYQ','fYA','fYR','fRS','fTopics','fMemo'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  mkTags('fTags');document.getElementById('fDate').value=today();
 }
-function clearYonnForm(){
-  document.getElementById('yonn-q').value='';
-  document.getElementById('yonn-a').value='';
-  document.getElementById('yonn-rate-display').value='';
-  document.getElementById('yonn-topics').value='';
-  document.getElementById('yonn-memo').value='';
-  renderTagSelectorNew('yonn-tag-selector');
-  document.getElementById('yonn-date').value=todayStr();
+
+function delLog(id){if(!confirm('削除しますか？'))return;logs=logs.filter(l=>l.id!==id);saveLogs();renderAll();}
+
+// ===== Stats =====
+function renderStats(){
+  const sl=logs.filter(l=>l.type==='study');
+  const tot=sl.reduce((s,l)=>s+(l.hours||0),0);
+  document.getElementById('sTot').textContent=tot.toFixed(1);
+  document.getElementById('sSess').textContent=logs.length+'セッション';
+  const td=today(),ws=wkStart(),ym=td.slice(0,7);
+  document.getElementById('sWeek').textContent=sl.filter(l=>l.date>=ws).reduce((s,l)=>s+(l.hours||0),0).toFixed(1);
+  document.getElementById('sToday').textContent=sl.filter(l=>l.date===td).reduce((s,l)=>s+(l.hours||0),0).toFixed(1);
+  const dates=[...new Set(sl.map(l=>l.date))].sort().reverse();
+  let streak=0,cur=new Date();cur.setHours(0,0,0,0);
+  for(let i=0;i<365;i++){const s=dStr(cur);if(dates.includes(s)){streak++;cur.setDate(cur.getDate()-1);}else if(i===0){cur.setDate(cur.getDate()-1);}else break;}
+  document.getElementById('sStreak').textContent=streak;
+  document.getElementById('sStreakSub').textContent=streak>=7?'🔥 継続中！':streak>0?'継続中！':'今日から再開！';
 }
-function deleteYonnLog(id){
-  if(!confirm('削除しますか？'))return;
-  yonnLogs=yonnLogs.filter(l=>l.id!==id);
-  saveYonn();renderYonnStats();renderYonnChart();renderYonnList();
+
+// ===== Week grid =====
+function renderWeek(){
+  const el=document.getElementById('weekGrid');
+  const td=new Date();td.setHours(0,0,0,0);const dow=td.getDay();
+  let h='';
+  for(let i=0;i<7;i++){
+    const d=new Date(td);d.setDate(td.getDate()-dow+i);
+    const ds=dStr(d),hrs=logs.filter(l=>l.date===ds&&l.type==='study').reduce((s,l)=>s+(l.hours||0),0),isT=ds===today();
+    h+=`<div class="wd-cell${hrs>0?' hs':''}${isT?' td':''}"><div class="wdn">${WDJ[i]}</div><div class="wdh">${hrs>0?hrs.toFixed(1):'—'}</div>${hrs>0?'<div class="dot"></div>':''}</div>`;
+  }
+  el.innerHTML=h;
 }
-function renderYonnStats(){
-  const c=yonnLogs.length;
-  document.getElementById('yonn-count').textContent=c;
-  if(!c){['yonn-avg-rate','yonn-best'].forEach(id=>document.getElementById(id).textContent='—');
-    document.getElementById('yonn-total-correct').textContent=0;
-    document.getElementById('yonn-total-q').textContent=0;return;}
-  const tQ=yonnLogs.reduce((s,l)=>s+l.q,0),tA=yonnLogs.reduce((s,l)=>s+l.a,0);
-  document.getElementById('yonn-avg-rate').textContent=Math.round(tA/tQ*100);
-  document.getElementById('yonn-best').textContent=Math.max(...yonnLogs.map(l=>Math.round(l.a/l.q*100)));
-  document.getElementById('yonn-total-correct').textContent=tA;
-  document.getElementById('yonn-total-q').textContent=tQ;
-}
-function renderYonnChart(){
-  const el=document.getElementById('yonn-chart');
-  if(!el)return;
-  const list=[...yonnLogs].sort((a,b)=>a.date.localeCompare(b.date)).slice(-12);
-  if(!list.length){el.innerHTML='<div class="empty"><div class="empty-icon">📋</div>まだ記録がありません。</div>';return;}
-  el.innerHTML='<div style="display:flex;align-items:flex-end;gap:8px;height:110px;padding-bottom:24px;position:relative;">'
-    +list.map(l=>{
-      const rate=Math.round(l.a/l.q*100);
-      const d=new Date(l.date+'T00:00:00');
-      const color=rate>=80?'#2F6B3E':rate>=60?'#E8A900':'#C04A22';
-      return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;height:100%;justify-content:flex-end;">'
-        +'<div style="font-size:10px;color:'+color+';font-weight:700;">'+rate+'%</div>'
-        +'<div style="width:100%;background:'+color+';border-radius:3px 3px 0 0;height:'+rate+'%;"></div>'
-        +'<div style="font-size:9px;color:var(--text3);position:absolute;bottom:0;">'+(d.getMonth()+1)+'/'+d.getDate()+'</div>'
-        +'</div>';
-    }).join('')
-    +'</div><div style="font-size:11px;color:var(--text3);margin-top:4px;">■緑:80%以上　■黄:60〜79%　■赤:60%未満</div>';
-}
-function renderYonnList(){
-  const el=document.getElementById('yonn-list');
-  if(!el)return;
-  const period=document.getElementById('yonn-filter-period')?.value||'all';
-  const ym=todayStr().slice(0,7),lym=getLastMonthYm();
-  let list=[...yonnLogs];
-  if(period==='month') list=list.filter(l=>l.date.startsWith(ym));
-  else if(period==='last_month') list=list.filter(l=>l.date.startsWith(lym));
+
+// ===== Log list =====
+function renderList(){
+  const el=document.getElementById('logList');
+  const p=document.getElementById('fPeriod').value,tp=document.getElementById('fType').value;
+  const td=today(),ws=wkStart(),ym=td.slice(0,7),lm=lastMo();
+  let list=[...logs];
+  if(p==='week') list=list.filter(l=>l.date>=ws);
+  else if(p==='month') list=list.filter(l=>l.date.startsWith(ym));
+  else if(p==='last') list=list.filter(l=>l.date.startsWith(lm));
+  if(tp!=='all') list=list.filter(l=>l.type===tp);
+  if(tagF) list=list.filter(l=>(l.tags||[]).includes(tagF));
   list.sort((a,b)=>b.date.localeCompare(a.date));
-  const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  const WDS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  if(!list.length){el.innerHTML='<div class="empty"><div class="empty-icon">📋</div>まだ記録がありません。</div>';return;}
+  if(!list.length){el.innerHTML='<div class="empty"><div class="ei">📖</div>該当する記録がありません。</div>';return;}
+
   el.innerHTML=list.map(l=>{
-    const d=new Date(l.date+'T00:00:00');
-    const rate=Math.round(l.a/l.q*100);
-    const rateColor=rate>=80?'#2F6B3E':rate>=60?'#E8A900':'#C04A22';
-    const rateBg=rate>=80?'#EAF2EC':rate>=60?'#FEF7E6':'#FDF0EB';
-    const tagHtml=(l.tags||[]).map(tid=>{const tp=TOPICS.find(x=>x.id===tid);return tp?'<span class="tag" style="background:'+tp.bg+';color:'+tp.color+';">'+tp.label+'</span>':''}).join('');
-    return '<div class="log-card" style="border-left:3px solid #2563EB;">'
-      +'<div class="log-date-block">'
-      +'<div class="month">'+MONTHS[d.getMonth()]+'</div>'
-      +'<div class="day">'+String(d.getDate()).padStart(2,'0')+'</div>'
-      +'<div class="weekday">'+WDS[d.getDay()]+'</div>'
-      +'</div>'
-      +'<div class="log-body">'
-      +'<div class="log-meta">'
-      +'<span class="log-score" style="background:'+rateBg+';color:'+rateColor+';font-family:Space Mono,monospace;font-size:12px;font-weight:700;padding:2px 8px;border-radius:4px;">'+l.a+'/'+l.q+'問 '+rate+'%</span>'
-      +'<span style="font-size:10px;padding:2px 6px;border-radius:3px;font-weight:700;background:#EFF4FF;color:#2563EB;">📋 四択</span>'
-      +tagHtml
-      +'</div>'
-      +'<div class="log-topics">'+escHtml(l.topics)+'</div>'
-      +(l.memo?'<div class="log-memo">'+escHtml(l.memo)+'</div>':'')
-      +'</div>'
-      +'<div class="log-actions"><button class="icon-btn" onclick="deleteYonnLog('+l.id+')">🗑</button></div>'
-      +'</div>';
+    const d=pd(l.date);
+    const tagH=(l.tags||[]).map(tid=>{const t=TOPICS.find(x=>x.id===tid);return t?`<span class="tg" style="background:${t.bg};color:${t.color};">${t.label}</span>`:''}).join('');
+    let badgeH='',typeH='';
+    if(l.type==='study'){
+      badgeH=`<span class="bdg" style="background:var(--gl);color:var(--green);">${l.hours}h</span>`;
+      typeH=`<span class="tbdg" style="background:#EAF2EC;color:#2F6B3E;">📚 学習</span>`;
+    } else if(l.type==='yonn'){
+      const rate=l.q>0?Math.round(l.a/l.q*100):0;
+      const rc=rate>=80?'#2F6B3E':rate>=60?'#E8A900':'#C04A22';
+      const rb=rate>=80?'#EAF2EC':rate>=60?'#FEF7E6':'#FDF0EB';
+      badgeH=`<span class="bdg" style="background:${rb};color:${rc};">${l.a}/${l.q}問 ${rate}%</span>`;
+      typeH=`<span class="tbdg" style="background:#EFF4FF;color:#2563EB;">📋 四択</span>`;
+    } else if(l.type==='ron'){
+      const sc=l.score>=8?'#7C3AED':l.score>=6?'#2F6B3E':'#E8A900';
+      const sb=l.score>=8?'#F3F0FF':l.score>=6?'#EAF2EC':'#FEF7E6';
+      badgeH=`<span class="bdg" style="background:${sb};color:${sc};">${l.score}/10点</span>`;
+      typeH=`<span class="tbdg" style="background:#F3F0FF;color:#7C3AED;">✍️ 論文</span>`;
+      if(l.year) typeH+=`<span style="font-size:11px;color:var(--t3);">${l.year}年度 ${l.prob||''}</span>`;
+    }
+    return `<div class="lc t-${l.type}"><div class="ld"><div class="mn">${MN[d.getMonth()]}</div><div class="dy">${String(d.getDate()).padStart(2,'0')}</div><div class="wd">${WDS[d.getDay()]}</div></div><div class="lb"><div class="lm">${badgeH}${typeH}${tagH}</div><div class="lt">${esc(l.topics)}</div>${l.memo?`<div class="lmemo">${esc(l.memo)}</div>`:''}</div><div class="la"><button class="ibt" onclick="delLog(${l.id})">🗑</button></div></div>`;
   }).join('');
 }
 
-function addRonLog(){
-  const date=document.getElementById('ron-date').value;
-  const year=document.getElementById('ron-year').value;
-  const problem=document.getElementById('ron-problem').value;
-  const score=parseFloat(document.getElementById('ron-score').value);
-  const topics=document.getElementById('ron-topics').value.trim();
-  const memo=document.getElementById('ron-memo').value.trim();
-  const tags=getTagsNew('ron-tag-selector');
-  if(!date||isNaN(score)||!topics){alert('日付・採点・内容を入力してください。');return;}
-  if(score<0||score>10){alert('採点は0〜10で入力してください。');return;}
-  ronLogs.unshift({id:Date.now(),date,year,problem,score,topics,tags,memo});
-  saveRon();renderRonStats();renderRonChart();renderRonList();clearRonForm();
+// ===== Progress =====
+function renderPhaseProg(){
+  const el=document.getElementById('phaseProg');
+  const colors=['#2F6B3E','#7C3AED','#C04A22','#B45309','#c0392b'];
+  el.innerHTML=PHASES.map((p,i)=>{
+    const h=logs.filter(l=>l.type==='study'&&p.months.some(m=>l.date.startsWith(m))).reduce((s,l)=>s+(l.hours||0),0);
+    const pct=Math.min(100,Math.round(h/p.targetH*100));
+    return `<div class="pc" style="margin-bottom:10px;"><div class="plbl">${p.label}<span class="ppct">${h.toFixed(1)}h / ${p.targetH}h</span></div><div class="pbg"><div class="pf" style="width:${pct}%;background:${colors[i]};"></div></div><div class="psub">${pct}% 完了</div></div>`;
+  }).join('');
 }
-function clearRonForm(){
-  document.getElementById('ron-score').value='';
-  document.getElementById('ron-topics').value='';
-  document.getElementById('ron-memo').value='';
-  renderTagSelectorNew('ron-tag-selector');
-  document.getElementById('ron-date').value=todayStr();
+function renderTopicProg(){
+  const el=document.getElementById('topicProg'),target=20;
+  el.innerHTML=TOPICS.filter(t=>!['過去問四択','論文'].includes(t.id)).map(t=>{
+    const h=logs.filter(l=>l.type==='study'&&(l.tags||[]).includes(t.id)).reduce((s,l)=>s+(l.hours||0),0);
+    const pct=Math.min(100,Math.round(h/target*100));
+    return `<div class="pc"><div class="plbl">${t.label}<span class="ppct">${h.toFixed(1)}h</span></div><div class="pbg"><div class="pf" style="width:${pct}%;background:${t.color};"></div></div><div class="psub">目標${target}hの${pct}%</div></div>`;
+  }).join('');
 }
-function deleteRonLog(id){
-  if(!confirm('削除しますか？'))return;
-  ronLogs=ronLogs.filter(l=>l.id!==id);
-  saveRon();renderRonStats();renderRonChart();renderRonList();
+function renderMonthChart(){
+  const el=document.getElementById('monthChart');
+  const months=['2026-03','2026-04','2026-05','2026-06','2026-07'],labels=['3月','4月','5月','6月','7月'];
+  const data=months.map(m=>logs.filter(l=>l.type==='study'&&l.date.startsWith(m)).reduce((s,l)=>s+(l.hours||0),0));
+  const max=Math.max(...data,1);
+  el.innerHTML='<div style="display:flex;align-items:flex-end;gap:12px;height:110px;padding-bottom:24px;position:relative;">'
+    +data.map((h,i)=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;height:100%;justify-content:flex-end;"><div style="font-size:11px;color:var(--green);font-family:Space Mono,monospace;font-weight:700;">${h>0?h.toFixed(1)+'h':''}</div><div style="width:100%;background:var(--green);border-radius:4px 4px 0 0;height:${Math.max(h/max*100,2)}%;opacity:${h>0?1:0.2};"></div><div style="font-size:11px;color:var(--t3);position:absolute;bottom:0;">${labels[i]}</div></div>`).join('')
+    +'</div>';
 }
-function renderRonStats(){
-  const c=ronLogs.length;
-  document.getElementById('ron-count').textContent=c;
-  if(!c){['ron-avg','ron-best'].forEach(id=>document.getElementById(id).textContent='—');return;}
-  const avg=(ronLogs.reduce((s,l)=>s+l.score,0)/c).toFixed(1);
-  document.getElementById('ron-avg').textContent=avg;
-  document.getElementById('ron-best').textContent=Math.max(...ronLogs.map(l=>l.score));
+function renderYonnChart(){
+  const el=document.getElementById('yonnChart');
+  const list=logs.filter(l=>l.type==='yonn').sort((a,b)=>a.date.localeCompare(b.date)).slice(-12);
+  if(!list.length){el.innerHTML='<div class="empty"><div class="ei">📋</div>まだ四択の記録がありません。</div>';return;}
+  el.innerHTML='<div style="display:flex;align-items:flex-end;gap:8px;height:110px;padding-bottom:24px;position:relative;">'
+    +list.map(l=>{
+      const rate=l.q>0?Math.round(l.a/l.q*100):0;
+      const d=pd(l.date),c=rate>=80?'#2F6B3E':rate>=60?'#E8A900':'#C04A22';
+      return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;height:100%;justify-content:flex-end;"><div style="font-size:10px;color:${c};font-weight:700;">${rate}%</div><div style="width:100%;background:${c};border-radius:3px 3px 0 0;height:${rate}%;"></div><div style="font-size:9px;color:var(--t3);position:absolute;bottom:0;">${d.getMonth()+1}/${d.getDate()}</div></div>`;
+    }).join('')
+    +'</div><div style="font-size:11px;color:var(--t3);margin-top:4px;">■緑:80%以上　■黄:60〜79%　■赤:60%未満</div>';
 }
 function renderRonChart(){
-  const el=document.getElementById('ron-chart');
-  if(!el)return;
-  const list=[...ronLogs].sort((a,b)=>a.date.localeCompare(b.date)).slice(-12);
-  if(!list.length){el.innerHTML='<div class="empty"><div class="empty-icon">✍️</div>まだ記録がありません。</div>';return;}
+  const el=document.getElementById('ronChart');
+  const list=logs.filter(l=>l.type==='ron'&&l.score!=null).sort((a,b)=>a.date.localeCompare(b.date)).slice(-12);
+  if(!list.length){el.innerHTML='<div class="empty"><div class="ei">✍️</div>まだ論文の記録がありません。</div>';return;}
   el.innerHTML='<div style="display:flex;align-items:flex-end;gap:8px;height:110px;padding-bottom:24px;position:relative;">'
     +list.map(l=>{
-      const pct=l.score/10*100;
-      const d=new Date(l.date+'T00:00:00');
-      const color=l.score>=8?'#7C3AED':l.score>=6?'#2F6B3E':'#E8A900';
-      return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;height:100%;justify-content:flex-end;">'
-        +'<div style="font-size:10px;color:'+color+';font-weight:700;">'+l.score+'</div>'
-        +'<div style="width:100%;background:'+color+';border-radius:3px 3px 0 0;height:'+Math.max(pct,4)+'%;"></div>'
-        +'<div style="font-size:9px;color:var(--text3);position:absolute;bottom:0;">'+(d.getMonth()+1)+'/'+d.getDate()+'</div>'
-        +'</div>';
+      const pct=l.score/10*100,d=pd(l.date),c=l.score>=8?'#7C3AED':l.score>=6?'#2F6B3E':'#E8A900';
+      return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;height:100%;justify-content:flex-end;"><div style="font-size:10px;color:${c};font-weight:700;">${l.score}</div><div style="width:100%;background:${c};border-radius:3px 3px 0 0;height:${Math.max(pct,4)}%;"></div><div style="font-size:9px;color:var(--t3);position:absolute;bottom:0;">${d.getMonth()+1}/${d.getDate()}</div></div>`;
     }).join('')
-    +'</div><div style="font-size:11px;color:var(--text3);margin-top:4px;">■紫:8点以上　■緑:6〜7点　■黄:5点以下　（10点満点）</div>';
-}
-function renderRonList(){
-  const el=document.getElementById('ron-list');
-  if(!el)return;
-  const period=document.getElementById('ron-filter-period')?.value||'all';
-  const ym=todayStr().slice(0,7),lym=getLastMonthYm();
-  let list=[...ronLogs];
-  if(period==='month') list=list.filter(l=>l.date.startsWith(ym));
-  else if(period==='last_month') list=list.filter(l=>l.date.startsWith(lym));
-  list.sort((a,b)=>b.date.localeCompare(a.date));
-  const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  const WDS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  if(!list.length){el.innerHTML='<div class="empty"><div class="empty-icon">✍️</div>まだ記録がありません。</div>';return;}
-  el.innerHTML=list.map(l=>{
-    const d=new Date(l.date+'T00:00:00');
-    const scoreColor=l.score>=8?'#7C3AED':l.score>=6?'#2F6B3E':'#E8A900';
-    const scoreBg=l.score>=8?'#F3F0FF':l.score>=6?'#EAF2EC':'#FEF7E6';
-    const tagHtml=(l.tags||[]).map(tid=>{const tp=TOPICS.find(x=>x.id===tid);return tp?'<span class="tag" style="background:'+tp.bg+';color:'+tp.color+';">'+tp.label+'</span>':''}).join('');
-    return '<div class="log-card" style="border-left:3px solid #7C3AED;">'
-      +'<div class="log-date-block">'
-      +'<div class="month">'+MONTHS[d.getMonth()]+'</div>'
-      +'<div class="day">'+String(d.getDate()).padStart(2,'0')+'</div>'
-      +'<div class="weekday">'+WDS[d.getDay()]+'</div>'
-      +'</div>'
-      +'<div class="log-body">'
-      +'<div class="log-meta">'
-      +'<span style="background:'+scoreBg+';color:'+scoreColor+';font-family:Space Mono,monospace;font-size:12px;font-weight:700;padding:2px 8px;border-radius:4px;">'+l.score+'/10点</span>'
-      +'<span style="font-size:10px;padding:2px 6px;border-radius:3px;font-weight:700;background:#F3F0FF;color:#7C3AED;">✍️ 論文</span>'
-      +'<span style="font-size:11px;color:var(--text3);">'+l.year+'年度 '+l.problem+'</span>'
-      +tagHtml
-      +'</div>'
-      +'<div class="log-topics">'+escHtml(l.topics)+'</div>'
-      +(l.memo?'<div class="log-memo">'+escHtml(l.memo)+'</div>':'')
-      +'</div>'
-      +'<div class="log-actions"><button class="icon-btn" onclick="deleteRonLog('+l.id+')">🗑</button></div>'
-      +'</div>';
-  }).join('');
+    +'</div><div style="font-size:11px;color:var(--t3);margin-top:4px;">■紫:8点以上　■緑:6〜7点　■黄:5点以下（10点満点）</div>';
 }
 
-// ── Init ──
-function init() {
-  document.getElementById('input-date').value = todayStr();
-  renderTagSelector();
-  renderAll();
-  updateCountdown();
-}
-
-function updateCountdown() {
-  const exam = new Date('2026-07-12T00:00:00');
-  const today = new Date(); today.setHours(0,0,0,0);
-  const diff = Math.ceil((exam - today) / 86400000);
-  document.getElementById('days-left').textContent = diff > 0 ? diff : '🎉';
-  const wds = ['日','月','火','水','木','金','土'];
-  document.getElementById('today-date').textContent =
-    `${today.getFullYear()}年${today.getMonth()+1}月${today.getDate()}日 ${wds[today.getDay()]}曜日`;
-}
-
-// ── Form type ──
-function setFormType(type) {
-  currentFormType = type;
-  document.querySelectorAll('.form-type-tab').forEach((el,i) => {
-    el.classList.toggle('active', ['study','yonn4','ronbun'][i] === type);
-  });
-  // show/hide fields
-  const isStudy = type==='study', isYonn = type==='yonn4', isRonbun = type==='ronbun';
-  document.getElementById('fg-hours').classList.toggle('hidden', !isStudy);
-  document.getElementById('fg-topics').classList.toggle('hidden', false); // always show
-  document.getElementById('fg-yonn').classList.toggle('hidden', !isYonn);
-  document.getElementById('fg-yonn2').classList.toggle('hidden', !isYonn);
-  document.getElementById('fg-yonn3').classList.toggle('hidden', !isYonn);
-  document.getElementById('fg-ronbun-year').classList.toggle('hidden', !isRonbun);
-  document.getElementById('fg-ronbun-grade').classList.toggle('hidden', !isRonbun);
-  // update placeholder
-  document.getElementById('input-topics').placeholder =
-    isStudy ? '例: 凍害の入力・WEB講義レビュー' :
-    isYonn  ? '例: 塩害・中性化 分野別' :
-              '例: 2023年度 問題Ⅰ';
-}
-
-function calcRate() {
-  const q = parseFloat(document.getElementById('input-yonn-q').value)||0;
-  const a = parseFloat(document.getElementById('input-yonn-a').value)||0;
-  document.getElementById('input-yonn-rate').value = q>0 ? Math.round(a/q*100)+'%' : '';
-}
-
-// ── Tag selector ──
-function renderTagSelector() {
-  const el = document.getElementById('tag-selector');
-  el.innerHTML = TOPICS.map(t =>
-    `<span class="tag-option" style="color:${t.color};background:${t.bg};" data-id="${t.id}" onclick="toggleTag('${t.id}')">${t.label}</span>`
-  ).join('');
-}
-function toggleTag(id) {
-  const sel = JSON.parse(document.getElementById('tag-selector').dataset.sel||'[]');
-  const idx = sel.indexOf(id);
-  if(idx>=0) sel.splice(idx,1); else sel.push(id);
-  document.getElementById('tag-selector').dataset.sel = JSON.stringify(sel);
-  document.querySelectorAll('.tag-option').forEach(el => {
-    el.classList.toggle('selected', sel.includes(el.dataset.id));
-  });
-}
-function getSelectedTags() {
-  return JSON.parse(document.getElementById('tag-selector').dataset.sel||'[]');
-}
-
-// ── Add log ──
-function addLog() {
-  const date = document.getElementById('input-date').value;
-  const topics = document.getElementById('input-topics').value.trim();
-  const memo = document.getElementById('input-memo').value.trim();
-  const tags = getSelectedTags();
-
-  if(!date || !topics) { alert('日付・内容を入力してください。'); return; }
-
-  const entry = {id:Date.now(), date, type:currentFormType, topics, tags, memo};
-
-  if(currentFormType==='study') {
-    const h = parseFloat(document.getElementById('input-hours').value);
-    if(!h) { alert('学習時間を入力してください。'); return; }
-    entry.hours = h;
-  } else if(currentFormType==='yonn4') {
-    const q = parseFloat(document.getElementById('input-yonn-q').value);
-    const a = parseFloat(document.getElementById('input-yonn-a').value);
-    if(!q||isNaN(a)) { alert('実施問題数と正答数を入力してください。'); return; }
-    entry.yonnQ = q; entry.yonnA = a;
-    entry.hours = 0;
-  } else if(currentFormType==='ronbun') {
-    entry.ronbunYear = document.getElementById('input-ronbun-year').value;
-    entry.ronbunGrade = document.getElementById('input-ronbun-grade').value;
-    entry.hours = 0;
-  }
-
-  logs.unshift(entry);
-  save();
-  renderAll();
-  clearForm();
-}
-
-function clearForm() {
-  document.getElementById('input-hours').value='';
-  document.getElementById('input-topics').value='';
-  document.getElementById('input-memo').value='';
-  document.getElementById('input-yonn-q').value='';
-  document.getElementById('input-yonn-a').value='';
-  document.getElementById('input-yonn-rate').value='';
-  document.getElementById('tag-selector').dataset.sel='[]';
-  renderTagSelector();
-  document.getElementById('input-date').value = todayStr();
-}
-
-// ── Filter ──
-function setTopicFilter(t) {
-  topicFilter = t;
-  document.getElementById('filter-topic-label').textContent = t ? `タグ: ${t}` : '';
-  renderLogList();
-  showTab('log');
-}
-
-// ── Render all ──
-function renderAll() {
-  renderStats();
-  renderWeekGrid();
-  renderLogList();
-  renderPhaseProgress();
-  renderYonnChart();
-  renderTopicProgress();
-  renderMonthlyChart();
-  renderKeywords();
-  renderSchedule();
-  updateBadges();
-}
-
-// ── Stats ──
-function renderStats() {
-  const studyLogs = logs.filter(l => l.type==='study'||!l.type);
-  const totalH = studyLogs.reduce((s,l)=>s+l.hours,0);
-  document.getElementById('total-hours').textContent = totalH.toFixed(1);
-  document.getElementById('total-sessions').textContent = logs.length+'セッション';
-
-  const today = todayStr();
-  const ws = getWeekStartStr();
-  const weekH = studyLogs.filter(l=>l.date>=ws).reduce((s,l)=>s+l.hours,0);
-  const todayH = studyLogs.filter(l=>l.date===today).reduce((s,l)=>s+l.hours,0);
-  document.getElementById('week-hours').textContent = weekH.toFixed(1);
-  document.getElementById('today-hours').textContent = todayH.toFixed(1);
-
-  const streak = calcStreak();
-  document.getElementById('streak').textContent = streak;
-  document.getElementById('streak-sub').textContent = streak>=7?'🔥 継続中！':streak>0?'継続中！':'今日から再開！';
-}
-
-function getWeekStartStr() {
-  const d = new Date(); d.setHours(0,0,0,0);
-  d.setDate(d.getDate() - d.getDay()); // 日曜始まり
-  return dateStr(d);
-}
-
-function calcStreak() {
-  const dates = [...new Set(logs.filter(l=>l.hours>0).map(l=>l.date))].sort().reverse();
-  if(!dates.length) return 0;
-  let streak=0, cur=new Date(); cur.setHours(0,0,0,0);
-  for(let i=0;i<365;i++) {
-    const s=dateStr(cur);
-    if(dates.includes(s)){streak++;cur.setDate(cur.getDate()-1);}
-    else if(i===0){cur.setDate(cur.getDate()-1);}
-    else break;
-  }
-  return streak;
-}
-
-// ── Week grid (timezone-safe fix) ──
-function renderWeekGrid() {
-  const el = document.getElementById('week-grid');
-  const WD = ['日','月','火','水','木','金','土'];
-  const today = new Date(); today.setHours(0,0,0,0);
-  const dow = today.getDay(); // 0=Sun
-
-  let html='';
-  for(let i=0;i<7;i++){
-    const d = new Date(today);
-    d.setDate(today.getDate() - dow + i);
-    const ds = dateStr(d); // ← timezone-safe fix
-    const h = logs.filter(l=>l.date===ds&&(l.hours||0)>0).reduce((s,l)=>s+(l.hours||0),0);
-    const isToday = ds===dateStr(today);
-    const hasStudy = h>0;
-    html+=`<div class="week-day${hasStudy?' has-study':''}${isToday?' today':''}">
-      <div class="wd-name">${WD[i]}</div>
-      <div class="wd-hours">${h>0?h.toFixed(1):'—'}</div>
-      ${hasStudy?'<div class="wd-dot"></div>':''}
-    </div>`;
-  }
-  el.innerHTML=html;
-}
-
-// ── Log list ──
-function renderLogList() {
-  const el = document.getElementById('log-list');
-  const period = document.getElementById('filter-period').value;
-  const typeF = document.getElementById('filter-type').value;
-
-  const today = todayStr();
-  const ws = getWeekStartStr();
-  const ym = today.slice(0,7);
-  const lastYm = (() => {
-    const d=new Date(); d.setDate(1); d.setMonth(d.getMonth()-1);
-    return dateStr(d).slice(0,7);
-  })();
-
-  let filtered = [...logs];
-  if(period==='week') filtered = filtered.filter(l=>l.date>=ws);
-  else if(period==='month') filtered = filtered.filter(l=>l.date.startsWith(ym));
-  else if(period==='last_month') filtered = filtered.filter(l=>l.date.startsWith(lastYm));
-  if(typeF!=='all') filtered = filtered.filter(l=>(l.type||'study')===typeF);
-  if(topicFilter) filtered = filtered.filter(l=>(l.tags||[]).includes(topicFilter));
-
-  filtered.sort((a,b)=>b.date.localeCompare(a.date));
-
-  if(!filtered.length){
-    el.innerHTML=`<div class="empty"><div class="empty-icon">📖</div>該当する記録がありません。</div>`;
-    return;
-  }
-
-  const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  const WDS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-
-  el.innerHTML=filtered.map(log=>{
-    const d = parseDate(log.date);
-    const t = log.type||'study';
-    const tagHtml=(log.tags||[]).map(tid=>{
-      const tp=TOPICS.find(x=>x.id===tid);
-      return tp?`<span class="tag" style="background:${tp.bg};color:${tp.color};">${tp.label}</span>`:'';
-    }).join('');
-
-    let scoreBadge='', typeBadge='';
-    if(t==='study'){
-      scoreBadge=`<span class="log-time">${log.hours}h</span>`;
-      typeBadge=`<span class="type-badge" style="background:#EAF2EC;color:#2F6B3E;">📚 学習</span>`;
-    } else if(t==='yonn4'){
-      const rate=log.yonnQ>0?Math.round(log.yonnA/log.yonnQ*100):0;
-      scoreBadge=`<span class="log-score yonn">${log.yonnA}/${log.yonnQ}問 ${rate}%</span>`;
-      typeBadge=`<span class="type-badge" style="background:#EFF4FF;color:#2563EB;">📋 四択</span>`;
-    } else if(t==='ronbun'){
-      scoreBadge=`<span class="log-score ronbun">${log.ronbunYear}年度 ${log.ronbunGrade}/10点</span>`;
-      typeBadge=`<span class="type-badge" style="background:#F3F0FF;color:#7C3AED;">✍️ 論文</span>`;
-    }
-
-    return `<div class="log-card type-${t}">
-      <div class="log-date-block">
-        <div class="month">${MONTHS[d.getMonth()]}</div>
-        <div class="day">${String(d.getDate()).padStart(2,'0')}</div>
-        <div class="weekday">${WDS[d.getDay()]}</div>
-      </div>
-      <div class="log-body">
-        <div class="log-meta">${scoreBadge}${typeBadge}${tagHtml}</div>
-        <div class="log-topics">${escHtml(log.topics)}</div>
-        ${log.memo?`<div class="log-memo">${escHtml(log.memo)}</div>`:''}
-      </div>
-      <div class="log-actions">
-        <button class="icon-btn" onclick="deleteLog(${log.id})" title="削除">🗑</button>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function deleteLog(id){
-  if(!confirm('この記録を削除しますか？'))return;
-  logs=logs.filter(l=>l.id!==id);
-  save();renderAll();
-}
-
-// ── Phase progress ──
-function renderPhaseProgress(){
-  const el=document.getElementById('phase-progress');
-  const colors=['#2F6B3E','#7C3AED','#C04A22','#B45309','#c0392b'];
-  el.innerHTML=PHASES.map((p,idx)=>{
-    const h=logs.filter(l=>(l.hours||0)>0&&p.months.some(m=>l.date.startsWith(m))).reduce((s,l)=>s+(l.hours||0),0);
-    const pct=Math.min(100,Math.round(h/p.targetH*100));
-    return `<div class="progress-card" style="margin-bottom:10px;">
-      <div class="progress-label">${p.label}<span class="progress-pct">${h.toFixed(1)}h / ${p.targetH}h</span></div>
-      <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pct}%;background:${colors[idx]};"></div></div>
-      <div class="progress-sub">${pct}% 完了</div>
-    </div>`;
-  }).join('');
-}
-
-// ── Yonn chart ──
-function renderYonnChart(){
-  const el=document.getElementById('yonn-chart');
-  const yonnLogs=logs.filter(l=>l.type==='yonn4').slice().sort((a,b)=>a.date.localeCompare(b.date)).slice(-10);
-  if(!yonnLogs.length){
-    el.innerHTML=`<div class="empty"><div class="empty-icon">📋</div>過去問四択の記録がまだありません。</div>`;
-    return;
-  }
-  const max=100;
-  el.innerHTML=`<div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;box-shadow:var(--shadow);">
-    <div style="display:flex;align-items:flex-end;gap:8px;height:100px;">
-      ${yonnLogs.map(l=>{
-        const rate=l.yonnQ>0?Math.round(l.yonnA/l.yonnQ*100):0;
-        const d=parseDate(l.date);
-        const label=`${d.getMonth()+1}/${d.getDate()}`;
-        const color=rate>=80?'#2F6B3E':rate>=60?'#E8A900':'#C04A22';
-        return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;height:100%;justify-content:flex-end;">
-          <div style="font-size:10px;color:${color};font-weight:700;">${rate}%</div>
-          <div style="width:100%;background:${color};border-radius:3px 3px 0 0;height:${rate}%;"></div>
-          <div style="font-size:9px;color:var(--text3);">${label}</div>
-        </div>`;
-      }).join('')}
-    </div>
-    <div style="font-size:11px;color:var(--text3);margin-top:8px;">■ 緑:80%以上　■ 黄:60〜79%　■ 赤:60%未満</div>
-  </div>`;
-}
-
-// ── Topic progress ──
-function renderTopicProgress(){
-  const el=document.getElementById('topic-progress');
-  const target=20;
-  el.innerHTML=TOPICS.filter(t=>t.id!=='論文').map(t=>{
-    const h=logs.filter(l=>(l.tags||[]).includes(t.id)).reduce((s,l)=>s+(l.hours||0),0);
-    const pct=Math.min(100,Math.round(h/target*100));
-    return `<div class="progress-card">
-      <div class="progress-label">${t.label}<span class="progress-pct">${h.toFixed(1)}h</span></div>
-      <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pct}%;background:${t.color};"></div></div>
-      <div class="progress-sub">目標${target}hの${pct}%</div>
-    </div>`;
-  }).join('');
-}
-
-// ── Monthly chart ──
-function renderMonthlyChart(){
-  const el=document.getElementById('monthly-chart');
-  const months=['2026-03','2026-04','2026-05','2026-06','2026-07'];
-  const labels=['3月','4月','5月','6月','7月'];
-  const data=months.map(m=>logs.filter(l=>(l.hours||0)>0&&l.date.startsWith(m)).reduce((s,l)=>s+(l.hours||0),0));
-  const max=Math.max(...data,1);
-  el.innerHTML=`<div style="display:flex;align-items:flex-end;gap:12px;height:110px;padding-bottom:22px;position:relative;">
-    ${data.map((h,i)=>{
-      const pct=h/max*100;
-      return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;height:100%;justify-content:flex-end;">
-        <div style="font-size:11px;color:var(--accent);font-family:'Space Mono',monospace;font-weight:700;">${h>0?h.toFixed(1)+'h':''}</div>
-        <div style="width:100%;background:var(--accent);border-radius:4px 4px 0 0;height:${Math.max(pct,2)}%;opacity:${h>0?1:0.2};"></div>
-        <div style="font-size:11px;color:var(--text3);position:absolute;bottom:0;">${labels[i]}</div>
-      </div>`;
-    }).join('')}
-  </div>`;
-}
-
-// ── Schedule ──
-function renderSchedule(){
-  const el=document.getElementById('schedule-list');
-  const filter=document.getElementById('sched-filter').value;
-  const monthFilter=document.getElementById('sched-month').value;
-
-  const loggedDates=new Set(logs.filter(l=>(l.hours||0)>0||(l.yonnQ||0)>0||(l.ronbunYear)).map(l=>l.date));
-  const today=todayStr();
-
-  const TYPE_COLORS={
-    'インプット':{bg:'#FEF3C7',color:'#92400E'},
-    '四択':{bg:'#EFF4FF',color:'#2563EB'},
-    '論文':{bg:'#F3F0FF',color:'#7C3AED'},
-    'ミックス':{bg:'#F0FDFA',color:'#0F766E'},
-    'バッファ':{bg:'#F1F0EC',color:'#6B6B6B'},
-  };
-
-  let items=[...SCHEDULE_DATA];
-  if(monthFilter!=='all') items=items.filter(s=>s.date.startsWith(monthFilter));
-
-  const isDone=s=>loggedDates.has(s.date)||s.date<today;
-  if(filter==='remaining') items=items.filter(s=>!isDone(s));
-  else if(filter==='done') items=items.filter(s=>isDone(s));
-
-  if(!items.length){el.innerHTML=`<div class="empty"><div class="empty-icon">📅</div>該当する予定がありません。</div>`;return;}
-
-  // Group by month
-  const grouped={};
-  items.forEach(s=>{
-    const ym=s.date.slice(0,7);
-    if(!grouped[ym])grouped[ym]=[];
-    grouped[ym].push(s);
-  });
-
+// ===== Schedule =====
+function renderSched(){
+  const el=document.getElementById('schedList');
+  const sf=document.getElementById('sfStatus').value,mf=document.getElementById('sfMonth').value;
+  const allDates=new Set(logs.map(l=>l.date));
+  const td=today();
+  const isDone=s=>allDates.has(s.date)||s.date<td;
+  const TC={'インプット':{bg:'#FEF3C7',c:'#92400E'},'四択':{bg:'#EFF4FF',c:'#2563EB'},'論文':{bg:'#F3F0FF',c:'#7C3AED'},'ミックス':{bg:'#F0FDFA',c:'#0F766E'},'バッファ':{bg:'#F1F0EC',c:'#6B6B6B'}};
+  let items=[...SCHED];
+  if(mf!=='all') items=items.filter(s=>s.date.startsWith(mf));
+  if(sf==='remaining') items=items.filter(s=>!isDone(s));
+  else if(sf==='done') items=items.filter(s=>isDone(s));
+  if(!items.length){el.innerHTML='<div class="empty"><div class="ei">📅</div>該当する予定がありません。</div>';return;}
+  const g={};items.forEach(s=>{const ym=s.date.slice(0,7);if(!g[ym])g[ym]=[];g[ym].push(s);});
   const ML={'2026-03':'3月','2026-04':'4月','2026-05':'5月','2026-06':'6月','2026-07':'7月'};
-
-  el.innerHTML=Object.entries(grouped).map(([ym,schedules])=>{
-    const done=schedules.filter(s=>isDone(s)).length;
-    return `<div style="margin-bottom:16px;">
-      <div class="schedule-month-label">${ML[ym]||ym}　<span style="font-weight:400;">${done}/${schedules.length}日 完了</span></div>
-      <div class="schedule-list">
-        ${schedules.map(s=>{
-          const done=isDone(s);
-          const isToday=s.date===today;
-          const d=parseDate(s.date);
-          const WD=['日','月','火','水','木','金','土'];
-          const tc=TYPE_COLORS[s.type]||{bg:'#F1F0EC',color:'#6B6B6B'};
-          return `<div class="schedule-item${done?' done':''}${isToday?' today-plan':''}">
-            <span class="sched-check">${done?'✅':'⬜'}</span>
-            <span class="sched-date">${d.getMonth()+1}/${d.getDate()}(${WD[d.getDay()]})</span>
-            <span class="sched-content">${escHtml(s.content)}</span>
-            <span class="sched-type" style="background:${tc.bg};color:${tc.color};">${s.type}</span>
-          </div>`;
-        }).join('')}
-      </div>
-    </div>`;
+  el.innerHTML=Object.entries(g).map(([ym,ss])=>{
+    const done=ss.filter(s=>isDone(s)).length;
+    return `<div style="margin-bottom:16px;"><div class="mlbl">${ML[ym]||ym}　<span style="font-weight:400;">${done}/${ss.length} 完了</span></div>${ss.map(s=>{const d=isDone(s),it=s.date===td,dt=pd(s.date),tc=TC[s.type]||{bg:'#F1F0EC',c:'#6B6B6B'};return `<div class="si${d?' done':''}${it?' tday':''}"><span style="font-size:16px;">${d?'✅':'⬜'}</span><span class="sddate">${dt.getMonth()+1}/${dt.getDate()}(${WDJ[dt.getDay()]})</span><span class="sdcont">${esc(s.content)}</span><span class="sdtype" style="background:${tc.bg};color:${tc.c};">${s.type}</span></div>`;}).join('')}</div>`;
   }).join('');
 }
 
-// ── Badges ──
+// ===== Keywords =====
+function addKW(){
+  const word=document.getElementById('kwWord').value.trim(),cat=document.getElementById('kwCat').value,desc=document.getElementById('kwDesc').value.trim();
+  if(!word){alert('キーワードを入力してください。');return;}
+  kws.unshift({id:Date.now(),word,cat,desc});saveKWs();renderKWs();
+  document.getElementById('kwWord').value='';document.getElementById('kwDesc').value='';
+}
+function delKW(id){kws=kws.filter(k=>k.id!==id);saveKWs();renderKWs();}
+function renderKWs(){
+  const el=document.getElementById('kwList');
+  if(!kws.length){el.innerHTML='<div class="empty"><div class="ei">🔑</div>まだキーワードがありません。</div>';return;}
+  const g={};kws.forEach(k=>{if(!g[k.cat])g[k.cat]=[];g[k.cat].push(k);});
+  el.innerHTML=Object.entries(g).map(([cat,ks])=>{
+    const t=TOPICS.find(x=>x.id===cat),color=t?t.color:'#6B6B6B',bg=t?t.bg:'#F0F0EE';
+    return `<div style="margin-bottom:18px;"><div style="font-size:11px;font-weight:700;color:${color};background:${bg};display:inline-block;padding:3px 10px;border-radius:4px;margin-bottom:8px;">${cat}</div><div style="display:flex;flex-direction:column;gap:6px;">${ks.map(k=>`<div class="kc"><div style="flex:1;"><div style="font-size:14px;font-weight:700;color:${color};margin-bottom:3px;">${esc(k.word)}</div>${k.desc?`<div style="font-size:12px;color:var(--t2);line-height:1.6;">${esc(k.desc)}</div>`:''}</div><button class="ibt" onclick="delKW(${k.id})">🗑</button></div>`).join('')}</div></div>`;
+  }).join('');
+}
+
+// ===== Badges =====
 function updateBadges(){
   TOPICS.forEach(t=>{
-    const el=document.getElementById('badge-'+t.id);
-    if(el) el.textContent=logs.filter(l=>(l.tags||[]).includes(t.id)).length;
+    const el=document.getElementById('b-'+t.id);
+    if(!el)return;
+    if(t.id==='過去問四択') el.textContent=logs.filter(l=>l.type==='yonn').length;
+    else if(t.id==='論文') el.textContent=logs.filter(l=>l.type==='ron').length;
+    else el.textContent=logs.filter(l=>(l.tags||[]).includes(t.id)).length;
   });
 }
 
-// ── Keywords ──
-function addKeyword(){
-  const word=document.getElementById('kw-word').value.trim();
-  const cat=document.getElementById('kw-cat').value;
-  const desc=document.getElementById('kw-desc').value.trim();
-  if(!word){alert('キーワードを入力してください。');return;}
-  keywords.unshift({id:Date.now(),word,cat,desc});
-  saveKW();renderKeywords();
-  document.getElementById('kw-word').value='';
-  document.getElementById('kw-desc').value='';
-}
-
-function deleteKeyword(id){
-  keywords=keywords.filter(k=>k.id!==id);
-  saveKW();renderKeywords();
-}
-
-function renderKeywords(){
-  const el=document.getElementById('keyword-list');
-  if(!keywords.length){el.innerHTML=`<div class="empty"><div class="empty-icon">🔑</div>まだキーワードがありません。</div>`;return;}
-  const grouped={};
-  keywords.forEach(k=>{if(!grouped[k.cat])grouped[k.cat]=[];grouped[k.cat].push(k);});
-  el.innerHTML=Object.entries(grouped).map(([cat,kws])=>{
-    const tp=TOPICS.find(t=>t.id===cat);
-    const color=tp?tp.color:'#6B6B6B';const bg=tp?tp.bg:'#F0F0EE';
-    return `<div style="margin-bottom:18px;">
-      <div style="font-size:11px;font-weight:700;color:${color};background:${bg};display:inline-block;padding:3px 10px;border-radius:4px;margin-bottom:8px;">${cat}</div>
-      <div style="display:flex;flex-direction:column;gap:6px;">
-        ${kws.map(k=>`<div class="kw-card">
-          <div style="flex:1;">
-            <div style="font-size:14px;font-weight:700;color:${color};margin-bottom:3px;">${escHtml(k.word)}</div>
-            ${k.desc?`<div style="font-size:12px;color:var(--text2);line-height:1.6;">${escHtml(k.desc)}</div>`:''}
-          </div>
-          <button class="icon-btn" onclick="deleteKeyword(${k.id})">🗑</button>
-        </div>`).join('')}
-      </div>
-    </div>`;
-  }).join('');
-}
-
-// ── Tab switch ──
+// ===== Tab =====
 function showTab(tab){
-  ['log','progress','schedule','keyword'].forEach(t=>{
-    document.getElementById('tab-'+t).classList.toggle('hidden',t!==tab);
-  });
-  document.querySelectorAll('.sidebar-item').forEach(el=>el.classList.remove('active'));
-  const idx={'log':0,'progress':1,'schedule':2,'keyword':3}[tab];
-  if(idx!==undefined) document.querySelectorAll('.sidebar-item')[idx].classList.add('active');
+  ['log','progress','schedule','keyword'].forEach(t=>document.getElementById('tab-'+t).classList.toggle('hidden',t!==tab));
+  document.querySelectorAll('.sb-item').forEach(el=>el.classList.remove('active'));
+  const idx={log:0,progress:1,schedule:2,keyword:3}[tab];
+  if(idx!=null) document.querySelectorAll('.sb-item')[idx].classList.add('active');
+}
+function setF(t){
+  tagF=t;
+  document.getElementById('tagFLabel').textContent=t?'タグ: '+t:'';
+  renderList();showTab('log');
 }
 
-// ── Export CSV ──
-function exportCSV(){
-  const header='日付,タイプ,学習時間(h),問題数,正答数,正答率,論文年度,論文採点,タグ,内容,メモ';
-  const rows=logs.map(l=>[
-    l.date,l.type||'study',l.hours||'',l.yonnQ||'',l.yonnA||'',
-    l.yonnQ?Math.round((l.yonnA/l.yonnQ)*100)+'%':'',
-    l.ronbunYear||'',l.ronbunGrade||'',
-    (l.tags||[]).join('/'),'\"'+l.topics+'\"','\"'+(l.memo||'').replace(/"/g,'""')+'\"'
-  ].join(','));
-  const csv=[header,...rows].join('\n');
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));
-  a.download='学習記録_コンクリート診断士.csv';
-  a.click();
+// ===== CSV =====
+function expCSV(){
+  const rows=[['タイプ','日付','学習時間(h)','問題数','正答数','正答率','採点(/10)','年度','問題番号','タグ','内容','メモ'],
+    ...logs.map(l=>[l.type,l.date,l.hours||'',l.q||'',l.a||'',l.q?Math.round(l.a/l.q*100)+'%':'',l.score!=null?l.score:'',l.year||'',l.prob||'',(l.tags||[]).join('/'),'\"'+(l.topics||'')+'\"','\"'+((l.memo||'').replace(/"/g,'""'))+'\"'])];
+  const csv=rows.map(r=>r.join(',')).join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));a.download='学習記録_コンクリート診断士.csv';a.click();
 }
-
-// ── Helpers ──
-function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-function save(){localStorage.setItem('study-logs-v2',JSON.stringify(logs));}
-function saveKW(){localStorage.setItem('study-keywords',JSON.stringify(keywords));}
 
 init();
 </script>
