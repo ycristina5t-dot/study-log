@@ -56,17 +56,14 @@ textarea{height:56px;resize:vertical;}
 .btn{display:block;width:100%;padding:11px;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;margin-top:8px;}
 .btn-primary{background:var(–accent);color:white;}
 .btn-csv{background:var(–green);color:white;}
-#q-rate{font-size:12px;color:var(–accent);margin-top:3px;}
 
 /* ── SCHEDULE ── */
 .sched-wrap{padding:12px;}
-/* 概要カード */
 .overview-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
 .ov-card{border-radius:10px;padding:10px 12px;color:white;}
 .ov-card h4{font-size:11px;font-weight:700;margin-bottom:5px;opacity:.9;}
 .ov-row{display:flex;justify-content:space-between;font-size:11px;padding:2px 0;border-bottom:1px solid rgba(255,255,255,.2);}
 .ov-row:last-child{border-bottom:none;}
-
 .month-tabs{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;padding-bottom:2px;}
 .month-tab{flex-shrink:0;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:2px solid var(–border);color:var(–muted);background:white;transition:.15s;}
 .month-tab.active{color:white;border-color:transparent;}
@@ -87,14 +84,11 @@ textarea{height:56px;resize:vertical;}
 .week-prog{height:4px;background:#eee;}
 .week-prog-fill{height:100%;transition:width .3s;}
 .week-body{padding:10px 12px 12px;}
-
-/* 日次目安 */
 .daily-guide{background:#e0f7fa;border-radius:8px;padding:7px 10px;margin-bottom:8px;font-size:11px;color:var(–teal);}
 .daily-guide strong{display:block;font-size:11px;margin-bottom:2px;}
 
 /* 3列グリッド */
 .week-3col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:6px;}
-.week-2col{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px;}
 .col-box{border-radius:8px;padding:8px;}
 .col-jic{background:#e8eaf6;}
 .col-shin{background:#e0f2f1;}
@@ -113,6 +107,8 @@ textarea{height:56px;resize:vertical;}
 .check-item input.essay-ck{accent-color:var(–purple);}
 .check-item input.misc-ck{accent-color:var(–accent);}
 .item-text{font-size:11px;line-height:1.5;}
+/* ★ チェック済みアイテムの打ち消し線 */
+.item-text.checked-text{text-decoration:line-through;color:var(–muted);opacity:.7;}
 .item-sub{font-size:10px;color:var(–muted);margin-top:1px;}
 .item-day{font-size:10px;font-weight:700;color:var(–purple);margin-bottom:1px;}
 .week-note{font-size:10px;color:var(–muted);margin-top:6px;padding-top:6px;border-top:1px dashed var(–border);}
@@ -157,13 +153,11 @@ textarea{height:56px;resize:vertical;}
 
 <div id="page-log" class="page active">
   <div class="stats-grid">
-    <div class="stat-card"><div class="val" id="st-total">12.0</div><div class="lbl">累計学習時間 (h)</div></div>
-    <div class="stat-card"><div class="val" id="st-days">4</div><div class="lbl">学習日数</div></div>
-    <div class="stat-card"><div class="val" id="st-essay">1</div><div class="lbl">論文 累計本数</div></div>
-    <div class="stat-card"><div class="val" id="st-avg">3.0</div><div class="lbl">1日平均 (h)</div></div>
+    <div class="stat-card"><div class="val" id="st-total">0.0</div><div class="lbl">累計学習時間 (h)</div></div>
+    <div class="stat-card"><div class="val" id="st-days">0</div><div class="lbl">学習日数</div></div>
+    <div class="stat-card"><div class="val" id="st-essay">0</div><div class="lbl">論文 累計本数</div></div>
+    <div class="stat-card"><div class="val" id="st-avg">0.0</div><div class="lbl">1日平均 (h)</div></div>
   </div>
-
-  <!-- 周回バー -->
 
   <div class="round-bar">
     <div class="round-card">
@@ -286,8 +280,6 @@ textarea{height:56px;resize:vertical;}
 <div id="page-schedule" class="page">
 <div class="sched-wrap">
 
-  <!-- 概要 -->
-
   <div class="overview-grid">
     <div class="ov-card" style="background:var(--indigo)">
       <h4>📘 JIC講座（最低3周）</h4>
@@ -343,6 +335,7 @@ textarea{height:56px;resize:vertical;}
     </select>
     <select id="fil-type" onchange="renderHistory()">
       <option value="all">すべて</option><option value="essay">論文あり</option><option value="quiz">択一あり</option>
+      <option value="checked">✅ チェック済みタスク</option>
     </select>
   </div>
   <div id="log-list"></div>
@@ -352,8 +345,18 @@ textarea{height:56px;resize:vertical;}
 <script>
 const SK='cl-logs-v6', CK='cl-chks-v6';
 let logs=[], chks={};
-function load(){try{logs=JSON.parse(localStorage.getItem(SK))||[];}catch{logs=[];}try{chks=JSON.parse(localStorage.getItem(CK))||{};}catch{chks={};}}
-function save(){localStorage.setItem(SK,JSON.stringify(logs));localStorage.setItem(CK,JSON.stringify(chks));}
+
+// ★ 開閉状態を管理するSet（週IDを保持）
+const openWeeks = new Set();
+
+function load(){
+  try{logs=JSON.parse(localStorage.getItem(SK))||[];}catch{logs=[];}
+  try{chks=JSON.parse(localStorage.getItem(CK))||{};}catch{chks={};}
+}
+function save(){
+  localStorage.setItem(SK,JSON.stringify(logs));
+  localStorage.setItem(CK,JSON.stringify(chks));
+}
 
 // ── SCHEDULE DATA ──
 const MONTHS=[
@@ -373,7 +376,6 @@ const MONTHS=[
           {day:'3/16（日）論文③', text:'テーマ：凍害\n初稿→翌日推敲の習慣づけ'},
         ],
         misc:[]},
-
       { id:'w3b', label:'3/17〜3/22', open:false,
         jic:[
           {text:'調査手法：配合・微細構造・化学成分①②', sub:'JIC 2周目 ▶ 調査 > 配合①②'},
@@ -386,7 +388,6 @@ const MONTHS=[
           {day:'3/22（日）論文④', text:'テーマ：中性化\n結論先出し・目的の明示を練習'},
         ],
         misc:[]},
-
       { id:'w3c', label:'3/23〜3/31', open:false,
         jic:[
           {text:'調査手法：ASR①②③・火害①・その他①②', sub:'JIC 2周目 ▶ 調査 残り完了'},
@@ -395,11 +396,9 @@ const MONTHS=[
         shin:[
           {text:'篠田レジュメ 1周目完了', sub:'調査手法・補修補強 通読'},
         ],
-        essays:[],
-        misc:[],
+        essays:[],misc:[],
         note:'3月末でJIC 2周目 調査手法パート完了を目指す。篠田1周目完了。'},
     ]},
-
   { id:'m4', color:'#EF6C00', label:'4月（4/1〜4/30）　JIC2周目完了→3周目 + 篠田2周目 + 論文8本',
     daily:'平日：2.5〜3h（50分×3）　/　週末：3.5〜4h（50分×4〜5）＋論文1〜2本',
     weeks:[
@@ -408,60 +407,44 @@ const MONTHS=[
           {text:'補修工法：ひび割れ①②③・断面修復①', sub:'JIC 2周目 ▶ 補修パート'},
           {text:'コンクリートの変状：初期欠陥①②③', sub:'JIC 2周目 ▶ 変状 > 初期欠陥'},
         ],
-        shin:[
-          {text:'篠田レジュメ 2周目スタート', sub:'中性化・塩害 精読（ポイント絞り込み）'},
-        ],
+        shin:[{text:'篠田レジュメ 2周目スタート', sub:'中性化・塩害 精読（ポイント絞り込み）'}],
         essays:[
           {day:'4/5（土）論文⑤', text:'テーマ：塩害'},
           {day:'4/6（日）論文⑥', text:'テーマ：ASR　週2本ペース定着'},
-        ],
-        misc:[]},
-
+        ],misc:[]},
       { id:'w4b', label:'4/7〜4/13', open:false,
         jic:[
           {text:'補修工法：表面被覆①・含浸①②・電気化学①②', sub:'JIC 2周目 ▶ 補修後半'},
           {text:'コンクリートの変状：経年劣化①②③④', sub:'JIC 2周目 ▶ 変状 > 経年劣化'},
         ],
-        shin:[
-          {text:'篠田レジュメ 2周目', sub:'ASR・凍害・化学的侵食 精読'},
-        ],
+        shin:[{text:'篠田レジュメ 2周目', sub:'ASR・凍害・化学的侵食 精読'}],
         essays:[
           {day:'4/12（土）論文⑦', text:'テーマ：化学的侵食'},
           {day:'4/13（日）論文⑧', text:'テーマ：疲労'},
-        ],
-        misc:[]},
-
+        ],misc:[]},
       { id:'w4c', label:'4/14〜4/20', open:false,
         jic:[
           {text:'増厚①・その他補強①・維持管理①', sub:'JIC 2周目 ▶ 補強・維持管理'},
           {text:'コンクリートの変状：構造的変状①', sub:'JIC 2周目 ▶ 変状 > 構造的変状'},
           {text:'コンクリート年表・計算ドリル開始', sub:'JIC 2周目 ▶ 年表・計算（前半5種）'},
         ],
-        shin:[
-          {text:'篠田レジュメ 2周目', sub:'疲労・火害・調査手法 精読'},
-        ],
+        shin:[{text:'篠田レジュメ 2周目', sub:'疲労・火害・調査手法 精読'}],
         essays:[
           {day:'4/19（土）論文⑨', text:'テーマ：中性化（再演習）'},
           {day:'4/20（日）論文⑩', text:'テーマ：過去問2024年度 問題Ⅰ'},
-        ],
-        misc:[]},
-
+        ],misc:[]},
       { id:'w4d', label:'4/21〜4/30', open:false,
         jic:[
           {text:'計算ドリル後半（5種）完了', sub:'JIC 2周目 ▶ 計算後半5種'},
           {text:'★ JIC 2周目 完了！→ 3周目スタート', sub:'JIC 3周目 ▶ 劣化メカニズムから再スタート'},
         ],
-        shin:[
-          {text:'篠田レジュメ 2周目完了', sub:'補修補強・年表 精読'},
-        ],
+        shin:[{text:'篠田レジュメ 2周目完了', sub:'補修補強・年表 精読'}],
         essays:[
           {day:'4/26（土）論文⑪', text:'テーマ：過去問2023年度 問題Ⅱ'},
           {day:'4/27（日）論文⑫', text:'テーマ：過去問2022年度 問題Ⅰ'},
-        ],
-        misc:[],
+        ],misc:[],
         note:'4月末でJIC 2周目完了・3周目開始。篠田2周目完了。論文累計12本目標。'},
     ]},
-
   { id:'m5', color:'#C62828', label:'5月（5/1〜5/31）　JIC3周目 + 篠田3〜4周目 + 論文10本',
     daily:'平日：2.5〜3h（50分×3）　/　週末：3.5〜4h（50分×4〜5）＋論文2本',
     weeks:[
@@ -470,16 +453,12 @@ const MONTHS=[
           {text:'JIC 3周目：劣化メカニズム全種 高速復習', sub:'JIC 3周目 ▶ 劣化メカニズム（課題中心）'},
           {text:'JIC 3周目：調査手法前半', sub:'JIC 3周目 ▶ 強度・ひび割れ・鉄筋・配合'},
         ],
-        shin:[
-          {text:'篠田レジュメ 3周目', sub:'劣化メカニズム 弱点に絞って精読'},
-        ],
+        shin:[{text:'篠田レジュメ 3周目', sub:'劣化メカニズム 弱点に絞って精読'}],
         essays:[
           {day:'5/3（土）論文⑬', text:'過去問2021年度 問題Ⅱ'},
           {day:'5/4（日）論文⑭', text:'過去問2020年度 問題Ⅰ'},
           {day:'5/10（土）論文⑮', text:'過去問2019年度 問題Ⅱ'},
-        ],
-        misc:[]},
-
+        ],misc:[]},
       { id:'w5b', label:'5/11〜5/20', open:false,
         jic:[
           {text:'JIC 3周目：調査手法後半・変状', sub:'JIC 3周目 ▶ 中性化・塩化物・ASR・火害・変状'},
@@ -493,92 +472,63 @@ const MONTHS=[
           {day:'5/16（土）論文⑯', text:'過去問2018年度 問題Ⅰ'},
           {day:'5/17（日）論文⑰', text:'過去問2017年度 問題Ⅱ'},
           {day:'5/20（水）論文⑱', text:'平日演習：苦手テーマ（30分集中）'},
-        ],
-        misc:[]},
-
+        ],misc:[]},
       { id:'w5c', label:'5/21〜5/31', open:false,
         jic:[
           {text:'JIC 3周目：計算ドリル全10種 + 年表', sub:'JIC 3周目 ▶ 計算・年表（小テスト含む）'},
           {text:'★ JIC 3周目 完了！', sub:'過去問（四択）2022〜2024年度 開始'},
         ],
-        shin:[
-          {text:'篠田レジュメ 4周目完了', sub:'計算・年表・弱点テーマ'},
-        ],
+        shin:[{text:'篠田レジュメ 4周目完了', sub:'計算・年表・弱点テーマ'}],
         essays:[
           {day:'5/24（土）論文⑲', text:'過去問2016年度 問題Ⅰ'},
           {day:'5/25（日）論文⑳', text:'過去問2015年度 問題Ⅱ'},
           {day:'5/31（日）論文㉑', text:'苦手テーマ 精度確認'},
-        ],
-        misc:[],
+        ],misc:[],
         note:'5月末でJIC 3周完了・篠田4周完了。論文累計21本目標。計算ドリル全10種必須。'},
     ]},
-
   { id:'m6', color:'#2E7D32', label:'6月（6/1〜6/20）　論文メイン🔥 + 篠田5周目 + 過去問択一',
     daily:'平日：2.5〜3h（論文 or 択一）　/　週末：3.5〜4h＋論文2〜3本',
     weeks:[
       { id:'w6a', label:'6/1〜6/7　論文メイン🔥', open:false,
-        jic:[
-          {text:'過去問 択一：2022〜2024年度（苦手のみ）', sub:'過去問 > 2024・2023・2022年度'},
-        ],
-        shin:[
-          {text:'篠田レジュメ 5周目スタート', sub:'全体を高速で通読（最終確認）'},
-        ],
+        jic:[{text:'過去問 択一：2022〜2024年度（苦手のみ）', sub:'過去問 > 2024・2023・2022年度'}],
+        shin:[{text:'篠田レジュメ 5周目スタート', sub:'全体を高速で通読（最終確認）'}],
         essays:[
           {day:'6/1（月）論文㉒', text:'平日演習：2014年度'},
           {day:'6/5（金）論文㉓', text:'平日演習：2013年度'},
           {day:'6/7（日）論文㉔', text:'週末精度仕上げ：2012年度'},
-        ],
-        misc:[]},
-
+        ],misc:[]},
       { id:'w6b', label:'6/8〜6/14　論文メイン🔥', open:false,
-        jic:[
-          {text:'過去問 択一：2019〜2021年度（弱点のみ）', sub:'過去問 > 2021・2020・2019年度'},
-        ],
-        shin:[
-          {text:'篠田レジュメ 5周目', sub:'弱点テーマのみ精読'},
-        ],
+        jic:[{text:'過去問 択一：2019〜2021年度（弱点のみ）', sub:'過去問 > 2021・2020・2019年度'}],
+        shin:[{text:'篠田レジュメ 5周目', sub:'弱点テーマのみ精読'}],
         essays:[
           {day:'6/9（火）論文㉕', text:'平日演習：2011年度'},
           {day:'6/13（土）論文㉖', text:'苦手テーマ①（FBを踏まえた修正演習）'},
           {day:'6/14（日）論文㉗', text:'苦手テーマ②（弱点分野の再演習）'},
-        ],
-        misc:[]},
-
+        ],misc:[]},
       { id:'w6c', label:'6/15〜6/20　最終仕上げ', open:false,
-        jic:[
-          {text:'苦手分野 択一 最終確認', sub:'弱点分野のみ絞って確認'},
-        ],
-        shin:[
-          {text:'篠田レジュメ 5周目完了', sub:'★ 5周達成！最終キーワード確認'},
-        ],
+        jic:[{text:'苦手分野 択一 最終確認', sub:'弱点分野のみ絞って確認'}],
+        shin:[{text:'篠田レジュメ 5周目完了', sub:'★ 5周達成！最終キーワード確認'}],
         essays:[
           {day:'6/15（月）論文㉘', text:'塩害 or 中性化（完成度確認）'},
           {day:'6/18（木）論文㉙', text:'ASR or 疲労（完成度確認）'},
           {day:'6/20（土）論文㉚〜㉛', text:'本番想定・時間計測で2本\n（累計31本達成）'},
-        ],
-        misc:[],
+        ],misc:[],
         note:'6月は論文が完全主役。択一は1日30分以内。書く量を最大化する。'},
     ]},
-
   { id:'mbuf', color:'#1a3a5c', label:'バッファ（6/21〜試験前）　最終確認のみ',
     daily:'1〜1.5h（確認のみ。詰め込み禁止）',
     weeks:[
       { id:'wbuf', label:'6/21〜試験前', open:true,
-        jic:[
-          {text:'JIC 弱点箇所のみ最終確認', sub:'新しいインプットは一切しない'},
-        ],
-        shin:[
-          {text:'篠田レジュメ：弱点ページのみ', sub:'キーワード・数値の最終確認'},
-        ],
-        essays:[
-          {day:'6/21〜 論文㉜〜㉞', text:'弱点テーマを2〜3本のみ\n新しく手を広げない'},
-        ],
-        misc:[
-          {text:'年表・計算式の最終見直し', sub:'暗記カード・数値の確認'},
-        ],
+        jic:[{text:'JIC 弱点箇所のみ最終確認', sub:'新しいインプットは一切しない'}],
+        shin:[{text:'篠田レジュメ：弱点ページのみ', sub:'キーワード・数値の最終確認'}],
+        essays:[{day:'6/21〜 論文㉜〜㉞', text:'弱点テーマを2〜3本のみ\n新しく手を広げない'}],
+        misc:[{text:'年表・計算式の最終見直し', sub:'暗記カード・数値の確認'}],
         note:'余裕を持った仕上げ期間。追加インプットは禁止。確認のみ。'},
     ]},
 ];
+
+// ── 初期オープン状態をセット ──
+MONTHS.forEach(mo=>mo.weeks.forEach(wk=>{if(wk.open)openWeeks.add(wk.id);}));
 
 // ── RENDER ──
 function renderSchedule(){
@@ -591,69 +541,64 @@ function renderSchedule(){
     </div>`;
 
     mo.weeks.forEach(wk=>{
-      const allItems=[
+      const allKeys=[
         ...wk.jic.map((_,i)=>wk.id+'j'+i),
         ...wk.shin.map((_,i)=>wk.id+'s'+i),
         ...wk.essays.map((_,i)=>wk.id+'e'+i),
         ...(wk.misc||[]).map((_,i)=>wk.id+'m'+i),
       ];
-      const total=allItems.length;
-      const done=allItems.filter(k=>chks[k]).length;
+      const total=allKeys.length;
+      const done=allKeys.filter(k=>chks[k]).length;
       const pct=total?Math.round(done/total*100):0;
+      // ★ openWeeks で開閉状態を判定
+      const isOpen=openWeeks.has(wk.id);
 
-      const jicHtml=wk.jic.map((it,i)=>`
+      const mkItem=(key,cls,inner)=>`
         <div class="check-item">
-          <input type="checkbox" class="jic-ck" ${chks[wk.id+'j'+i]?'checked':''} onchange="ck('${wk.id}','j',${i},this.checked)">
-          <div><div class="item-text">${it.text}</div><div class="item-sub">${it.sub}</div></div>
-        </div>`).join('');
+          <input type="checkbox" class="${cls}" ${chks[key]?'checked':''}
+            onchange="ck('${key}',this.checked)">
+          <div>${inner}</div>
+        </div>`;
 
-      const shinHtml=wk.shin.map((it,i)=>`
-        <div class="check-item">
-          <input type="checkbox" class="shin-ck" ${chks[wk.id+'s'+i]?'checked':''} onchange="ck('${wk.id}','s',${i},this.checked)">
-          <div><div class="item-text">${it.text}</div><div class="item-sub">${it.sub}</div></div>
-        </div>`).join('');
+      const jicHtml=wk.jic.map((it,i)=>mkItem(wk.id+'j'+i,'jic-ck',
+        `<div class="item-text${chks[wk.id+'j'+i]?' checked-text':''}">${it.text}</div>
+         <div class="item-sub">${it.sub}</div>`)).join('');
+
+      const shinHtml=wk.shin.map((it,i)=>mkItem(wk.id+'s'+i,'shin-ck',
+        `<div class="item-text${chks[wk.id+'s'+i]?' checked-text':''}">${it.text}</div>
+         <div class="item-sub">${it.sub}</div>`)).join('');
 
       const essHtml=wk.essays.length
-        ?wk.essays.map((e,i)=>`
-        <div class="check-item">
-          <input type="checkbox" class="essay-ck" ${chks[wk.id+'e'+i]?'checked':''} onchange="ck('${wk.id}','e',${i},this.checked)">
-          <div><div class="item-day">${e.day}</div><div class="item-text">${e.text.replace(/\n/g,'<br>')}</div></div>
-        </div>`).join('')
+        ?wk.essays.map((e,i)=>mkItem(wk.id+'e'+i,'essay-ck',
+          `<div class="item-day">${e.day}</div>
+           <div class="item-text${chks[wk.id+'e'+i]?' checked-text':''}">${e.text.replace(/\n/g,'<br>')}</div>`)).join('')
         :'<div style="font-size:10px;color:#bbb;font-style:italic">この週の論文なし</div>';
 
-      const miscHtml=(wk.misc||[]).map((it,i)=>`
-        <div class="check-item">
-          <input type="checkbox" class="misc-ck" ${chks[wk.id+'m'+i]?'checked':''} onchange="ck('${wk.id}','m',${i},this.checked)">
-          <div><div class="item-text">${it.text}</div><div class="item-sub">${it.sub}</div></div>
-        </div>`).join('');
+      const miscHtml=(wk.misc||[]).map((it,i)=>mkItem(wk.id+'m'+i,'misc-ck',
+        `<div class="item-text${chks[wk.id+'m'+i]?' checked-text':''}">${it.text}</div>
+         <div class="item-sub">${it.sub}</div>`)).join('');
 
       const noteHtml=wk.note?`<div class="week-note">※ ${wk.note}</div>`:'';
 
       html+=`<div class="week-card">
-        <div class="week-header" onclick="toggleWeek('wb-${wk.id}')">
+        <div class="week-header" onclick="toggleWeek('${wk.id}')">
           <span class="week-title" style="color:${mo.color}">${wk.label}</span>
           <span class="week-badges">
             ${wk.essays.length?`<span class="badge badge-essay">✍️${wk.essays.length}</span>`:''}
             ${wk.jic.length?`<span class="badge badge-jic">JIC${wk.jic.length}</span>`:''}
             ${wk.shin.length?`<span class="badge badge-shin">篠${wk.shin.length}</span>`:''}
-            ${done===total&&total>0?'<span class="badge badge-done">✅</span>':''}
+            ${done===total&&total>0?'<span class="badge badge-done">✅完了</span>':''}
             <span style="font-size:11px;color:var(--muted)">${done}/${total}</span>
-            <span style="color:var(--muted);font-size:13px;">▼</span>
+            <span style="color:var(--muted);font-size:13px;">${isOpen?'▲':'▼'}</span>
           </span>
         </div>
         <div class="week-prog"><div class="week-prog-fill" style="width:${pct}%;background:${mo.color}"></div></div>
-        <div class="week-body" id="wb-${wk.id}" style="display:${wk.open?'block':'none'}">
+        <div class="week-body" id="wb-${wk.id}" style="display:${isOpen?'block':'none'}">
           <div class="daily-guide"><strong>📅 日次目安</strong><span>${mo.daily}</span></div>
           <div class="week-3col">
-            <div class="col-box col-jic">
-              <div class="col-lbl jic-lbl">📘 JIC講座</div>${jicHtml}
-            </div>
-            <div class="col-box col-shin">
-              <div class="col-lbl shin-lbl">📗 篠田レジュメ</div>${shinHtml}
-            </div>
-            <div class="col-box col-essay">
-              <div class="col-lbl es-lbl">✍️ 論文演習</div>${essHtml}
-            </div>
+            <div class="col-box col-jic"><div class="col-lbl jic-lbl">📘 JIC講座</div>${jicHtml}</div>
+            <div class="col-box col-shin"><div class="col-lbl shin-lbl">📗 篠田レジュメ</div>${shinHtml}</div>
+            <div class="col-box col-essay"><div class="col-lbl es-lbl">✍️ 論文演習</div>${essHtml}</div>
           </div>
           ${miscHtml?`<div class="col-box col-misc" style="margin-top:6px"><div class="col-lbl misc-lbl">📌 その他</div>${miscHtml}</div>`:''}
           ${noteHtml}
@@ -664,8 +609,96 @@ function renderSchedule(){
   });
 }
 
-function ck(wid,type,idx,val){chks[wid+type+idx]=val;save();renderSchedule();}
-function toggleWeek(id){const b=document.getElementById(id);if(b)b.style.display=b.style.display!=='none'?'none':'block';}
+// ★ チェック変更：状態保存→ヘッダーだけ更新（週カード閉じない）
+function ck(key, val){
+  chks[key]=val;
+  save();
+  // どの週IDか特定して、その週カードのヘッダー＋プログレスバーだけ更新
+  const wkId=findWeekId(key);
+  if(wkId) updateWeekHeader(wkId);
+  // チェック済みテキストの打ち消し線を即反映
+  const item=event.target.closest('.check-item');
+  if(item){
+    const txt=item.querySelector('.item-text');
+    if(txt){txt.classList.toggle('checked-text',val);}
+  }
+}
+
+function findWeekId(key){
+  for(const mo of MONTHS){
+    for(const wk of mo.weeks){
+      const prefixes=[wk.id+'j',wk.id+'s',wk.id+'e',wk.id+'m'];
+      if(prefixes.some(p=>key.startsWith(p)))return wk.id;
+    }
+  }
+  return null;
+}
+
+function updateWeekHeader(wkId){
+  // 対象週のデータを取得
+  let wkData=null, moColor='#999';
+  for(const mo of MONTHS){
+    const found=mo.weeks.find(w=>w.id===wkId);
+    if(found){wkData=found;moColor=mo.color;break;}
+  }
+  if(!wkData)return;
+
+  const allKeys=[
+    ...wkData.jic.map((_,i)=>wkId+'j'+i),
+    ...wkData.shin.map((_,i)=>wkId+'s'+i),
+    ...wkData.essays.map((_,i)=>wkId+'e'+i),
+    ...(wkData.misc||[]).map((_,i)=>wkId+'m'+i),
+  ];
+  const total=allKeys.length;
+  const done=allKeys.filter(k=>chks[k]).length;
+  const pct=total?Math.round(done/total*100):0;
+  const isOpen=openWeeks.has(wkId);
+
+  // ヘッダーのバッジを更新
+  const card=document.querySelector(`[onclick="toggleWeek('${wkId}')"]`)?.closest('.week-card');
+  if(!card)return;
+  const badges=card.querySelector('.week-badges');
+  if(badges){
+    // done/totalカウント更新
+    const countSpan=badges.querySelector('span[style*="muted"]');
+    if(countSpan)countSpan.textContent=`${done}/${total}`;
+    // ✅完了バッジ
+    let doneBadge=badges.querySelector('.badge-done');
+    if(done===total&&total>0){
+      if(!doneBadge){
+        doneBadge=document.createElement('span');
+        doneBadge.className='badge badge-done';
+        doneBadge.textContent='✅完了';
+        badges.insertBefore(doneBadge,countSpan);
+      }
+    }else{
+      if(doneBadge)doneBadge.remove();
+    }
+    // ▲▼
+    const arrow=badges.querySelector('span:last-child');
+    if(arrow)arrow.textContent=isOpen?'▲':'▼';
+  }
+  // プログレスバー更新
+  const fill=card.querySelector('.week-prog-fill');
+  if(fill)fill.style.width=pct+'%';
+}
+
+// ★ 開閉トグル：openWeeks を更新してから body の display を切り替え
+function toggleWeek(wkId){
+  const body=document.getElementById('wb-'+wkId);
+  if(!body)return;
+  const isOpen=openWeeks.has(wkId);
+  if(isOpen){
+    openWeeks.delete(wkId);
+    body.style.display='none';
+  }else{
+    openWeeks.add(wkId);
+    body.style.display='block';
+  }
+  // ヘッダーの▲▼だけ更新
+  updateWeekHeader(wkId);
+}
+
 function showMonth(m,el,color){
   document.querySelectorAll('.month-page').forEach(e=>e.classList.remove('active'));
   document.querySelectorAll('.month-tab').forEach(e=>{e.classList.remove('active');e.style.background='';e.style.color='';});
@@ -687,17 +720,15 @@ function calcRate(){
   const tot=+document.getElementById('inp-qt').value;
   const cor=+document.getElementById('inp-qc').value;
   const box=document.getElementById('q-rate-box');
-  if(tot>0 && cor>=0){
+  if(tot>0&&cor>=0){
     const rate=Math.round(cor/tot*100);
     box.textContent=rate+'%';
     box.style.color=rate>=80?'var(--green)':rate>=60?'var(--orange)':'var(--red)';
     box.style.background=rate>=80?'#e8f5e9':rate>=60?'#fff3e0':'#ffebee';
     box.style.borderColor=rate>=80?'#a5d6a7':rate>=60?'#ffcc80':'#ef9a9a';
-  } else {
-    box.textContent='─';
-    box.style.color='var(--accent)';
-    box.style.background='#e3f2fd';
-    box.style.borderColor='#90caf9';
+  }else{
+    box.textContent='─';box.style.color='var(--accent)';
+    box.style.background='#e3f2fd';box.style.borderColor='#90caf9';
   }
 }
 
@@ -747,8 +778,73 @@ const DOW=['日','月','火','水','木','金','土'];
 const MONS=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
 const TC={中性化:'#e3f2fd,#1565c0',塩害:'#ffebee,#c62828',ASR:'#e8f5e9,#2e7d32',凍害:'#e0f7fa,#00796b',疲労:'#fff3e0,#e65100',火害:'#fff8e1,#f57f17','化学的侵食':'#f3e5f5,#6a1b9a',調査手法:'#e8eaf6,#283593','補修・補強':'#fbe9e7,#bf360c',計算:'#e0f2f1,#00695c',過去問:'#ede7f6,#4527a0',篠田:'#e0f2f1,#00695c'};
 
+// チェック済みタスクを全スケジュールから収集
+function getCheckedTasks(){
+  const result=[];
+  MONTHS.forEach(mo=>{
+    mo.weeks.forEach(wk=>{
+      const cats=[
+        {list:wk.jic,   prefix:'j', label:'📘 JIC講座',   cls:'badge-jic',  color:mo.color},
+        {list:wk.shin,  prefix:'s', label:'📗 篠田',       cls:'badge-shin', color:mo.color},
+        {list:wk.essays,prefix:'e', label:'✍️ 論文',       cls:'badge-essay',color:mo.color},
+        {list:wk.misc||[],prefix:'m',label:'📌 その他',   cls:'',           color:mo.color},
+      ];
+      cats.forEach(cat=>{
+        cat.list.forEach((it,i)=>{
+          const key=wk.id+cat.prefix+i;
+          if(chks[key]){
+            result.push({
+              key, wkLabel:wk.label, moLabel:mo.label.split('　')[0],
+              catLabel:cat.label, cls:cat.cls, color:cat.color,
+              text:it.text, sub:it.sub||'', day:it.day||''
+            });
+          }
+        });
+      });
+    });
+  });
+  return result;
+}
+
 function renderHistory(){
   const period=document.getElementById('fil-period').value,type=document.getElementById('fil-type').value;
+  const c=document.getElementById('log-list');
+
+  // ── チェック済みタスク表示 ──
+  if(type==='checked'){
+    document.getElementById('fil-period').style.display='none';
+    const tasks=getCheckedTasks();
+    if(!tasks.length){
+      c.innerHTML='<p style="text-align:center;color:var(--muted);padding:30px">チェック済みのタスクがまだありません</p>';
+      return;
+    }
+    // 月ごとにグループ化
+    const grouped={};
+    tasks.forEach(t=>{
+      if(!grouped[t.moLabel])grouped[t.moLabel]=[];
+      grouped[t.moLabel].push(t);
+    });
+    c.innerHTML=Object.entries(grouped).map(([mo,items])=>`
+      <div style="font-size:11px;font-weight:700;color:var(--muted);margin:10px 0 5px;padding-left:4px;">${mo}</div>
+      ${items.map(t=>`
+        <div class="log-item" style="border-left:3px solid ${t.color};padding-left:11px;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;">
+            <div style="font-size:10px;color:var(--muted);">${t.wkLabel}</div>
+            <div style="display:flex;gap:4px;align-items:center;">
+              <span class="badge ${t.cls}" style="font-size:10px;">${t.catLabel}</span>
+              <span style="font-size:13px;color:var(--green);">✅</span>
+              <button onclick="uncheckTask('${t.key}')" style="font-size:10px;color:var(--red);background:none;border:1px solid #ffcdd2;border-radius:6px;padding:2px 6px;cursor:pointer;">戻す</button>
+            </div>
+          </div>
+          ${t.day?`<div style="font-size:10px;font-weight:700;color:var(--purple);margin-bottom:2px;">${t.day}</div>`:''}
+          <div style="font-size:12px;font-weight:500;text-decoration:line-through;color:var(--muted);">${t.text}</div>
+          ${t.sub?`<div style="font-size:10px;color:#bbb;margin-top:2px;">${t.sub}</div>`:''}
+        </div>`).join('')}
+    `).join('');
+    return;
+  }
+
+  document.getElementById('fil-period').style.display='';
   const now=new Date();
   let filtered=logs.filter(l=>{
     const d=new Date(l.date);
@@ -758,7 +854,6 @@ function renderHistory(){
     if(type==='quiz'&&!l.q_total)return false;
     return true;
   });
-  const c=document.getElementById('log-list');
   if(!filtered.length){c.innerHTML='<p style="text-align:center;color:var(--muted);padding:30px">記録がありません</p>';return;}
   c.innerHTML=filtered.map(l=>{
     const d=new Date(l.date);
@@ -768,7 +863,11 @@ function renderHistory(){
     const roundHtml=(l.jic_round||l.shin_round)?`<div class="log-round">🔄 JIC:${l.jic_round||'─'}　篠田:${l.shin_round||'─'}</div>`:'';
     return`<div class="log-item">
       <div class="log-head">
-        <div class="log-date-block"><div class="log-mon">${MONS[d.getMonth()]}</div><div class="log-day">${String(d.getDate()).padStart(2,'0')}</div><div class="log-dow">${DOW[d.getDay()]}</div></div>
+        <div class="log-date-block">
+          <div class="log-mon">${MONS[d.getMonth()]}</div>
+          <div class="log-day">${String(d.getDate()).padStart(2,'0')}</div>
+          <div class="log-dow">${DOW[d.getDay()]}</div>
+        </div>
         <div class="log-right">
           <span class="log-hrs">📚 ${l.study}h</span>
           ${l.essay_year?'<span class="badge badge-essay">✍️</span>':''}
@@ -783,6 +882,16 @@ function renderHistory(){
   }).join('');
 }
 function delLog(id){if(!confirm('削除しますか？'))return;logs=logs.filter(l=>l.id!==id);save();updateStats();renderHistory();}
+
+function uncheckTask(key){
+  chks[key]=false;
+  save();
+  // スケジュールタブのヘッダーも更新
+  const wkId=findWeekId(key);
+  if(wkId) updateWeekHeader(wkId);
+  // チェック済み一覧を再描画
+  renderHistory();
+}
 
 function exportCSV(){
   const h=['日付','学習時間','休憩','内容','タグ','メモ','JIC周回','篠田周回','択一問題数','択一正答数','択一正答率','択一分野','論文年度','論文ステータス','論文メモ'];
