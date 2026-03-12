@@ -4,900 +4,807 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>学習記録 — コンクリート診断士</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<title>学習ログ｜コンクリート診断士2026</title>
 <style>
 :root{
-  --bg:#F7F6F3;--surface:#fff;--s2:#F1F0EC;--border:#E8E7E3;--b2:#D3D1CA;
-  --text:#1A1A1A;--t2:#6B6B6B;--t3:#9E9C98;
-  --green:#2F6B3E;--gl:#EAF2EC;
-  --blue:#2563EB;--bl:#EFF4FF;
-  --purple:#7C3AED;--pl:#F3F0FF;
-  --yellow:#E8A900;--yl:#FEF7E6;
-  --sh:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);
-  --shm:0 4px 12px rgba(0,0,0,.08);
+  --primary:#1a3a5c;--accent:#2196F3;--green:#2E7D32;--orange:#EF6C00;
+  --red:#C62828;--yellow:#F9A825;--purple:#6A1B9A;--teal:#00796B;
+  --pink:#E91E63;--indigo:#3F51B5;
+  --bg:#f5f7fa;--card:#fff;--border:#e0e0e0;--text:#222;--muted:#777;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;}
-.app{display:flex;min-height:100vh;}
+body{font-family:-apple-system,'Hiragino Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;}
+header{background:var(--primary);color:white;padding:12px 16px 8px;position:sticky;top:0;z-index:200;}
+header h1{font-size:14px;font-weight:700;}
+header p{font-size:10px;opacity:.75;margin-top:1px;}
+.main-tabs{display:flex;background:white;border-bottom:2px solid var(--border);position:sticky;top:48px;z-index:199;}
+.main-tab{flex:1;padding:10px 4px;text-align:center;font-size:11px;cursor:pointer;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-2px;}
+.main-tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:700;}
+.page{display:none;}.page.active{display:block;}
 
-/* Sidebar */
-.sb{width:220px;background:var(–s2);border-right:1px solid var(–border);display:flex;flex-direction:column;padding:20px 0;position:sticky;top:0;height:100vh;overflow-y:auto;flex-shrink:0;}
-.sb-logo{padding:0 16px 16px;border-bottom:1px solid var(–border);margin-bottom:8px;}
-.sb-logo h1{font-size:13px;font-weight:700;line-height:1.3;}
-.sb-logo p{font-size:11px;color:var(–t3);font-family:‘Space Mono’,monospace;}
-.sb-sec{font-size:10px;font-weight:700;letter-spacing:.08em;color:var(–t3);text-transform:uppercase;padding:10px 16px 4px;}
-.sb-item{display:flex;align-items:center;gap:8px;padding:6px 16px;cursor:pointer;border-radius:4px;margin:1px 8px;font-size:13px;color:var(–t2);transition:background .1s,color .1s;}
-.sb-item:hover{background:var(–border);color:var(–text);}
-.sb-item.active{background:var(–surface);color:var(–text);font-weight:500;}
-.sb-item .ic{font-size:14px;width:18px;text-align:center;flex-shrink:0;}
-.sb-badge{margin-left:auto;background:var(–b2);color:var(–t2);font-size:10px;font-family:‘Space Mono’,monospace;padding:1px 5px;border-radius:3px;}
-.countdown{margin:10px 12px;padding:10px 12px;background:var(–gl);border:1px solid #B8D9C0;border-radius:8px;}
-.countdown .lbl{font-size:10px;color:var(–green);font-weight:700;text-transform:uppercase;}
-.countdown .days{font-size:26px;font-family:‘Space Mono’,monospace;font-weight:700;color:var(–green);line-height:1.1;}
-.countdown .sub{font-size:11px;color:var(–green);opacity:.8;}
+/* ── STATS ── */
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:12px 12px 0;}
+.stat-card{background:var(–card);border-radius:10px;padding:10px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.08);}
+.stat-card .val{font-size:22px;font-weight:700;color:var(–accent);}
+.stat-card .lbl{font-size:10px;color:var(–muted);margin-top:1px;}
 
-/* Save status */
-.save-status{margin:6px 12px;padding:5px 10px;border-radius:5px;font-size:11px;font-weight:600;text-align:center;transition:opacity .3s;}
-.save-status.saving{background:#FEF3C7;color:#92400E;}
-.save-status.saved{background:#EAF2EC;color:#2F6B3E;}
-.save-status.error{background:#FEE2E2;color:#B91C1C;cursor:pointer;}
-.save-status.hidden{opacity:0;pointer-events:none;}
+/* 周回バー */
+.round-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:10px 12px 0;}
+.round-card{background:var(–card);border-radius:10px;padding:10px 8px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.08);}
+.round-card .round-val{font-size:18px;font-weight:700;}
+.round-card .round-lbl{font-size:9px;color:var(–muted);margin-top:1px;}
+.round-dots{display:flex;justify-content:center;gap:3px;margin-top:4px;}
+.dot{width:10px;height:10px;border-radius:50%;border:1.5px solid;}
+.dot.done{opacity:1;}
+.dot.todo{opacity:.25;}
 
-/* Main */
-.main{flex:1;min-width:0;padding:28px 32px;max-width:960px;}
-.ph{margin-bottom:24px;}
-.ph h2{font-size:24px;font-weight:700;letter-spacing:-.02em;margin-bottom:4px;}
-.ph p{font-size:13px;color:var(–t3);}
+/* ── FORM ── */
+.card{background:var(–card);border-radius:10px;padding:14px;margin:10px 12px 0;box-shadow:0 1px 4px rgba(0,0,0,.08);}
+.card h2{font-size:13px;font-weight:700;margin-bottom:10px;color:var(–primary);}
+label{display:block;font-size:11px;color:var(–muted);margin:8px 0 3px;}
+input[type=date],input[type=number],input[type=text],textarea,select{
+width:100%;border:1px solid var(–border);border-radius:8px;padding:8px 10px;
+font-size:14px;font-family:inherit;background:#fafafa;}
+textarea{height:56px;resize:vertical;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px;}
+.tag{padding:4px 8px;border-radius:20px;font-size:11px;border:1px solid var(–border);cursor:pointer;background:#f0f0f0;}
+.tag.sel{background:var(–accent);color:white;border-color:var(–accent);}
+.sec-ttl{font-size:11px;font-weight:700;color:var(–primary);margin:12px 0 5px;border-left:3px solid var(–accent);padding-left:7px;}
+.sec-ttl.essay{border-left-color:var(–purple);color:var(–purple);}
+.sec-ttl.round{border-left-color:var(–teal);color:var(–teal);}
+.btn{display:block;width:100%;padding:11px;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;margin-top:8px;}
+.btn-primary{background:var(–accent);color:white;}
+.btn-csv{background:var(–green);color:white;}
+#q-rate{font-size:12px;color:var(–accent);margin-top:3px;}
 
-/* Token modal */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;z-index:1000;}
-.modal{background:#fff;border-radius:12px;padding:28px;max-width:420px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.15);}
-.modal h3{font-size:18px;font-weight:700;margin-bottom:8px;}
-.modal p{font-size:13px;color:var(–t2);line-height:1.7;margin-bottom:16px;}
-.modal ol{font-size:12px;color:var(–t2);line-height:2;padding-left:18px;margin-bottom:16px;}
-.modal input{width:100%;padding:9px 12px;border:1px solid var(–b2);border-radius:6px;font-size:13px;font-family:‘Noto Sans JP’,sans-serif;outline:none;margin-bottom:12px;}
-.modal input:focus{border-color:var(–green);}
-.modal-btns{display:flex;gap:8px;justify-content:flex-end;}
+/* ── SCHEDULE ── */
+.sched-wrap{padding:12px;}
+/* 概要カード */
+.overview-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+.ov-card{border-radius:10px;padding:10px 12px;color:white;}
+.ov-card h4{font-size:11px;font-weight:700;margin-bottom:5px;opacity:.9;}
+.ov-row{display:flex;justify-content:space-between;font-size:11px;padding:2px 0;border-bottom:1px solid rgba(255,255,255,.2);}
+.ov-row:last-child{border-bottom:none;}
 
-/* Stats */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px;}
-.sc{background:var(–surface);border:1px solid var(–border);border-radius:8px;padding:12px 14px;box-shadow:var(–sh);}
-.sc .lbl{font-size:11px;color:var(–t3);letter-spacing:.04em;margin-bottom:4px;}
-.sc .val{font-size:20px;font-family:‘Space Mono’,monospace;font-weight:700;}
-.sc .unit{font-size:11px;color:var(–t3);font-family:‘Noto Sans JP’,sans-serif;}
-.sc .sub{font-size:11px;color:var(–t3);margin-top:2px;}
+.month-tabs{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;padding-bottom:2px;}
+.month-tab{flex-shrink:0;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:2px solid var(–border);color:var(–muted);background:white;transition:.15s;}
+.month-tab.active{color:white;border-color:transparent;}
+.month-page{display:none;}.month-page.active{display:block;}
+.month-banner{border-radius:10px;padding:10px 14px;color:white;margin-bottom:10px;}
+.month-banner strong{font-size:12px;display:block;margin-bottom:3px;}
 
-/* Section */
-.sec{margin-bottom:24px;}
-.sec-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
-.sec-ttl{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(–t3);}
+/* 週カード */
+.week-card{background:var(–card);border-radius:10px;margin-bottom:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.08);}
+.week-header{padding:9px 12px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none;}
+.week-title{font-size:12px;font-weight:700;}
+.week-badges{display:flex;gap:4px;align-items:center;}
+.badge{font-size:10px;padding:2px 7px;border-radius:12px;font-weight:700;}
+.badge-essay{background:#f3e5f5;color:var(–purple);}
+.badge-jic{background:#e3f2fd;color:var(–indigo);}
+.badge-shin{background:#e0f2f1;color:var(–teal);}
+.badge-done{background:#e8f5e9;color:var(–green);}
+.week-prog{height:4px;background:#eee;}
+.week-prog-fill{height:100%;transition:width .3s;}
+.week-body{padding:10px 12px 12px;}
 
-/* Buttons */
-.btn{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:5px;font-size:12px;font-family:‘Noto Sans JP’,sans-serif;cursor:pointer;border:1px solid var(–b2);background:var(–surface);color:var(–t2);transition:all .1s;font-weight:500;}
-.btn:hover{background:var(–s2);color:var(–text);}
-.btn-p{background:var(–green);border-color:var(–green);color:#fff;}
-.btn-p:hover{background:#255730;color:#fff;}
-.btn-sm{padding:3px 8px;font-size:11px;}
-.btn-danger{background:#FEE2E2;border-color:#FCA5A5;color:#B91C1C;}
-.btn-danger:hover{background:#FECACA;}
+/* 日次目安 */
+.daily-guide{background:#e0f7fa;border-radius:8px;padding:7px 10px;margin-bottom:8px;font-size:11px;color:var(–teal);}
+.daily-guide strong{display:block;font-size:11px;margin-bottom:2px;}
 
-/* Form */
-.fc{background:var(–surface);border:1px solid var(–border);border-radius:10px;padding:18px;box-shadow:var(–sh);margin-bottom:16px;}
-.fr{display:flex;gap:12px;margin-bottom:12px;align-items:flex-start;flex-wrap:wrap;}
-.fg{display:flex;flex-direction:column;gap:4px;}
-.fg.grow{flex:1;min-width:120px;}
-.flbl{font-size:11px;font-weight:600;color:var(–t3);letter-spacing:.04em;text-transform:uppercase;}
-input.fi,select.fi,textarea.fi{background:var(–bg);border:1px solid var(–b2);border-radius:5px;padding:7px 10px;font-size:13px;font-family:‘Noto Sans JP’,sans-serif;color:var(–text);outline:none;transition:border .15s;width:100%;}
-input.fi:focus,select.fi:focus,textarea.fi:focus{border-color:var(–green);background:#fff;}
-textarea.fi{resize:vertical;min-height:60px;line-height:1.6;}
+/* 3列グリッド */
+.week-3col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:6px;}
+.week-2col{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px;}
+.col-box{border-radius:8px;padding:8px;}
+.col-jic{background:#e8eaf6;}
+.col-shin{background:#e0f2f1;}
+.col-essay{background:#f9f0ff;}
+.col-misc{background:#fafafa;}
+.col-lbl{font-size:10px;font-weight:700;margin-bottom:5px;}
+.col-lbl.jic-lbl{color:var(–indigo);}
+.col-lbl.shin-lbl{color:var(–teal);}
+.col-lbl.es-lbl{color:var(–purple);}
+.col-lbl.misc-lbl{color:var(–muted);}
+.check-item{display:flex;align-items:flex-start;gap:5px;margin-bottom:5px;}
+.check-item:last-child{margin-bottom:0;}
+.check-item input[type=checkbox]{margin-top:2px;min-width:14px;height:14px;}
+.check-item input.jic-ck{accent-color:var(–indigo);}
+.check-item input.shin-ck{accent-color:var(–teal);}
+.check-item input.essay-ck{accent-color:var(–purple);}
+.check-item input.misc-ck{accent-color:var(–accent);}
+.item-text{font-size:11px;line-height:1.5;}
+.item-sub{font-size:10px;color:var(–muted);margin-top:1px;}
+.item-day{font-size:10px;font-weight:700;color:var(–purple);margin-bottom:1px;}
+.week-note{font-size:10px;color:var(–muted);margin-top:6px;padding-top:6px;border-top:1px dashed var(–border);}
 
-/* Type tabs */
-.ttabs{display:flex;gap:2px;background:var(–s2);border-radius:7px;padding:3px;margin-bottom:16px;}
-.ttab{flex:1;padding:7px;border-radius:5px;font-size:13px;font-weight:500;cursor:pointer;text-align:center;color:var(–t3);border:none;background:transparent;font-family:‘Noto Sans JP’,sans-serif;transition:all .15s;}
-.ttab.active{background:#fff;color:var(–text);box-shadow:var(–sh);}
-
-/* Tags */
-.tag-sel{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
-.topt{padding:3px 10px;border-radius:4px;font-size:12px;cursor:pointer;border:1.5px solid transparent;user-select:none;transition:all .1s;}
-.topt:hover{opacity:.85;}
-.topt.sel{border-color:currentColor;font-weight:600;}
-
-/* Filter */
-.fbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center;}
-.fsel{background:var(–surface);border:1px solid var(–b2);border-radius:5px;padding:4px 8px;font-size:12px;font-family:‘Noto Sans JP’,sans-serif;color:var(–text);outline:none;cursor:pointer;}
-
-/* Log list */
-.ll{display:flex;flex-direction:column;gap:8px;}
-.lc{background:var(–surface);border:1px solid var(–border);border-left:3px solid var(–b2);border-radius:8px;padding:12px 14px;box-shadow:var(–sh);display:flex;gap:12px;align-items:flex-start;}
-.lc:hover{box-shadow:var(–shm);}
-.lc.t-study{border-left-color:var(–green);}
-.lc.t-yonn{border-left-color:var(–blue);}
-.lc.t-ron{border-left-color:var(–purple);}
-.ld{text-align:center;flex-shrink:0;width:40px;}
-.ld .mn{font-size:10px;color:var(–t3);text-transform:uppercase;letter-spacing:.06em;}
-.ld .dy{font-size:20px;font-family:‘Space Mono’,monospace;font-weight:700;line-height:1;}
-.ld .wd{font-size:10px;color:var(–t3);}
-.lb{flex:1;min-width:0;}
-.lm{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:5px;}
-.bdg{font-size:12px;font-weight:700;padding:2px 8px;border-radius:4px;font-family:‘Space Mono’,monospace;}
-.tbdg{font-size:10px;font-weight:700;padding:2px 6px;border-radius:3px;letter-spacing:.04em;}
-.tg{font-size:11px;padding:2px 7px;border-radius:4px;font-weight:500;}
-.lt{font-size:13px;font-weight:600;margin-bottom:3px;}
-.lmemo{font-size:12px;color:var(–t2);line-height:1.6;}
-.la{margin-left:auto;}
-.ibt{width:26px;height:26px;border-radius:4px;border:none;background:transparent;cursor:pointer;font-size:14px;color:var(–t3);}
-.ibt:hover{background:var(–s2);color:var(–text);}
-
-/* Week grid */
-.wg{display:flex;gap:6px;}
-.wd-cell{flex:1;background:var(–surface);border:1px solid var(–border);border-radius:6px;padding:7px 5px;text-align:center;font-size:11px;}
-.wd-cell .wdn{color:var(–t3);margin-bottom:3px;font-weight:500;}
-.wd-cell .wdh{font-family:‘Space Mono’,monospace;font-size:13px;font-weight:700;color:var(–t3);}
-.wd-cell.hs .wdh{color:var(–green);}
-.wd-cell.td{border-color:var(–green);}
-.dot{width:4px;height:4px;border-radius:50%;background:var(–green);margin:3px auto 0;}
-
-/* Progress */
-.pg{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
-.pc{background:var(–surface);border:1px solid var(–border);border-radius:8px;padding:12px 14px;box-shadow:var(–sh);}
-.plbl{font-size:13px;font-weight:600;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;}
-.ppct{font-family:‘Space Mono’,monospace;font-size:12px;color:var(–t3);}
-.pbg{height:6px;background:var(–s2);border-radius:3px;overflow:hidden;}
-.pf{height:100%;border-radius:3px;transition:width .4s;}
-.psub{font-size:11px;color:var(–t3);margin-top:4px;}
-
-/* Bar chart */
-.bch{background:var(–surface);border:1px solid var(–border);border-radius:8px;padding:16px;box-shadow:var(–sh);}
-
-/* Schedule */
-.si{background:var(–surface);border:1px solid var(–border);border-radius:7px;padding:9px 12px;display:flex;align-items:center;gap:10px;box-shadow:var(–sh);margin-bottom:6px;}
-.si.done{opacity:.5;background:var(–gl);border-color:#B8D9C0;}
-.si.tday{border-color:var(–yellow);background:var(–yl);}
-.sddate{font-family:‘Space Mono’,monospace;font-size:11px;font-weight:700;color:var(–t3);width:74px;flex-shrink:0;}
-.sdcont{flex:1;font-size:13px;}
-.sdtype{font-size:10px;padding:2px 6px;border-radius:3px;font-weight:700;flex-shrink:0;}
-.mlbl{font-size:11px;font-weight:700;color:var(–t3);letter-spacing:.06em;text-transform:uppercase;padding:8px 0 4px;border-bottom:1px solid var(–border);margin-bottom:6px;}
-
-.kc{background:var(–surface);border:1px solid var(–border);border-radius:7px;padding:12px 14px;display:flex;gap:12px;align-items:flex-start;box-shadow:var(–sh);margin-bottom:6px;}
-.empty{text-align:center;padding:32px 20px;color:var(–t3);font-size:13px;}
-.empty .ei{font-size:28px;margin-bottom:8px;}
-.dvd{border:none;border-top:1px solid var(–border);margin:20px 0;}
-.hidden{display:none!important;}
-.loading{text-align:center;padding:60px 20px;color:var(–t3);font-size:14px;}
-.loading .sp{font-size:32px;display:block;margin-bottom:12px;animation:spin 1s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg);}}
-/* Mobile top bar */
-.mob-bar{display:none;position:sticky;top:0;z-index:100;background:var(–surface);border-bottom:1px solid var(–border);padding:10px 14px;align-items:center;justify-content:space-between;box-shadow:var(–sh);}
-.mob-bar h1{font-size:13px;font-weight:700;}
-.mob-bar-btns{display:flex;gap:6px;}
-/* Mobile drawer */
-.mob-drawer{display:none;position:fixed;inset:0;z-index:200;}
-.mob-drawer-bg{position:absolute;inset:0;background:rgba(0,0,0,.4);}
-.mob-drawer-panel{position:absolute;left:0;top:0;bottom:0;width:240px;background:var(–s2);overflow-y:auto;padding:16px 0;}
-@media(max-width:640px){
-.main{padding:16px 12px;}
-.stats{grid-template-columns:repeat(2,1fr);}
-.pg{grid-template-columns:1fr;}
-.sb{display:none;}
-.mob-bar{display:flex;}
-.app{flex-direction:column;}
-}
+/* ── HISTORY ── */
+.history-wrap{padding:12px;}
+.filter-bar{display:flex;gap:8px;margin-bottom:10px;}
+.filter-bar select{flex:1;border:1px solid var(–border);border-radius:8px;padding:7px 10px;font-size:13px;background:white;}
+.log-item{background:var(–card);border-radius:10px;padding:12px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.08);}
+.log-head{display:flex;justify-content:space-between;align-items:flex-start;}
+.log-date-block{line-height:1.2;}
+.log-mon{font-size:10px;font-weight:700;color:var(–muted);}
+.log-day{font-size:20px;font-weight:700;color:var(–primary);}
+.log-dow{font-size:10px;color:var(–muted);}
+.log-right{display:flex;align-items:center;gap:5px;}
+.log-hrs{font-size:12px;color:var(–accent);font-weight:700;background:#e3f2fd;padding:2px 8px;border-radius:12px;}
+.del-btn{color:#e53935;background:none;border:none;cursor:pointer;font-size:16px;padding:2px;}
+.log-content{font-size:13px;margin:6px 0 4px;font-weight:500;}
+.log-tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:4px;}
+.log-tag{font-size:10px;padding:2px 7px;border-radius:12px;}
+.log-memo{font-size:11px;color:var(–muted);}
+.log-exam{font-size:11px;padding:4px 8px;border-radius:8px;margin-top:4px;}
+.log-essay{font-size:11px;padding:4px 8px;border-radius:8px;margin-top:4px;background:#f3e5f5;color:var(–purple);}
+.log-round{font-size:11px;padding:4px 8px;border-radius:8px;margin-top:4px;background:#e0f2f1;color:var(–teal);}
 </style>
 
 </head>
 <body>
-<div class="app">
 
-<!-- Token Modal -->
+<header>
+  <h1>📘 コンクリート診断士2026 学習ログ</h1>
+  <p>試験：2026年7月｜JIC3周+篠田5周+論文30本｜今週末（3/15）論文①スタート</p>
+</header>
 
-<div class="modal-overlay" id="tokenModal" style="display:none;">
-  <div class="modal">
-    <h3>🔑 GitHub連携の設定</h3>
-    <p>データをGitHubに保存することで、スマホ・PCどちらからでも同じデータを見られます。</p>
-    <ol>
-      <li>GitHubにログイン</li>
-      <li>Settings → Developer settings → Personal access tokens → Tokens (classic)</li>
-      <li>Generate new token (classic) をクリック</li>
-      <li>スコープで <strong>repo</strong> にチェック</li>
-      <li>生成されたトークンをコピーして下記に貼り付け</li>
-    </ol>
-    <input type="password" class="fi" id="tokenInput" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
-    <div class="modal-btns">
-      <button class="btn btn-p" onclick="saveToken()">✓ 保存して開始</button>
-    </div>
-  </div>
+<div class="main-tabs">
+  <div class="main-tab active" onclick="showMain('log',this)">📝 記録</div>
+  <div class="main-tab" onclick="showMain('schedule',this)">📅 予定</div>
+  <div class="main-tab" onclick="showMain('history',this)">📋 履歴</div>
 </div>
 
-<!-- Mobile top bar -->
+<!-- ══ 記録 ══ -->
 
-<div class="mob-bar">
-  <h1>コンクリート診断士 2026</h1>
-  <div class="mob-bar-btns">
-    <button class="btn btn-sm" onclick="changeToken()">🔑 設定</button>
-    <button class="btn btn-sm" onclick="openDrawer()">☰ メニュー</button>
+<div id="page-log" class="page active">
+  <div class="stats-grid">
+    <div class="stat-card"><div class="val" id="st-total">12.0</div><div class="lbl">累計学習時間 (h)</div></div>
+    <div class="stat-card"><div class="val" id="st-days">4</div><div class="lbl">学習日数</div></div>
+    <div class="stat-card"><div class="val" id="st-essay">1</div><div class="lbl">論文 累計本数</div></div>
+    <div class="stat-card"><div class="val" id="st-avg">3.0</div><div class="lbl">1日平均 (h)</div></div>
   </div>
-</div>
 
-<!-- Mobile drawer -->
+  <!-- 周回バー -->
 
-<div class="mob-drawer" id="mobDrawer" style="display:none;">
-  <div class="mob-drawer-bg" onclick="closeDrawer()"></div>
-  <div class="mob-drawer-panel">
-    <div style="padding:0 16px 12px;border-bottom:1px solid var(--border);margin-bottom:8px;">
-      <div style="font-size:13px;font-weight:700;">コンクリート診断士 2026</div>
-      <div style="font-size:11px;color:var(--t3);">試験まで <span id="daysLeftMob">—</span> 日</div>
-    </div>
-    <div class="sb-sec">メニュー</div>
-    <div class="sb-item" onclick="showTab('log');closeDrawer()"><span class="ic">📝</span>学習記録</div>
-    <div class="sb-item" onclick="showTab('progress');closeDrawer()"><span class="ic">📊</span>進捗</div>
-    <div class="sb-item" onclick="showTab('schedule');closeDrawer()"><span class="ic">📅</span>予定</div>
-    <div class="sb-item" onclick="showTab('keyword');closeDrawer()"><span class="ic">🔑</span>キーワード辞書</div>
-    <div class="sb-sec" style="margin-top:10px;">劣化機構・種別</div>
-    <div class="sb-item" onclick="setF('凍害');closeDrawer()"><span class="ic">❄️</span>凍害</div>
-    <div class="sb-item" onclick="setF('火害');closeDrawer()"><span class="ic">🔥</span>火害</div>
-    <div class="sb-item" onclick="setF('中性化');closeDrawer()"><span class="ic">🧪</span>中性化</div>
-    <div class="sb-item" onclick="setF('塩害');closeDrawer()"><span class="ic">🌊</span>塩害</div>
-    <div class="sb-item" onclick="setF('ASR');closeDrawer()"><span class="ic">⚗️</span>ASR</div>
-    <div class="sb-item" onclick="setF('化学的侵食');closeDrawer()"><span class="ic">🧫</span>化学的侵食</div>
-    <div class="sb-item" onclick="setF('疲労');closeDrawer()"><span class="ic">⚡</span>疲労</div>
-    <div class="sb-item" onclick="setF('過去問四択');closeDrawer()"><span class="ic">📋</span>過去問四択</div>
-    <div class="sb-item" onclick="setF('論文');closeDrawer()"><span class="ic">✍️</span>論文</div>
-    <div class="sb-item" onclick="setF('');closeDrawer()"><span class="ic">🔄</span>すべて表示</div>
-    <div style="padding:12px 12px 0;margin-top:8px;border-top:1px solid var(--border);">
-      <button class="btn btn-sm btn-danger" style="width:100%;" onclick="changeToken();closeDrawer()">🔑 トークン変更</button>
-    </div>
-  </div>
-</div>
-
-<!-- Sidebar -->
-
-<nav class="sb">
-  <div class="sb-logo"><h1>コンクリート<br>診断士 2026</h1><p>STUDY TRACKER</p></div>
-  <div class="countdown"><div class="lbl">試験まで</div><div class="days" id="daysLeft">—</div><div class="sub">日</div></div>
-  <div class="save-status hidden" id="saveStatus">—</div>
-  <div class="sb-sec">メニュー</div>
-  <div class="sb-item active" onclick="showTab('log')"><span class="ic">📝</span>学習記録</div>
-  <div class="sb-item" onclick="showTab('progress')"><span class="ic">📊</span>進捗</div>
-  <div class="sb-item" onclick="showTab('schedule')"><span class="ic">📅</span>予定</div>
-  <div class="sb-item" onclick="showTab('keyword')"><span class="ic">🔑</span>キーワード辞書</div>
-  <div class="sb-sec" style="margin-top:10px;">劣化機構・種別</div>
-  <div class="sb-item" onclick="setF('凍害')"><span class="ic">❄️</span>凍害<span class="sb-badge" id="b-凍害">0</span></div>
-  <div class="sb-item" onclick="setF('火害')"><span class="ic">🔥</span>火害<span class="sb-badge" id="b-火害">0</span></div>
-  <div class="sb-item" onclick="setF('中性化')"><span class="ic">🧪</span>中性化<span class="sb-badge" id="b-中性化">0</span></div>
-  <div class="sb-item" onclick="setF('塩害')"><span class="ic">🌊</span>塩害<span class="sb-badge" id="b-塩害">0</span></div>
-  <div class="sb-item" onclick="setF('ASR')"><span class="ic">⚗️</span>ASR<span class="sb-badge" id="b-ASR">0</span></div>
-  <div class="sb-item" onclick="setF('化学的侵食')"><span class="ic">🧫</span>化学的侵食<span class="sb-badge" id="b-化学的侵食">0</span></div>
-  <div class="sb-item" onclick="setF('疲労')"><span class="ic">⚡</span>疲労<span class="sb-badge" id="b-疲労">0</span></div>
-  <div class="sb-item" onclick="setF('過去問四択')"><span class="ic">📋</span>過去問四択<span class="sb-badge" id="b-過去問四択">0</span></div>
-  <div class="sb-item" onclick="setF('論文')"><span class="ic">✍️</span>論文<span class="sb-badge" id="b-論文">0</span></div>
-  <div class="sb-item" onclick="setF('')"><span class="ic">🔄</span>すべて表示</div>
-  <div style="margin-top:auto;padding:12px 12px 0;">
-    <button class="btn btn-sm btn-danger" style="width:100%;" onclick="changeToken()">🔑 トークン変更</button>
-  </div>
-</nav>
-
-<main class="main">
-
-<!-- Loading -->
-
-<div id="loadingView" class="loading"><span class="sp">⏳</span>GitHubからデータを読み込んでいます...</div>
-
-<!-- ===== 学習記録タブ ===== -->
-
-<div id="tab-log" class="hidden">
-  <div class="ph"><h2>学習記録</h2><p id="todayStr"></p></div>
-  <div class="stats">
-    <div class="sc"><div class="lbl">累計学習時間</div><div class="val"><span id="sTot">0</span><span class="unit">h</span></div><div class="sub" id="sSess">0セッション</div></div>
-    <div class="sc"><div class="lbl">今週</div><div class="val"><span id="sWeek">0</span><span class="unit">h</span></div><div class="sub">週目標: 21h</div></div>
-    <div class="sc"><div class="lbl">今日</div><div class="val"><span id="sToday">0</span><span class="unit">h</span></div><div class="sub">日目標: 3h</div></div>
-    <div class="sc"><div class="lbl">連続学習</div><div class="val"><span id="sStreak">0</span><span class="unit">日</span></div><div class="sub" id="sStreakSub">がんばれ！</div></div>
-  </div>
-  <div class="sec"><div class="sec-hd"><span class="sec-ttl">今週の学習</span></div><div class="wg" id="weekGrid"></div></div>
-
-  <!-- 記録フォーム -->
-
-  <div class="sec">
-    <div class="sec-hd"><span class="sec-ttl">記録を追加</span></div>
-    <div class="fc">
-      <div class="ttabs">
-        <button class="ttab active" id="tt-study" onclick="setType('study')">📚 学習記録</button>
-        <button class="ttab" id="tt-yonn" onclick="setType('yonn')">📋 過去問四択</button>
-        <button class="ttab" id="tt-ron" onclick="setType('ron')">✍️ 論文</button>
+  <div class="round-bar">
+    <div class="round-card">
+      <div class="round-val" style="color:var(--indigo)">2<span style="font-size:12px">/3周</span></div>
+      <div class="round-lbl">JIC講座</div>
+      <div class="round-dots">
+        <div class="dot done" style="background:var(--indigo);border-color:var(--indigo)"></div>
+        <div class="dot done" style="background:var(--indigo);border-color:var(--indigo);opacity:.5"></div>
+        <div class="dot todo" style="background:var(--indigo);border-color:var(--indigo)"></div>
       </div>
-      <div class="fr">
-        <div class="fg"><label class="flbl">日付</label><input type="date" class="fi" id="fDate" style="width:140px;"></div>
-        <div class="fg" id="fg-hours"><label class="flbl">学習時間(h)</label><input type="number" class="fi" id="fHours" placeholder="3.0" step="0.5" min="0.5" max="12" style="width:90px;"></div>
-        <div class="fg hidden" id="fg-yq"><label class="flbl">実施問題数</label><input type="number" class="fi" id="fYQ" placeholder="20" min="1" max="300" style="width:85px;" oninput="calcYR()"></div>
-        <div class="fg hidden" id="fg-ya"><label class="flbl">正答数</label><input type="number" class="fi" id="fYA" placeholder="16" min="0" max="300" style="width:80px;" oninput="calcYR()"></div>
-        <div class="fg hidden" id="fg-yr"><label class="flbl">正答率</label><input type="text" class="fi" id="fYR" placeholder="自動計算" style="width:80px;" readonly></div>
-        <div class="fg hidden" id="fg-ry"><label class="flbl">年度（4桁）</label><input type="number" class="fi" id="fRY" placeholder="2024" min="2000" max="2099" style="width:100px;"></div>
-        <div class="fg hidden" id="fg-rp"><label class="flbl">部門</label><select class="fi" id="fRP" style="width:86px;"><option>建築</option><option>土木</option></select></div>
-        <div class="fg hidden" id="fg-rs"><label class="flbl">採点（/10点）</label><input type="number" class="fi" id="fRS" placeholder="7" min="0" max="10" step="0.5" style="width:90px;"></div>
-        <div class="fg grow"><label class="flbl" id="topicsLabel">学習内容</label><input type="text" class="fi" id="fTopics" placeholder="例: 火害インプット・WEB講義レビュー"></div>
+    </div>
+    <div class="round-card">
+      <div class="round-val" style="color:var(--teal)">0<span style="font-size:12px">/5周</span></div>
+      <div class="round-lbl">篠田レジュメ</div>
+      <div class="round-dots">
+        <div class="dot todo" style="background:var(--teal);border-color:var(--teal)"></div>
+        <div class="dot todo" style="background:var(--teal);border-color:var(--teal)"></div>
+        <div class="dot todo" style="background:var(--teal);border-color:var(--teal)"></div>
+        <div class="dot todo" style="background:var(--teal);border-color:var(--teal)"></div>
+        <div class="dot todo" style="background:var(--teal);border-color:var(--teal)"></div>
       </div>
-      <div class="fr"><div class="fg" style="flex:1;"><label class="flbl">タグ</label><div class="tag-sel" id="fTags"></div></div></div>
-      <div class="fr"><div class="fg" style="flex:1;"><label class="flbl">メモ・気づき</label><textarea class="fi" id="fMemo" placeholder="学んだこと、課題、次回やること など"></textarea></div></div>
-      <div style="display:flex;justify-content:flex-end;gap:8px;"><button class="btn" onclick="clearF()">クリア</button><button class="btn btn-p" onclick="addLog()">✚ 記録を保存</button></div>
+    </div>
+    <div class="round-card">
+      <div class="round-val" style="color:var(--purple)">1<span style="font-size:12px">/30本</span></div>
+      <div class="round-lbl">論文演習</div>
+      <div class="round-dots">
+        <div class="dot done" style="background:var(--purple);border-color:var(--purple)"></div>
+        <div class="dot todo" style="background:var(--purple);border-color:var(--purple)"></div>
+        <div class="dot todo" style="background:var(--purple);border-color:var(--purple)"></div>
+      </div>
     </div>
   </div>
 
-  <!-- ログ一覧 -->
-
-  <div class="sec">
-    <div class="sec-hd"><span class="sec-ttl">学習ログ</span><button class="btn btn-sm" onclick="expCSV()">📥 CSV</button></div>
-    <div class="fbar">
-      <span style="font-size:11px;color:var(--t3);">期間:</span>
-      <select class="fsel" id="fPeriod" onchange="renderList()"><option value="all">全期間</option><option value="week">今週</option><option value="month">今月</option><option value="last">先月</option></select>
-      <span style="font-size:11px;color:var(--t3);">タイプ:</span>
-      <select class="fsel" id="fType" onchange="renderList()"><option value="all">すべて</option><option value="study">📚 学習</option><option value="yonn">📋 四択</option><option value="ron">✍️ 論文</option></select>
-      <span style="font-size:11px;color:var(--t3);" id="tagFLabel"></span>
+  <div class="card">
+    <h2>📝 学習記録を追加</h2>
+    <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:8px;">
+      <div><label>日付</label><input type="date" id="inp-date"></div>
+      <div><label>学習時間 (h)</label><input type="number" id="inp-study" step="0.5" min="0" placeholder="2.5"></div>
+      <div><label>休憩時間 (h)</label><input type="number" id="inp-break" step="0.5" min="0" placeholder="0.5"></div>
     </div>
-    <div class="ll" id="logList"></div>
-  </div>
-</div>
-
-<!-- ===== 進捗タブ ===== -->
-
-<div id="tab-progress" class="hidden">
-  <div class="ph"><h2>学習進捗</h2><p>フェーズ別・機構別の進捗</p></div>
-  <div class="sec"><div class="sec-hd"><span class="sec-ttl">フェーズ進捗</span></div><div id="phaseProg"></div></div>
-  <hr class="dvd">
-  <div class="sec"><div class="sec-hd"><span class="sec-ttl">劣化機構別 学習時間</span></div><div class="pg" id="topicProg"></div></div>
-  <hr class="dvd">
-  <div class="sec"><div class="sec-hd"><span class="sec-ttl">月別学習時間</span></div><div class="bch" id="monthChart"></div></div>
-  <hr class="dvd">
-  <div class="sec"><div class="sec-hd"><span class="sec-ttl">過去問四択 正答率推移</span></div><div class="bch" id="yonnChart"></div></div>
-  <hr class="dvd">
-  <div class="sec"><div class="sec-hd"><span class="sec-ttl">論文 採点推移（10点満点）</span></div><div class="bch" id="ronChart"></div></div>
-</div>
-
-<!-- ===== 予定タブ ===== -->
-
-<div id="tab-schedule" class="hidden">
-  <div class="ph"><h2>学習予定</h2><p>✅ 実施済　⬜ 未実施</p></div>
-  <div class="fbar">
-    <select class="fsel" id="sfStatus" onchange="renderSched()"><option value="all">全期間</option><option value="remaining">未実施のみ</option><option value="done">実施済のみ</option></select>
-    <select class="fsel" id="sfMonth" onchange="renderSched()"><option value="all">全月</option><option value="2026-03">3月</option><option value="2026-04">4月</option><option value="2026-05">5月</option><option value="2026-06">6月</option><option value="2026-07">7月</option></select>
-  </div>
-  <div id="schedList"></div>
-</div>
-
-<!-- ===== キーワードタブ ===== -->
-
-<div id="tab-keyword" class="hidden">
-  <div class="ph"><h2>キーワード辞書</h2><p>論文記述用キーワードを管理</p></div>
-  <div class="fc" style="margin-bottom:16px;">
-    <div class="fr">
-      <div class="fg grow"><label class="flbl">キーワード</label><input type="text" class="fi" id="kwWord" placeholder="例: 凍結融解サイクル"></div>
-      <div class="fg"><label class="flbl">カテゴリ</label><select class="fi" id="kwCat" style="width:130px;"><option>凍害</option><option>火害</option><option>中性化</option><option>塩害</option><option>ASR</option><option>化学的侵食</option><option>疲労</option><option>複合劣化</option><option>診断一般</option><option>論文構成</option></select></div>
+    <label>学習内容</label>
+    <input type="text" id="inp-content" placeholder="例：調査手法 ひび割れ② インプット">
+    <label>タグ</label>
+    <div class="tags" id="mech-tags">
+      <span class="tag" data-val="中性化">🔵中性化</span>
+      <span class="tag" data-val="塩害">🔴塩害</span>
+      <span class="tag" data-val="ASR">🟢ASR</span>
+      <span class="tag" data-val="凍害">❄️凍害</span>
+      <span class="tag" data-val="化学的侵食">🟡化学的侵食</span>
+      <span class="tag" data-val="疲労">🟠疲労</span>
+      <span class="tag" data-val="火害">🔥火害</span>
+      <span class="tag" data-val="調査手法">🔬調査手法</span>
+      <span class="tag" data-val="補修・補強">🔧補修・補強</span>
+      <span class="tag" data-val="計算">🧮計算</span>
+      <span class="tag" data-val="過去問">📋過去問</span>
+      <span class="tag" data-val="篠田">📗篠田</span>
     </div>
-    <div class="fr"><div class="fg" style="flex:1;"><label class="flbl">説明・使い方</label><textarea class="fi" id="kwDesc" placeholder="論文での使いどころ、関連する数値、注意点など" style="min-height:50px;"></textarea></div></div>
-    <div style="display:flex;justify-content:flex-end;"><button class="btn btn-p" onclick="addKW()">✚ 追加</button></div>
+    <label>メモ・気づき</label>
+    <textarea id="inp-memo" placeholder="気づきや課題を記録"></textarea>
+
+```
+<div class="sec-ttl round">🔄 周回記録</div>
+<div class="row2">
+  <div>
+    <label>JIC講座 現在の周回</label>
+    <select id="inp-jic-round">
+      <option value="">─</option>
+      <option value="1周目">1周目</option>
+      <option value="2周目">2周目</option>
+      <option value="3周目">3周目</option>
+    </select>
   </div>
-  <div id="kwList"></div>
+  <div>
+    <label>篠田レジュメ 現在の周回</label>
+    <select id="inp-shin-round">
+      <option value="">─</option>
+      <option value="1周目">1周目</option>
+      <option value="2周目">2周目</option>
+      <option value="3周目">3周目</option>
+      <option value="4周目">4周目</option>
+      <option value="5周目">5周目</option>
+    </select>
+  </div>
 </div>
 
-</main>
+<div class="sec-ttl">過去問｜択一</div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;align-items:end;">
+  <div><label>問題数</label><input type="number" id="inp-qt" min="0" placeholder="30" oninput="calcRate()"></div>
+  <div><label>正答数</label><input type="number" id="inp-qc" min="0" placeholder="24" oninput="calcRate()"></div>
+  <div>
+    <label>正答率</label>
+    <div id="q-rate-box" style="background:#e3f2fd;border:1px solid #90caf9;border-radius:8px;padding:8px 10px;font-size:15px;font-weight:700;color:var(--accent);text-align:center;min-height:40px;line-height:1.4;">─</div>
+  </div>
+</div>
+<label>分野・メモ</label>
+<input type="text" id="inp-qf" placeholder="例：塩害, 中性化">
+
+<div class="sec-ttl essay">✍️ 論文演習</div>
+<label>年度・問題番号</label>
+<input type="text" id="inp-ey" placeholder="例：2024年度 問題Ⅰ 建築">
+<label>ステータス</label>
+<select id="inp-es">
+  <option value="">─</option>
+  <option>初稿</option><option>推敲済み</option>
+  <option>提出済み</option><option>FB受領</option><option>修正完了</option>
+</select>
+<label>メモ（論文）</label>
+<textarea id="inp-em" style="height:44px;" placeholder="講師FBや気づきを記録"></textarea>
+
+<button class="btn btn-primary" onclick="addLog()">✅ 記録を保存</button>
+<button class="btn btn-csv" onclick="exportCSV()">📤 CSVエクスポート</button>
+```
+
+  </div>
+  <div style="height:20px"></div>
+</div>
+
+<!-- ══ スケジュール ══ -->
+
+<div id="page-schedule" class="page">
+<div class="sched-wrap">
+
+  <!-- 概要 -->
+
+  <div class="overview-grid">
+    <div class="ov-card" style="background:var(--indigo)">
+      <h4>📘 JIC講座（最低3周）</h4>
+      <div class="ov-row"><span>1周目</span><span>✅ 完了</span></div>
+      <div class="ov-row"><span>2周目</span><span>▶ 進行中（ひび割れ②）</span></div>
+      <div class="ov-row"><span>3周目</span><span>5〜6月</span></div>
+    </div>
+    <div class="ov-card" style="background:var(--teal)">
+      <h4>📗 篠田レジュメ（最低5周）</h4>
+      <div class="ov-row"><span>1〜2周目</span><span>3〜4月</span></div>
+      <div class="ov-row"><span>3〜4周目</span><span>5月</span></div>
+      <div class="ov-row"><span>5周目</span><span>6月</span></div>
+    </div>
+    <div class="ov-card" style="background:var(--purple)">
+      <h4>✍️ 論文（30本以上）</h4>
+      <div class="ov-row"><span>3月（3/15〜）</span><span>3本</span></div>
+      <div class="ov-row"><span>4月</span><span>8本　累計11本</span></div>
+      <div class="ov-row"><span>5月</span><span>10本　累計21本</span></div>
+      <div class="ov-row"><span>6月</span><span>10本　累計31本</span></div>
+    </div>
+    <div class="ov-card" style="background:var(--orange)">
+      <h4>📅 学習時間目安</h4>
+      <div class="ov-row"><span>平日</span><span>2.5〜3h</span></div>
+      <div class="ov-row"><span>週末</span><span>3.5〜4h</span></div>
+      <div class="ov-row"><span>50分×</span><span>平日3 / 週末4〜5セット</span></div>
+    </div>
+  </div>
+
+  <div class="month-tabs">
+    <div class="month-tab active" style="background:var(--yellow);color:white;" onclick="showMonth('m3',this,'#F9A825')">3月</div>
+    <div class="month-tab" onclick="showMonth('m4',this,'#EF6C00')">4月</div>
+    <div class="month-tab" onclick="showMonth('m5',this,'#C62828')">5月</div>
+    <div class="month-tab" onclick="showMonth('m6',this,'#2E7D32')">6月</div>
+    <div class="month-tab" onclick="showMonth('mbuf',this,'#1a3a5c')">Buffer</div>
+  </div>
+
+  <div id="m3" class="month-page active"></div>
+  <div id="m4" class="month-page"></div>
+  <div id="m5" class="month-page"></div>
+  <div id="m6" class="month-page"></div>
+  <div id="mbuf" class="month-page"></div>
+
+</div>
+</div>
+
+<!-- ══ 履歴 ══ -->
+
+<div id="page-history" class="page">
+<div class="history-wrap">
+  <div class="filter-bar">
+    <select id="fil-period" onchange="renderHistory()">
+      <option value="all">全期間</option><option value="week">今週</option><option value="month">今月</option>
+    </select>
+    <select id="fil-type" onchange="renderHistory()">
+      <option value="all">すべて</option><option value="essay">論文あり</option><option value="quiz">択一あり</option>
+    </select>
+  </div>
+  <div id="log-list"></div>
+</div>
 </div>
 
 <script>
-// ===== GitHub設定 =====
-const GH_OWNER = 'ycristina5t-dot';
-const GH_REPO  = 'study-log';
-const GH_FILE  = 'data.json';
-const GH_BRANCH = 'main';
-const GH_API = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}`;
+const SK='cl-logs-v6', CK='cl-chks-v6';
+let logs=[], chks={};
+function load(){try{logs=JSON.parse(localStorage.getItem(SK))||[];}catch{logs=[];}try{chks=JSON.parse(localStorage.getItem(CK))||{};}catch{chks={};}}
+function save(){localStorage.setItem(SK,JSON.stringify(logs));localStorage.setItem(CK,JSON.stringify(chks));}
 
-let ghToken = localStorage.getItem('gh-token') || '';
-let fileSha = null;  // GitHubファイルのsha（更新時に必要）
-let saveTimer = null;
+// ── SCHEDULE DATA ──
+const MONTHS=[
+  { id:'m3', color:'#F9A825', label:'3月（3/12〜3/31）　JIC2周目後半 + 篠田1周目開始 + 論文3本',
+    daily:'平日：2.5〜3h（50分×3）　/　週末：3.5〜4h（50分×4〜5）',
+    weeks:[
+      { id:'w3a', label:'今週 3/12〜3/14（水〜金）', open:true,
+        jic:[
+          {text:'調査手法：ひび割れ②・空洞・剥離の調査完了', sub:'JIC 2周目 ▶ 調査 > ひび割れ②'},
+          {text:'調査手法：鉄筋・かぶり・埋設物', sub:'JIC 2周目 ▶ 調査 > 鉄筋①'},
+        ],
+        shin:[
+          {text:'篠田レジュメ 1周目スタート', sub:'劣化メカニズム 全種を通読（中性化・塩害・ASR）'},
+        ],
+        essays:[
+          {day:'★ 3/15（土）論文②', text:'テーマ：火害\n型を覚える・結論先出し'},
+          {day:'3/16（日）論文③', text:'テーマ：凍害\n初稿→翌日推敲の習慣づけ'},
+        ],
+        misc:[]},
 
-// ===== 定数 =====
-const TOPICS=[
-  {id:'凍害',    label:'❄️ 凍害',    color:'#1D78A8',bg:'#E8F4FB'},
-  {id:'火害',    label:'🔥 火害',    color:'#C04A22',bg:'#FDF0EB'},
-  {id:'中性化',  label:'🧪 中性化',  color:'#7C3AED',bg:'#F3F0FF'},
-  {id:'塩害',    label:'🌊 塩害',    color:'#0E6B5A',bg:'#E6F7F4'},
-  {id:'ASR',     label:'⚗️ ASR',     color:'#B45309',bg:'#FEF3C7'},
-  {id:'化学的侵食',label:'🧫 化学的侵食',color:'#6D28D9',bg:'#F5F3FF'},
-  {id:'疲労',    label:'⚡ 疲労',    color:'#0F766E',bg:'#F0FDFA'},
-  {id:'複合劣化',label:'🔄 複合劣化',color:'#92400E',bg:'#FEF9C3'},
-  {id:'過去問四択',label:'📋 四択',  color:'#2563EB',bg:'#EFF4FF'},
-  {id:'論文',    label:'✍️ 論文',    color:'#7C3AED',bg:'#F3F0FF'},
+      { id:'w3b', label:'3/17〜3/22', open:false,
+        jic:[
+          {text:'調査手法：配合・微細構造・化学成分①②', sub:'JIC 2周目 ▶ 調査 > 配合①②'},
+          {text:'調査手法：中性化①・塩化物①②③', sub:'JIC 2周目 ▶ 中性化・塩化物'},
+        ],
+        shin:[
+          {text:'篠田レジュメ 1周目', sub:'凍害・火害・疲労・化学的侵食 通読'},
+        ],
+        essays:[
+          {day:'3/22（日）論文④', text:'テーマ：中性化\n結論先出し・目的の明示を練習'},
+        ],
+        misc:[]},
+
+      { id:'w3c', label:'3/23〜3/31', open:false,
+        jic:[
+          {text:'調査手法：ASR①②③・火害①・その他①②', sub:'JIC 2周目 ▶ 調査 残り完了'},
+          {text:'変状・劣化と調査方法（テキスト）', sub:'JIC 2周目 ▶ 変状・劣化の調査方法'},
+        ],
+        shin:[
+          {text:'篠田レジュメ 1周目完了', sub:'調査手法・補修補強 通読'},
+        ],
+        essays:[],
+        misc:[],
+        note:'3月末でJIC 2周目 調査手法パート完了を目指す。篠田1周目完了。'},
+    ]},
+
+  { id:'m4', color:'#EF6C00', label:'4月（4/1〜4/30）　JIC2周目完了→3周目 + 篠田2周目 + 論文8本',
+    daily:'平日：2.5〜3h（50分×3）　/　週末：3.5〜4h（50分×4〜5）＋論文1〜2本',
+    weeks:[
+      { id:'w4a', label:'4/1〜4/6', open:false,
+        jic:[
+          {text:'補修工法：ひび割れ①②③・断面修復①', sub:'JIC 2周目 ▶ 補修パート'},
+          {text:'コンクリートの変状：初期欠陥①②③', sub:'JIC 2周目 ▶ 変状 > 初期欠陥'},
+        ],
+        shin:[
+          {text:'篠田レジュメ 2周目スタート', sub:'中性化・塩害 精読（ポイント絞り込み）'},
+        ],
+        essays:[
+          {day:'4/5（土）論文⑤', text:'テーマ：塩害'},
+          {day:'4/6（日）論文⑥', text:'テーマ：ASR　週2本ペース定着'},
+        ],
+        misc:[]},
+
+      { id:'w4b', label:'4/7〜4/13', open:false,
+        jic:[
+          {text:'補修工法：表面被覆①・含浸①②・電気化学①②', sub:'JIC 2周目 ▶ 補修後半'},
+          {text:'コンクリートの変状：経年劣化①②③④', sub:'JIC 2周目 ▶ 変状 > 経年劣化'},
+        ],
+        shin:[
+          {text:'篠田レジュメ 2周目', sub:'ASR・凍害・化学的侵食 精読'},
+        ],
+        essays:[
+          {day:'4/12（土）論文⑦', text:'テーマ：化学的侵食'},
+          {day:'4/13（日）論文⑧', text:'テーマ：疲労'},
+        ],
+        misc:[]},
+
+      { id:'w4c', label:'4/14〜4/20', open:false,
+        jic:[
+          {text:'増厚①・その他補強①・維持管理①', sub:'JIC 2周目 ▶ 補強・維持管理'},
+          {text:'コンクリートの変状：構造的変状①', sub:'JIC 2周目 ▶ 変状 > 構造的変状'},
+          {text:'コンクリート年表・計算ドリル開始', sub:'JIC 2周目 ▶ 年表・計算（前半5種）'},
+        ],
+        shin:[
+          {text:'篠田レジュメ 2周目', sub:'疲労・火害・調査手法 精読'},
+        ],
+        essays:[
+          {day:'4/19（土）論文⑨', text:'テーマ：中性化（再演習）'},
+          {day:'4/20（日）論文⑩', text:'テーマ：過去問2024年度 問題Ⅰ'},
+        ],
+        misc:[]},
+
+      { id:'w4d', label:'4/21〜4/30', open:false,
+        jic:[
+          {text:'計算ドリル後半（5種）完了', sub:'JIC 2周目 ▶ 計算後半5種'},
+          {text:'★ JIC 2周目 完了！→ 3周目スタート', sub:'JIC 3周目 ▶ 劣化メカニズムから再スタート'},
+        ],
+        shin:[
+          {text:'篠田レジュメ 2周目完了', sub:'補修補強・年表 精読'},
+        ],
+        essays:[
+          {day:'4/26（土）論文⑪', text:'テーマ：過去問2023年度 問題Ⅱ'},
+          {day:'4/27（日）論文⑫', text:'テーマ：過去問2022年度 問題Ⅰ'},
+        ],
+        misc:[],
+        note:'4月末でJIC 2周目完了・3周目開始。篠田2周目完了。論文累計12本目標。'},
+    ]},
+
+  { id:'m5', color:'#C62828', label:'5月（5/1〜5/31）　JIC3周目 + 篠田3〜4周目 + 論文10本',
+    daily:'平日：2.5〜3h（50分×3）　/　週末：3.5〜4h（50分×4〜5）＋論文2本',
+    weeks:[
+      { id:'w5a', label:'5/1〜5/10', open:false,
+        jic:[
+          {text:'JIC 3周目：劣化メカニズム全種 高速復習', sub:'JIC 3周目 ▶ 劣化メカニズム（課題中心）'},
+          {text:'JIC 3周目：調査手法前半', sub:'JIC 3周目 ▶ 強度・ひび割れ・鉄筋・配合'},
+        ],
+        shin:[
+          {text:'篠田レジュメ 3周目', sub:'劣化メカニズム 弱点に絞って精読'},
+        ],
+        essays:[
+          {day:'5/3（土）論文⑬', text:'過去問2021年度 問題Ⅱ'},
+          {day:'5/4（日）論文⑭', text:'過去問2020年度 問題Ⅰ'},
+          {day:'5/10（土）論文⑮', text:'過去問2019年度 問題Ⅱ'},
+        ],
+        misc:[]},
+
+      { id:'w5b', label:'5/11〜5/20', open:false,
+        jic:[
+          {text:'JIC 3周目：調査手法後半・変状', sub:'JIC 3周目 ▶ 中性化・塩化物・ASR・火害・変状'},
+          {text:'JIC 3周目：補修・補強・維持管理', sub:'JIC 3周目 ▶ 補修系全種'},
+        ],
+        shin:[
+          {text:'篠田レジュメ 3周目完了', sub:'調査手法・補修補強 弱点集中'},
+          {text:'篠田レジュメ 4周目スタート', sub:'苦手箇所のみ読み込む'},
+        ],
+        essays:[
+          {day:'5/16（土）論文⑯', text:'過去問2018年度 問題Ⅰ'},
+          {day:'5/17（日）論文⑰', text:'過去問2017年度 問題Ⅱ'},
+          {day:'5/20（水）論文⑱', text:'平日演習：苦手テーマ（30分集中）'},
+        ],
+        misc:[]},
+
+      { id:'w5c', label:'5/21〜5/31', open:false,
+        jic:[
+          {text:'JIC 3周目：計算ドリル全10種 + 年表', sub:'JIC 3周目 ▶ 計算・年表（小テスト含む）'},
+          {text:'★ JIC 3周目 完了！', sub:'過去問（四択）2022〜2024年度 開始'},
+        ],
+        shin:[
+          {text:'篠田レジュメ 4周目完了', sub:'計算・年表・弱点テーマ'},
+        ],
+        essays:[
+          {day:'5/24（土）論文⑲', text:'過去問2016年度 問題Ⅰ'},
+          {day:'5/25（日）論文⑳', text:'過去問2015年度 問題Ⅱ'},
+          {day:'5/31（日）論文㉑', text:'苦手テーマ 精度確認'},
+        ],
+        misc:[],
+        note:'5月末でJIC 3周完了・篠田4周完了。論文累計21本目標。計算ドリル全10種必須。'},
+    ]},
+
+  { id:'m6', color:'#2E7D32', label:'6月（6/1〜6/20）　論文メイン🔥 + 篠田5周目 + 過去問択一',
+    daily:'平日：2.5〜3h（論文 or 択一）　/　週末：3.5〜4h＋論文2〜3本',
+    weeks:[
+      { id:'w6a', label:'6/1〜6/7　論文メイン🔥', open:false,
+        jic:[
+          {text:'過去問 択一：2022〜2024年度（苦手のみ）', sub:'過去問 > 2024・2023・2022年度'},
+        ],
+        shin:[
+          {text:'篠田レジュメ 5周目スタート', sub:'全体を高速で通読（最終確認）'},
+        ],
+        essays:[
+          {day:'6/1（月）論文㉒', text:'平日演習：2014年度'},
+          {day:'6/5（金）論文㉓', text:'平日演習：2013年度'},
+          {day:'6/7（日）論文㉔', text:'週末精度仕上げ：2012年度'},
+        ],
+        misc:[]},
+
+      { id:'w6b', label:'6/8〜6/14　論文メイン🔥', open:false,
+        jic:[
+          {text:'過去問 択一：2019〜2021年度（弱点のみ）', sub:'過去問 > 2021・2020・2019年度'},
+        ],
+        shin:[
+          {text:'篠田レジュメ 5周目', sub:'弱点テーマのみ精読'},
+        ],
+        essays:[
+          {day:'6/9（火）論文㉕', text:'平日演習：2011年度'},
+          {day:'6/13（土）論文㉖', text:'苦手テーマ①（FBを踏まえた修正演習）'},
+          {day:'6/14（日）論文㉗', text:'苦手テーマ②（弱点分野の再演習）'},
+        ],
+        misc:[]},
+
+      { id:'w6c', label:'6/15〜6/20　最終仕上げ', open:false,
+        jic:[
+          {text:'苦手分野 択一 最終確認', sub:'弱点分野のみ絞って確認'},
+        ],
+        shin:[
+          {text:'篠田レジュメ 5周目完了', sub:'★ 5周達成！最終キーワード確認'},
+        ],
+        essays:[
+          {day:'6/15（月）論文㉘', text:'塩害 or 中性化（完成度確認）'},
+          {day:'6/18（木）論文㉙', text:'ASR or 疲労（完成度確認）'},
+          {day:'6/20（土）論文㉚〜㉛', text:'本番想定・時間計測で2本\n（累計31本達成）'},
+        ],
+        misc:[],
+        note:'6月は論文が完全主役。択一は1日30分以内。書く量を最大化する。'},
+    ]},
+
+  { id:'mbuf', color:'#1a3a5c', label:'バッファ（6/21〜試験前）　最終確認のみ',
+    daily:'1〜1.5h（確認のみ。詰め込み禁止）',
+    weeks:[
+      { id:'wbuf', label:'6/21〜試験前', open:true,
+        jic:[
+          {text:'JIC 弱点箇所のみ最終確認', sub:'新しいインプットは一切しない'},
+        ],
+        shin:[
+          {text:'篠田レジュメ：弱点ページのみ', sub:'キーワード・数値の最終確認'},
+        ],
+        essays:[
+          {day:'6/21〜 論文㉜〜㉞', text:'弱点テーマを2〜3本のみ\n新しく手を広げない'},
+        ],
+        misc:[
+          {text:'年表・計算式の最終見直し', sub:'暗記カード・数値の確認'},
+        ],
+        note:'余裕を持った仕上げ期間。追加インプットは禁止。確認のみ。'},
+    ]},
 ];
-const PHASES=[
-  {label:'Phase 1 — インプット完走',   months:['2026-03'],targetH:58},
-  {label:'Phase 2 — 定着・論文週1',    months:['2026-04'],targetH:83},
-  {label:'Phase 3 — 過去問集中・論文週2',months:['2026-05'],targetH:83},
-  {label:'Phase 4 — 仕上げ・模擬試験', months:['2026-06'],targetH:83},
-  {label:'Phase 5 — 最終調整',         months:['2026-07'],targetH:33},
-];
-const SCHED=[
-  {date:'2026-03-11',type:'インプット',content:'化学的侵食 劣化メカニズム・影響因子'},
-  {date:'2026-03-12',type:'インプット',content:'化学的侵食 変状・調査手法・補修'},
-  {date:'2026-03-13',type:'インプット',content:'疲労 劣化メカニズム〜調査手法'},
-  {date:'2026-03-14',type:'インプット',content:'疲労 補修・対策'},
-  {date:'2026-03-15',type:'四択',content:'中性化 過去問四択'},
-  {date:'2026-03-16',type:'四択',content:'塩害 過去問四択'},
-  {date:'2026-03-17',type:'四択',content:'ASR 過去問四択'},
-  {date:'2026-03-18',type:'四択',content:'凍害 過去問四択'},
-  {date:'2026-03-19',type:'四択',content:'火害 過去問四択'},
-  {date:'2026-03-20',type:'インプット',content:'複合劣化 インプット（前半）'},
-  {date:'2026-03-21',type:'インプット',content:'複合劣化 インプット（後半）+ 調査手法'},
-  {date:'2026-03-22',type:'四択',content:'複合劣化 + 化学的侵食 過去問四択'},
-  {date:'2026-03-23',type:'論文',content:'キーワード辞書作成①（劣化診断系）'},
-  {date:'2026-03-24',type:'論文',content:'キーワード辞書作成②（補修・対策系）'},
-  {date:'2026-03-25',type:'論文',content:'論文 時間計測練習①（2023年度）'},
-  {date:'2026-03-26',type:'論文',content:'論文 翌日自己レビュー + キーワード追記'},
-  {date:'2026-03-27',type:'四択',content:'過去問四択 総まとめ①（中性化・塩害・ASR）'},
-  {date:'2026-03-28',type:'四択',content:'過去問四択 総まとめ②（凍害・火害・複合）'},
-  {date:'2026-03-29',type:'論文',content:'論文 時間計測練習②（2022年度）'},
-  {date:'2026-03-30',type:'論文',content:'論文 翌日レビュー + 全体整理'},
-  {date:'2026-03-31',type:'バッファ',content:'遅れ回収 or 弱点補強'},
-  {date:'2026-04-01',type:'四択',content:'中性化 総復習 + 過去問四択'},
-  {date:'2026-04-03',type:'四択',content:'ASR 総復習 + 過去問四択'},
-  {date:'2026-04-05',type:'四択',content:'火害 総復習 + 過去問四択'},
-  {date:'2026-04-07',type:'ミックス',content:'疲労 復習 + 論文キーワード確認'},
-  {date:'2026-04-09',type:'論文',content:'論文 練習①（2021年度）'},
-  {date:'2026-04-11',type:'四択',content:'過去問四択 弱点分野集中①'},
-  {date:'2026-04-14',type:'四択',content:'全機構 調査手法 過去問①'},
-  {date:'2026-04-16',type:'論文',content:'論文 練習②（2020年度）'},
-  {date:'2026-04-18',type:'ミックス',content:'過去問四択 + 論文キーワード確認'},
-  {date:'2026-04-21',type:'論文',content:'キーワード辞書 最終整理'},
-  {date:'2026-04-23',type:'論文',content:'論文 練習③（2019年度）'},
-  {date:'2026-04-25',type:'ミックス',content:'フラッシュカード + 論文構成復習'},
-  {date:'2026-04-28',type:'論文',content:'論文 練習④（自由テーマ）'},
-  {date:'2026-04-30',type:'ミックス',content:'4月振り返り + 正答率確認'},
-  {date:'2026-05-01',type:'四択',content:'過去問四択 集中①（中性化）'},
-  {date:'2026-05-05',type:'論文',content:'論文 練習⑤（2018年度）'},
-  {date:'2026-05-07',type:'四択',content:'過去問四択 集中②（凍害）'},
-  {date:'2026-05-11',type:'論文',content:'論文 練習⑥（2017年度）'},
-  {date:'2026-05-16',type:'論文',content:'論文 練習⑦（週2回目）'},
-  {date:'2026-05-18',type:'四択',content:'模擬形式 四択（時間計測）①'},
-  {date:'2026-05-20',type:'論文',content:'論文 練習⑧（2016年度）'},
-  {date:'2026-05-22',type:'四択',content:'模擬形式 四択（時間計測）②'},
-  {date:'2026-05-24',type:'論文',content:'論文 練習⑨（週2回目）'},
-  {date:'2026-05-28',type:'論文',content:'論文 練習⑩（自由テーマ）'},
-  {date:'2026-05-30',type:'ミックス',content:'5月振り返り + 正答率確認'},
-  {date:'2026-06-01',type:'四択',content:'全機構 総復習 四択①'},
-  {date:'2026-06-06',type:'論文',content:'論文 練習⑪（模擬試験形式）'},
-  {date:'2026-06-09',type:'ミックス',content:'模擬試験形式①（四択+論文）'},
-  {date:'2026-06-12',type:'論文',content:'論文 練習⑫（週2回目）'},
-  {date:'2026-06-15',type:'ミックス',content:'模擬試験形式②'},
-  {date:'2026-06-19',type:'論文',content:'論文 練習⑬（週2回目）'},
-  {date:'2026-06-21',type:'ミックス',content:'模擬試験形式③（最終チェック）'},
-  {date:'2026-06-26',type:'論文',content:'論文 最終練習（時間計測）'},
-  {date:'2026-06-28',type:'ミックス',content:'全体ペース確認 + 弱点最終チェック'},
-  {date:'2026-07-01',type:'四択',content:'弱点確認 四択（軽め）'},
-  {date:'2026-07-02',type:'論文',content:'論文テンプレ暗記 最終確認'},
-  {date:'2026-07-03',type:'ミックス',content:'暗記カード確認 + 論文構成復習'},
-  {date:'2026-07-05',type:'論文',content:'論文テンプレ 頭の中で確認'},
-  {date:'2026-07-07',type:'バッファ',content:'前日：暗記カードのみ・早めに就寝 🎯'},
-];
-const DEFAULT_LOGS=[
-  {id:1,date:'2026-03-08',type:'study',hours:3.5,topics:'凍害インプット完了 / 火害インプット途中',tags:['凍害','火害'],memo:'コンクリート・鉄筋の加熱・冷却時の温度閾値を要暗記。要テキスト確認。'},
-  {id:2,date:'2026-03-09',type:'study',hours:2.5,topics:'火害インプット終了 / 論文2024年度推敲実施',tags:['火害','論文'],memo:'推敲効果的！別日にやると尚良いと実感'},
-  {id:3,date:'2026-03-10',type:'study',hours:3.0,topics:'火害劣化メカニズム終了、調査手法「強度」インプット / 論文推敲2024提出済',tags:['火害','論文'],memo:''},
-];
 
-// ===== State =====
-let logs = [];
-let kws  = [];
-let tagF = '';
-let curType = 'study';
+// ── RENDER ──
+function renderSchedule(){
+  MONTHS.forEach(mo=>{
+    const container=document.getElementById(mo.id);
+    if(!container)return;
+    let html=`<div class="month-banner" style="background:${mo.color}">
+      <strong>${mo.label}</strong>
+      <small>📅 ${mo.daily}</small>
+    </div>`;
 
-// ===== Helpers =====
-const MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-const WDS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-const WDJ=['日','月','火','水','木','金','土'];
-function dStr(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
-function pd(s){return new Date(s+'T00:00:00');}
-function today(){return dStr(new Date());}
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function wkStart(){const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-d.getDay());return dStr(d);}
-function lastMo(){const d=new Date();d.setDate(1);d.setMonth(d.getMonth()-1);return dStr(d).slice(0,7);}
+    mo.weeks.forEach(wk=>{
+      const allItems=[
+        ...wk.jic.map((_,i)=>wk.id+'j'+i),
+        ...wk.shin.map((_,i)=>wk.id+'s'+i),
+        ...wk.essays.map((_,i)=>wk.id+'e'+i),
+        ...(wk.misc||[]).map((_,i)=>wk.id+'m'+i),
+      ];
+      const total=allItems.length;
+      const done=allItems.filter(k=>chks[k]).length;
+      const pct=total?Math.round(done/total*100):0;
 
-// ===== Save status UI =====
-function showSaveStatus(state, msg) {
-  const el = document.getElementById('saveStatus');
-  el.className = 'save-status ' + state;
-  el.textContent = msg;
-  if (state === 'saved') {
-    setTimeout(() => el.classList.add('hidden'), 2000);
-  }
-}
+      const jicHtml=wk.jic.map((it,i)=>`
+        <div class="check-item">
+          <input type="checkbox" class="jic-ck" ${chks[wk.id+'j'+i]?'checked':''} onchange="ck('${wk.id}','j',${i},this.checked)">
+          <div><div class="item-text">${it.text}</div><div class="item-sub">${it.sub}</div></div>
+        </div>`).join('');
 
-// ===== GitHub API =====
-async function ghLoad() {
-  const res = await fetch(GH_API + '?ref=' + GH_BRANCH + '&t=' + Date.now(), {
-    headers: {
-      Authorization: 'token ' + ghToken,
-      Accept: 'application/vnd.github.v3+json',
-    }
-  });
-  if (res.status === 404) {
-    // ファイル未作成 → デフォルトデータを使う
-    logs = DEFAULT_LOGS;
-    kws  = [];
-    fileSha = null;
-    return;
-  }
-  if (!res.ok) throw new Error('GitHub読み込みエラー: ' + res.status);
-  const json = await res.json();
-  fileSha = json.sha;
-  // Base64デコード（日本語対応）
-  const decoded = decodeURIComponent(escape(atob(json.content.replace(/\n/g, ''))));
-  const data = JSON.parse(decoded);
-  logs = data.logs || DEFAULT_LOGS;
-  kws  = data.kws  || [];
-}
+      const shinHtml=wk.shin.map((it,i)=>`
+        <div class="check-item">
+          <input type="checkbox" class="shin-ck" ${chks[wk.id+'s'+i]?'checked':''} onchange="ck('${wk.id}','s',${i},this.checked)">
+          <div><div class="item-text">${it.text}</div><div class="item-sub">${it.sub}</div></div>
+        </div>`).join('');
 
-async function ghSave() {
-  showSaveStatus('saving', '💾 保存中...');
-  try {
-    const jsonStr = JSON.stringify({logs, kws});
-    // Base64エンコード（日本語対応）
-    const encoded = btoa(unescape(encodeURIComponent(jsonStr)));
-    const body = {
-      message: 'update study log ' + new Date().toISOString(),
-      content: encoded,
-      branch: GH_BRANCH,
-    };
-    if (fileSha) body.sha = fileSha;
+      const essHtml=wk.essays.length
+        ?wk.essays.map((e,i)=>`
+        <div class="check-item">
+          <input type="checkbox" class="essay-ck" ${chks[wk.id+'e'+i]?'checked':''} onchange="ck('${wk.id}','e',${i},this.checked)">
+          <div><div class="item-day">${e.day}</div><div class="item-text">${e.text.replace(/\n/g,'<br>')}</div></div>
+        </div>`).join('')
+        :'<div style="font-size:10px;color:#bbb;font-style:italic">この週の論文なし</div>';
 
-    const res = await fetch(GH_API, {
-      method: 'PUT',
-      headers: {
-        Authorization: 'token ' + ghToken,
-        'Content-Type': 'application/json',
-        Accept: 'application/vnd.github.v3+json',
-      },
-      body: JSON.stringify(body),
+      const miscHtml=(wk.misc||[]).map((it,i)=>`
+        <div class="check-item">
+          <input type="checkbox" class="misc-ck" ${chks[wk.id+'m'+i]?'checked':''} onchange="ck('${wk.id}','m',${i},this.checked)">
+          <div><div class="item-text">${it.text}</div><div class="item-sub">${it.sub}</div></div>
+        </div>`).join('');
+
+      const noteHtml=wk.note?`<div class="week-note">※ ${wk.note}</div>`:'';
+
+      html+=`<div class="week-card">
+        <div class="week-header" onclick="toggleWeek('wb-${wk.id}')">
+          <span class="week-title" style="color:${mo.color}">${wk.label}</span>
+          <span class="week-badges">
+            ${wk.essays.length?`<span class="badge badge-essay">✍️${wk.essays.length}</span>`:''}
+            ${wk.jic.length?`<span class="badge badge-jic">JIC${wk.jic.length}</span>`:''}
+            ${wk.shin.length?`<span class="badge badge-shin">篠${wk.shin.length}</span>`:''}
+            ${done===total&&total>0?'<span class="badge badge-done">✅</span>':''}
+            <span style="font-size:11px;color:var(--muted)">${done}/${total}</span>
+            <span style="color:var(--muted);font-size:13px;">▼</span>
+          </span>
+        </div>
+        <div class="week-prog"><div class="week-prog-fill" style="width:${pct}%;background:${mo.color}"></div></div>
+        <div class="week-body" id="wb-${wk.id}" style="display:${wk.open?'block':'none'}">
+          <div class="daily-guide"><strong>📅 日次目安</strong><span>${mo.daily}</span></div>
+          <div class="week-3col">
+            <div class="col-box col-jic">
+              <div class="col-lbl jic-lbl">📘 JIC講座</div>${jicHtml}
+            </div>
+            <div class="col-box col-shin">
+              <div class="col-lbl shin-lbl">📗 篠田レジュメ</div>${shinHtml}
+            </div>
+            <div class="col-box col-essay">
+              <div class="col-lbl es-lbl">✍️ 論文演習</div>${essHtml}
+            </div>
+          </div>
+          ${miscHtml?`<div class="col-box col-misc" style="margin-top:6px"><div class="col-lbl misc-lbl">📌 その他</div>${miscHtml}</div>`:''}
+          ${noteHtml}
+        </div>
+      </div>`;
     });
-    if (!res.ok) {
-      const err = await res.json();
-      throw new Error(err.message || res.status);
-    }
-    const result = await res.json();
-    fileSha = result.content.sha;
-    showSaveStatus('saved', '✓ 保存完了');
-  } catch(e) {
-    showSaveStatus('error', '⚠️ 保存失敗（タップで再試行）');
-    document.getElementById('saveStatus').onclick = () => ghSave();
-    console.error(e);
-  }
-}
-
-// デバウンス付き保存（連続操作でもまとめて1回）
-function scheduleSave() {
-  clearTimeout(saveTimer);
-  saveTimer = setTimeout(() => ghSave(), 800);
-}
-
-function saveLogs() { scheduleSave(); }
-function saveKWs()  { scheduleSave(); }
-
-// ===== Token modal =====
-function showTokenModal() {
-  document.getElementById('tokenModal').style.display = 'flex';
-}
-function saveToken() {
-  const t = document.getElementById('tokenInput').value.trim();
-  if (!t) { alert('トークンを入力してください。'); return; }
-  ghToken = t;
-  localStorage.setItem('gh-token', t);
-  document.getElementById('tokenModal').style.display = 'none';
-  startApp();
-}
-function changeToken() {
-  document.getElementById('tokenInput').value = '';
-  document.getElementById('tokenModal').style.display = 'flex';
-}
-
-// ===== Init =====
-async function startApp() {
-  document.getElementById('loadingView').classList.remove('hidden');
-  try {
-    await ghLoad();
-  } catch(e) {
-    alert('GitHubへの接続に失敗しました。\nトークンまたはネットワークを確認してください。\n\n' + e.message);
-    changeToken();
-    return;
-  }
-  document.getElementById('loadingView').classList.add('hidden');
-  document.getElementById('tab-log').classList.remove('hidden');
-
-  const t = new Date();
-  document.getElementById('todayStr').textContent = t.getFullYear()+'年'+(t.getMonth()+1)+'月'+t.getDate()+'日 '+WDJ[t.getDay()]+'曜日';
-  const exam = new Date('2026-07-12T00:00:00');
-  const dLeft = Math.max(0,Math.ceil((exam-t)/86400000));
-  document.getElementById('daysLeft').textContent = dLeft;
-  const mobEl = document.getElementById('daysLeftMob');
-  if(mobEl) mobEl.textContent = dLeft;
-  document.getElementById('fDate').value = today();
-  mkTags('fTags');
-  renderAll();
-}
-
-function init() {
-  if (!ghToken) {
-    document.getElementById('loadingView').classList.add('hidden');
-    showTokenModal();
-  } else {
-    startApp();
-  }
-}
-
-function renderAll(){
-  renderStats();renderWeek();renderList();
-  renderPhaseProg();renderTopicProg();renderMonthChart();renderYonnChart();renderRonChart();
-  renderSched();renderKWs();updateBadges();
-}
-
-// ===== Type selector =====
-function setType(t){
-  curType=t;
-  ['study','yonn','ron'].forEach(x=>document.getElementById('tt-'+x).classList.toggle('active',x===t));
-  document.getElementById('fg-hours').classList.toggle('hidden',t!=='study');
-  ['fg-yq','fg-ya','fg-yr'].forEach(id=>document.getElementById(id).classList.toggle('hidden',t!=='yonn'));
-  ['fg-ry','fg-rp','fg-rs'].forEach(id=>document.getElementById(id).classList.toggle('hidden',t!=='ron'));
-  const pl={study:'例: 火害インプット・WEB講義レビュー',yonn:'例: 塩害・中性化 分野別',ron:'例: 海岸沿いRC構造物の診断'};
-  document.getElementById('fTopics').placeholder=pl[t];
-  document.getElementById('topicsLabel').textContent=t==='study'?'学習内容':'分野・内容';
-}
-
-function calcYR(){
-  const q=parseFloat(document.getElementById('fYQ').value)||0,a=parseFloat(document.getElementById('fYA').value)||0;
-  document.getElementById('fYR').value=q>0?Math.round(a/q*100)+'%':'';
-}
-
-// ===== Tag selector =====
-function mkTags(elId){
-  const el=document.getElementById(elId);if(!el)return;
-  el.dataset.sel='[]';
-  el.innerHTML=TOPICS.map(t=>`<span class="topt" style="color:${t.color};background:${t.bg};" data-id="${t.id}" onclick="toggleT('${elId}','${t.id}')">${t.label}</span>`).join('');
-}
-function toggleT(elId,id){
-  const el=document.getElementById(elId);
-  const sel=JSON.parse(el.dataset.sel||'[]');
-  const i=sel.indexOf(id);if(i>=0)sel.splice(i,1);else sel.push(id);
-  el.dataset.sel=JSON.stringify(sel);
-  el.querySelectorAll('.topt').forEach(e=>e.classList.toggle('sel',sel.includes(e.dataset.id)));
-}
-function getTags(elId){return JSON.parse(document.getElementById(elId)?.dataset.sel||'[]');}
-
-// ===== Add log =====
-function addLog(){
-  const date=document.getElementById('fDate').value;
-  const topics=document.getElementById('fTopics').value.trim();
-  const memo=document.getElementById('fMemo').value.trim();
-  const tags=getTags('fTags');
-  if(!date||!topics){alert('日付と内容を入力してください。');return;}
-
-  const entry={id:Date.now(),date,type:curType,topics,tags,memo};
-
-  if(curType==='study'){
-    const h=parseFloat(document.getElementById('fHours').value);
-    if(!h){alert('学習時間を入力してください。');return;}
-    entry.hours=h;
-  } else if(curType==='yonn'){
-    const q=parseFloat(document.getElementById('fYQ').value);
-    const a=parseFloat(document.getElementById('fYA').value);
-    if(!q||isNaN(a)){alert('実施問題数と正答数を入力してください。');return;}
-    entry.q=q; entry.a=a; entry.hours=0;
-  } else if(curType==='ron'){
-    const s=parseFloat(document.getElementById('fRS').value);
-    if(isNaN(s)){alert('採点を入力してください。');return;}
-    if(s<0||s>10){alert('採点は0〜10で入力してください。');return;}
-    entry.score=s;
-    entry.year=document.getElementById('fRY').value;
-    entry.prob=document.getElementById('fRP').value;
-    entry.hours=0;
-  }
-
-  logs.unshift(entry);saveLogs();renderAll();clearF();
-}
-
-function clearF(){
-  ['fHours','fYQ','fYA','fYR','fRS','fTopics','fMemo'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  mkTags('fTags');document.getElementById('fDate').value=today();
-}
-
-function delLog(id){if(!confirm('削除しますか？'))return;logs=logs.filter(l=>l.id!==id);saveLogs();renderAll();}
-
-// ===== Stats =====
-function renderStats(){
-  const sl=logs.filter(l=>l.type==='study');
-  const tot=sl.reduce((s,l)=>s+(l.hours||0),0);
-  document.getElementById('sTot').textContent=tot.toFixed(1);
-  document.getElementById('sSess').textContent=logs.length+'セッション';
-  const td=today(),ws=wkStart();
-  document.getElementById('sWeek').textContent=sl.filter(l=>l.date>=ws).reduce((s,l)=>s+(l.hours||0),0).toFixed(1);
-  document.getElementById('sToday').textContent=sl.filter(l=>l.date===td).reduce((s,l)=>s+(l.hours||0),0).toFixed(1);
-  const dates=[...new Set(sl.map(l=>l.date))].sort().reverse();
-  let streak=0,cur=new Date();cur.setHours(0,0,0,0);
-  for(let i=0;i<365;i++){const s=dStr(cur);if(dates.includes(s)){streak++;cur.setDate(cur.getDate()-1);}else if(i===0){cur.setDate(cur.getDate()-1);}else break;}
-  document.getElementById('sStreak').textContent=streak;
-  document.getElementById('sStreakSub').textContent=streak>=7?'🔥 継続中！':streak>0?'継続中！':'今日から再開！';
-}
-
-// ===== Week grid =====
-function renderWeek(){
-  const el=document.getElementById('weekGrid');
-  const td=new Date();td.setHours(0,0,0,0);const dow=td.getDay();
-  let h='';
-  for(let i=0;i<7;i++){
-    const d=new Date(td);d.setDate(td.getDate()-dow+i);
-    const ds=dStr(d),hrs=logs.filter(l=>l.date===ds&&l.type==='study').reduce((s,l)=>s+(l.hours||0),0),isT=ds===today();
-    h+=`<div class="wd-cell${hrs>0?' hs':''}${isT?' td':''}"><div class="wdn">${WDJ[i]}</div><div class="wdh">${hrs>0?hrs.toFixed(1):'—'}</div>${hrs>0?'<div class="dot"></div>':''}</div>`;
-  }
-  el.innerHTML=h;
-}
-
-// ===== Log list =====
-function renderList(){
-  const el=document.getElementById('logList');
-  const p=document.getElementById('fPeriod').value,tp=document.getElementById('fType').value;
-  const td=today(),ws=wkStart(),ym=td.slice(0,7),lm=lastMo();
-  let list=[...logs];
-  if(p==='week') list=list.filter(l=>l.date>=ws);
-  else if(p==='month') list=list.filter(l=>l.date.startsWith(ym));
-  else if(p==='last') list=list.filter(l=>l.date.startsWith(lm));
-  if(tp!=='all') list=list.filter(l=>l.type===tp);
-  if(tagF) list=list.filter(l=>(l.tags||[]).includes(tagF));
-  list.sort((a,b)=>b.date.localeCompare(a.date));
-  if(!list.length){el.innerHTML='<div class="empty"><div class="ei">📖</div>該当する記録がありません。</div>';return;}
-  el.innerHTML=list.map(l=>{
-    const d=pd(l.date);
-    const tagH=(l.tags||[]).map(tid=>{const t=TOPICS.find(x=>x.id===tid);return t?`<span class="tg" style="background:${t.bg};color:${t.color};">${t.label}</span>`:''}).join('');
-    let badgeH='',typeH='';
-    if(l.type==='study'){
-      badgeH=`<span class="bdg" style="background:var(--gl);color:var(--green);">${l.hours}h</span>`;
-      typeH=`<span class="tbdg" style="background:#EAF2EC;color:#2F6B3E;">📚 学習</span>`;
-    } else if(l.type==='yonn'){
-      const rate=l.q>0?Math.round(l.a/l.q*100):0;
-      const rc=rate>=80?'#2F6B3E':rate>=60?'#E8A900':'#C04A22';
-      const rb=rate>=80?'#EAF2EC':rate>=60?'#FEF7E6':'#FDF0EB';
-      badgeH=`<span class="bdg" style="background:${rb};color:${rc};">${l.a}/${l.q}問 ${rate}%</span>`;
-      typeH=`<span class="tbdg" style="background:#EFF4FF;color:#2563EB;">📋 四択</span>`;
-    } else if(l.type==='ron'){
-      const sc=l.score>=8?'#7C3AED':l.score>=6?'#2F6B3E':'#E8A900';
-      const sb=l.score>=8?'#F3F0FF':l.score>=6?'#EAF2EC':'#FEF7E6';
-      badgeH=`<span class="bdg" style="background:${sb};color:${sc};">${l.score}/10点</span>`;
-      typeH=`<span class="tbdg" style="background:#F3F0FF;color:#7C3AED;">✍️ 論文</span>`;
-      if(l.year) typeH+=`<span style="font-size:11px;color:var(--t3);">${l.year}年度 ${l.prob||''}</span>`;
-    }
-    return `<div class="lc t-${l.type}"><div class="ld"><div class="mn">${MN[d.getMonth()]}</div><div class="dy">${String(d.getDate()).padStart(2,'0')}</div><div class="wd">${WDS[d.getDay()]}</div></div><div class="lb"><div class="lm">${badgeH}${typeH}${tagH}</div><div class="lt">${esc(l.topics)}</div>${l.memo?`<div class="lmemo">${esc(l.memo)}</div>`:''}</div><div class="la"><button class="ibt" onclick="delLog(${l.id})">🗑</button></div></div>`;
-  }).join('');
-}
-
-// ===== Progress =====
-function renderPhaseProg(){
-  const el=document.getElementById('phaseProg');
-  const colors=['#2F6B3E','#7C3AED','#C04A22','#B45309','#c0392b'];
-  el.innerHTML=PHASES.map((p,i)=>{
-    const h=logs.filter(l=>l.type==='study'&&p.months.some(m=>l.date.startsWith(m))).reduce((s,l)=>s+(l.hours||0),0);
-    const pct=Math.min(100,Math.round(h/p.targetH*100));
-    return `<div class="pc" style="margin-bottom:10px;"><div class="plbl">${p.label}<span class="ppct">${h.toFixed(1)}h / ${p.targetH}h</span></div><div class="pbg"><div class="pf" style="width:${pct}%;background:${colors[i]};"></div></div><div class="psub">${pct}% 完了</div></div>`;
-  }).join('');
-}
-function renderTopicProg(){
-  const el=document.getElementById('topicProg'),target=20;
-  el.innerHTML=TOPICS.filter(t=>!['過去問四択','論文'].includes(t.id)).map(t=>{
-    const h=logs.filter(l=>l.type==='study'&&(l.tags||[]).includes(t.id)).reduce((s,l)=>s+(l.hours||0),0);
-    const pct=Math.min(100,Math.round(h/target*100));
-    return `<div class="pc"><div class="plbl">${t.label}<span class="ppct">${h.toFixed(1)}h</span></div><div class="pbg"><div class="pf" style="width:${pct}%;background:${t.color};"></div></div><div class="psub">目標${target}hの${pct}%</div></div>`;
-  }).join('');
-}
-function renderMonthChart(){
-  const el=document.getElementById('monthChart');
-  const months=['2026-03','2026-04','2026-05','2026-06','2026-07'],labels=['3月','4月','5月','6月','7月'];
-  const data=months.map(m=>logs.filter(l=>l.type==='study'&&l.date.startsWith(m)).reduce((s,l)=>s+(l.hours||0),0));
-  const max=Math.max(...data,1);
-  el.innerHTML='<div style="display:flex;align-items:flex-end;gap:12px;height:110px;padding-bottom:24px;position:relative;">'
-    +data.map((h,i)=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;height:100%;justify-content:flex-end;"><div style="font-size:11px;color:var(--green);font-family:Space Mono,monospace;font-weight:700;">${h>0?h.toFixed(1)+'h':''}</div><div style="width:100%;background:var(--green);border-radius:4px 4px 0 0;height:${Math.max(h/max*100,2)}%;opacity:${h>0?1:0.2};"></div><div style="font-size:11px;color:var(--t3);position:absolute;bottom:0;">${labels[i]}</div></div>`).join('')
-    +'</div>';
-}
-function renderYonnChart(){
-  const el=document.getElementById('yonnChart');
-  const list=logs.filter(l=>l.type==='yonn').sort((a,b)=>a.date.localeCompare(b.date)).slice(-12);
-  if(!list.length){el.innerHTML='<div class="empty"><div class="ei">📋</div>まだ四択の記録がありません。</div>';return;}
-  el.innerHTML='<div style="display:flex;align-items:flex-end;gap:8px;height:110px;padding-bottom:24px;position:relative;">'
-    +list.map(l=>{
-      const rate=l.q>0?Math.round(l.a/l.q*100):0;
-      const d=pd(l.date),c=rate>=80?'#2F6B3E':rate>=60?'#E8A900':'#C04A22';
-      return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;height:100%;justify-content:flex-end;"><div style="font-size:10px;color:${c};font-weight:700;">${rate}%</div><div style="width:100%;background:${c};border-radius:3px 3px 0 0;height:${rate}%;"></div><div style="font-size:9px;color:var(--t3);position:absolute;bottom:0;">${d.getMonth()+1}/${d.getDate()}</div></div>`;
-    }).join('')
-    +'</div><div style="font-size:11px;color:var(--t3);margin-top:4px;">■緑:80%以上　■黄:60〜79%　■赤:60%未満</div>';
-}
-function renderRonChart(){
-  const el=document.getElementById('ronChart');
-  const list=logs.filter(l=>l.type==='ron'&&l.score!=null).sort((a,b)=>a.date.localeCompare(b.date)).slice(-12);
-  if(!list.length){el.innerHTML='<div class="empty"><div class="ei">✍️</div>まだ論文の記録がありません。</div>';return;}
-  el.innerHTML='<div style="display:flex;align-items:flex-end;gap:8px;height:110px;padding-bottom:24px;position:relative;">'
-    +list.map(l=>{
-      const pct=l.score/10*100,d=pd(l.date),c=l.score>=8?'#7C3AED':l.score>=6?'#2F6B3E':'#E8A900';
-      return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;height:100%;justify-content:flex-end;"><div style="font-size:10px;color:${c};font-weight:700;">${l.score}</div><div style="width:100%;background:${c};border-radius:3px 3px 0 0;height:${Math.max(pct,4)}%;"></div><div style="font-size:9px;color:var(--t3);position:absolute;bottom:0;">${d.getMonth()+1}/${d.getDate()}</div></div>`;
-    }).join('')
-    +'</div><div style="font-size:11px;color:var(--t3);margin-top:4px;">■紫:8点以上　■緑:6〜7点　■黄:5点以下（10点満点）</div>';
-}
-
-// ===== Schedule =====
-function renderSched(){
-  const el=document.getElementById('schedList');
-  const sf=document.getElementById('sfStatus').value,mf=document.getElementById('sfMonth').value;
-  const allDates=new Set(logs.map(l=>l.date));
-  const td=today();
-  const isDone=s=>allDates.has(s.date)||s.date<td;
-  const TC={'インプット':{bg:'#FEF3C7',c:'#92400E'},'四択':{bg:'#EFF4FF',c:'#2563EB'},'論文':{bg:'#F3F0FF',c:'#7C3AED'},'ミックス':{bg:'#F0FDFA',c:'#0F766E'},'バッファ':{bg:'#F1F0EC',c:'#6B6B6B'}};
-  let items=[...SCHED];
-  if(mf!=='all') items=items.filter(s=>s.date.startsWith(mf));
-  if(sf==='remaining') items=items.filter(s=>!isDone(s));
-  else if(sf==='done') items=items.filter(s=>isDone(s));
-  if(!items.length){el.innerHTML='<div class="empty"><div class="ei">📅</div>該当する予定がありません。</div>';return;}
-  const g={};items.forEach(s=>{const ym=s.date.slice(0,7);if(!g[ym])g[ym]=[];g[ym].push(s);});
-  const ML={'2026-03':'3月','2026-04':'4月','2026-05':'5月','2026-06':'6月','2026-07':'7月'};
-  el.innerHTML=Object.entries(g).map(([ym,ss])=>{
-    const done=ss.filter(s=>isDone(s)).length;
-    return `<div style="margin-bottom:16px;"><div class="mlbl">${ML[ym]||ym}　<span style="font-weight:400;">${done}/${ss.length} 完了</span></div>${ss.map(s=>{const d=isDone(s),it=s.date===td,dt=pd(s.date),tc=TC[s.type]||{bg:'#F1F0EC',c:'#6B6B6B'};return `<div class="si${d?' done':''}${it?' tday':''}"><span style="font-size:16px;">${d?'✅':'⬜'}</span><span class="sddate">${dt.getMonth()+1}/${dt.getDate()}(${WDJ[dt.getDay()]})</span><span class="sdcont">${esc(s.content)}</span><span class="sdtype" style="background:${tc.bg};color:${tc.c};">${s.type}</span></div>`;}).join('')}</div>`;
-  }).join('');
-}
-
-// ===== Keywords =====
-function addKW(){
-  const word=document.getElementById('kwWord').value.trim(),cat=document.getElementById('kwCat').value,desc=document.getElementById('kwDesc').value.trim();
-  if(!word){alert('キーワードを入力してください。');return;}
-  kws.unshift({id:Date.now(),word,cat,desc});saveKWs();renderKWs();
-  document.getElementById('kwWord').value='';document.getElementById('kwDesc').value='';
-}
-function delKW(id){kws=kws.filter(k=>k.id!==id);saveKWs();renderKWs();}
-function renderKWs(){
-  const el=document.getElementById('kwList');
-  if(!kws.length){el.innerHTML='<div class="empty"><div class="ei">🔑</div>まだキーワードがありません。</div>';return;}
-  const g={};kws.forEach(k=>{if(!g[k.cat])g[k.cat]=[];g[k.cat].push(k);});
-  el.innerHTML=Object.entries(g).map(([cat,ks])=>{
-    const t=TOPICS.find(x=>x.id===cat),color=t?t.color:'#6B6B6B',bg=t?t.bg:'#F0F0EE';
-    return `<div style="margin-bottom:18px;"><div style="font-size:11px;font-weight:700;color:${color};background:${bg};display:inline-block;padding:3px 10px;border-radius:4px;margin-bottom:8px;">${cat}</div><div style="display:flex;flex-direction:column;gap:6px;">${ks.map(k=>`<div class="kc"><div style="flex:1;"><div style="font-size:14px;font-weight:700;color:${color};margin-bottom:3px;">${esc(k.word)}</div>${k.desc?`<div style="font-size:12px;color:var(--t2);line-height:1.6;">${esc(k.desc)}</div>`:''}</div><button class="ibt" onclick="delKW(${k.id})">🗑</button></div>`).join('')}</div></div>`;
-  }).join('');
-}
-
-// ===== Badges =====
-function updateBadges(){
-  TOPICS.forEach(t=>{
-    const el=document.getElementById('b-'+t.id);
-    if(!el)return;
-    if(t.id==='過去問四択') el.textContent=logs.filter(l=>l.type==='yonn').length;
-    else if(t.id==='論文') el.textContent=logs.filter(l=>l.type==='ron').length;
-    else el.textContent=logs.filter(l=>(l.tags||[]).includes(t.id)).length;
+    container.innerHTML=html;
   });
 }
 
-// ===== Tab =====
-function showTab(tab){
-  ['log','progress','schedule','keyword'].forEach(t=>document.getElementById('tab-'+t).classList.toggle('hidden',t!==tab));
-  document.querySelectorAll('.sb-item').forEach(el=>el.classList.remove('active'));
-  const idx={log:0,progress:1,schedule:2,keyword:3}[tab];
-  if(idx!=null) document.querySelectorAll('.sb-item')[idx].classList.add('active');
+function ck(wid,type,idx,val){chks[wid+type+idx]=val;save();renderSchedule();}
+function toggleWeek(id){const b=document.getElementById(id);if(b)b.style.display=b.style.display!=='none'?'none':'block';}
+function showMonth(m,el,color){
+  document.querySelectorAll('.month-page').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.month-tab').forEach(e=>{e.classList.remove('active');e.style.background='';e.style.color='';});
+  document.getElementById(m).classList.add('active');
+  el.classList.add('active');el.style.background=color;el.style.color='white';
 }
-function setF(t){
-  tagF=t;
-  document.getElementById('tagFLabel').textContent=t?'タグ: '+t:'';
-  renderList();showTab('log');
-}
-
-// ===== CSV =====
-function expCSV(){
-  const rows=[['タイプ','日付','学習時間(h)','問題数','正答数','正答率','採点(/10)','年度','問題番号','タグ','内容','メモ'],
-    ...logs.map(l=>[l.type,l.date,l.hours||'',l.q||'',l.a||'',l.q?Math.round(l.a/l.q*100)+'%':'',l.score!=null?l.score:'',l.year||'',l.prob||'',(l.tags||[]).join('/'),'\"'+(l.topics||'')+'\"','\"'+((l.memo||'').replace(/"/g,'""'))+'\"'])];
-  const csv=rows.map(r=>r.join(',')).join('\n');
-  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));a.download='学習記録_コンクリート診断士.csv';a.click();
+function showMain(p,el){
+  document.querySelectorAll('.page').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.main-tab').forEach(e=>e.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');el.classList.add('active');
+  if(p==='history')renderHistory();
+  if(p==='schedule')renderSchedule();
 }
 
-function openDrawer(){document.getElementById('mobDrawer').style.display='block';}
-function closeDrawer(){document.getElementById('mobDrawer').style.display='none';}
+// ── FORM ──
+document.querySelectorAll('#mech-tags .tag').forEach(t=>t.addEventListener('click',()=>t.classList.toggle('sel')));
 
-init();
+function calcRate(){
+  const tot=+document.getElementById('inp-qt').value;
+  const cor=+document.getElementById('inp-qc').value;
+  const box=document.getElementById('q-rate-box');
+  if(tot>0 && cor>=0){
+    const rate=Math.round(cor/tot*100);
+    box.textContent=rate+'%';
+    box.style.color=rate>=80?'var(--green)':rate>=60?'var(--orange)':'var(--red)';
+    box.style.background=rate>=80?'#e8f5e9':rate>=60?'#fff3e0':'#ffebee';
+    box.style.borderColor=rate>=80?'#a5d6a7':rate>=60?'#ffcc80':'#ef9a9a';
+  } else {
+    box.textContent='─';
+    box.style.color='var(--accent)';
+    box.style.background='#e3f2fd';
+    box.style.borderColor='#90caf9';
+  }
+}
+
+function addLog(){
+  const date=document.getElementById('inp-date').value,study=+document.getElementById('inp-study').value;
+  if(!date||!study){alert('日付と学習時間は必須です');return;}
+  const tags=[...document.querySelectorAll('#mech-tags .tag.sel')].map(t=>t.dataset.val);
+  const tot=+document.getElementById('inp-qt').value,cor=+document.getElementById('inp-qc').value;
+  logs.unshift({id:Date.now(),date,study,
+    break_h:+document.getElementById('inp-break').value||0,
+    content:document.getElementById('inp-content').value.trim(),
+    tags,memo:document.getElementById('inp-memo').value.trim(),
+    jic_round:document.getElementById('inp-jic-round').value,
+    shin_round:document.getElementById('inp-shin-round').value,
+    q_total:tot||null,q_correct:cor||null,q_rate:tot?Math.round(cor/tot*100):null,
+    q_field:document.getElementById('inp-qf').value.trim(),
+    essay_year:document.getElementById('inp-ey').value.trim(),
+    essay_status:document.getElementById('inp-es').value,
+    essay_memo:document.getElementById('inp-em').value.trim(),
+  });
+  save();updateStats();clearForm();alert('✅ 保存しました！');
+}
+function clearForm(){
+  ['inp-date','inp-study','inp-break','inp-content','inp-memo','inp-qt','inp-qc','inp-qf','inp-ey','inp-em']
+    .forEach(id=>document.getElementById(id).value='');
+  document.getElementById('inp-es').value='';
+  document.getElementById('inp-jic-round').value='';
+  document.getElementById('inp-shin-round').value='';
+  document.querySelectorAll('#mech-tags .tag.sel').forEach(t=>t.classList.remove('sel'));
+  const box=document.getElementById('q-rate-box');
+  box.textContent='─';box.style.color='var(--accent)';box.style.background='#e3f2fd';box.style.borderColor='#90caf9';
+}
+
+// ── STATS ──
+function updateStats(){
+  const total=logs.reduce((s,l)=>s+l.study,0);
+  const days=new Set(logs.map(l=>l.date)).size;
+  const essays=logs.filter(l=>l.essay_year).length;
+  document.getElementById('st-total').textContent=total.toFixed(1);
+  document.getElementById('st-days').textContent=days;
+  document.getElementById('st-essay').textContent=essays;
+  document.getElementById('st-avg').textContent=days?(total/days).toFixed(1):'0.0';
+}
+
+// ── HISTORY ──
+const DOW=['日','月','火','水','木','金','土'];
+const MONS=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+const TC={中性化:'#e3f2fd,#1565c0',塩害:'#ffebee,#c62828',ASR:'#e8f5e9,#2e7d32',凍害:'#e0f7fa,#00796b',疲労:'#fff3e0,#e65100',火害:'#fff8e1,#f57f17','化学的侵食':'#f3e5f5,#6a1b9a',調査手法:'#e8eaf6,#283593','補修・補強':'#fbe9e7,#bf360c',計算:'#e0f2f1,#00695c',過去問:'#ede7f6,#4527a0',篠田:'#e0f2f1,#00695c'};
+
+function renderHistory(){
+  const period=document.getElementById('fil-period').value,type=document.getElementById('fil-type').value;
+  const now=new Date();
+  let filtered=logs.filter(l=>{
+    const d=new Date(l.date);
+    if(period==='week'){const mon=new Date(now);mon.setDate(now.getDate()-now.getDay()+(now.getDay()===0?-6:1));if(d<mon)return false;}
+    if(period==='month'&&(d.getMonth()!==now.getMonth()||d.getFullYear()!==now.getFullYear()))return false;
+    if(type==='essay'&&!l.essay_year)return false;
+    if(type==='quiz'&&!l.q_total)return false;
+    return true;
+  });
+  const c=document.getElementById('log-list');
+  if(!filtered.length){c.innerHTML='<p style="text-align:center;color:var(--muted);padding:30px">記録がありません</p>';return;}
+  c.innerHTML=filtered.map(l=>{
+    const d=new Date(l.date);
+    const tagsHtml=(l.tags||[]).map(t=>{const[bg,fg]=(TC[t]||'#f5f5f5,#555').split(',');return`<span class="log-tag" style="background:${bg};color:${fg}">${t}</span>`;}).join('');
+    const examHtml=l.q_total?`<div class="log-exam" style="background:#e3f2fd;color:#1565c0">択一：${l.q_correct}/${l.q_total}問（${l.q_rate}%）${l.q_field?' | '+l.q_field:''}</div>`:'';
+    const essayHtml=l.essay_year?`<div class="log-essay">✍️ ${l.essay_year}${l.essay_status?' ['+l.essay_status+']':''}</div>`:'';
+    const roundHtml=(l.jic_round||l.shin_round)?`<div class="log-round">🔄 JIC:${l.jic_round||'─'}　篠田:${l.shin_round||'─'}</div>`:'';
+    return`<div class="log-item">
+      <div class="log-head">
+        <div class="log-date-block"><div class="log-mon">${MONS[d.getMonth()]}</div><div class="log-day">${String(d.getDate()).padStart(2,'0')}</div><div class="log-dow">${DOW[d.getDay()]}</div></div>
+        <div class="log-right">
+          <span class="log-hrs">📚 ${l.study}h</span>
+          ${l.essay_year?'<span class="badge badge-essay">✍️</span>':''}
+          <button class="del-btn" onclick="delLog(${l.id})">🗑</button>
+        </div>
+      </div>
+      <div class="log-content">${l.content||'─'}</div>
+      <div class="log-tags">${tagsHtml}</div>
+      ${l.memo?`<div class="log-memo">💬 ${l.memo}</div>`:''}
+      ${roundHtml}${examHtml}${essayHtml}
+    </div>`;
+  }).join('');
+}
+function delLog(id){if(!confirm('削除しますか？'))return;logs=logs.filter(l=>l.id!==id);save();updateStats();renderHistory();}
+
+function exportCSV(){
+  const h=['日付','学習時間','休憩','内容','タグ','メモ','JIC周回','篠田周回','択一問題数','択一正答数','択一正答率','択一分野','論文年度','論文ステータス','論文メモ'];
+  const r=logs.map(l=>[l.date,l.study,l.break_h,l.content,(l.tags||[]).join('|'),l.memo,l.jic_round||'',l.shin_round||'',l.q_total||'',l.q_correct||'',l.q_rate!=null?l.q_rate+'%':'',l.q_field||'',l.essay_year||'',l.essay_status||'',l.essay_memo||'']);
+  const csv=[h,...r].map(row=>row.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);a.download=`study_log_${new Date().toISOString().slice(0,10)}.csv`;a.click();
+}
+
+function seedIfEmpty(){
+  if(logs.length)return;
+  logs=[
+    {id:4,date:'2026-03-11',study:3.0,break_h:0.5,content:'調査手法（コア・超音波）インプット',tags:['調査手法'],memo:'',jic_round:'2周目',shin_round:'',q_total:null,q_correct:null,q_rate:null,q_field:'',essay_year:'',essay_status:'',essay_memo:''},
+    {id:3,date:'2026-03-10',study:3.0,break_h:0.5,content:'火害劣化メカニズム終了、調査手法「強度」インプット / 論文推敲2024提出済',tags:['火害','調査手法'],memo:'',jic_round:'2周目',shin_round:'',q_total:null,q_correct:null,q_rate:null,q_field:'',essay_year:'2024年度 問題Ⅰ',essay_status:'提出済み',essay_memo:''},
+    {id:2,date:'2026-03-09',study:2.5,break_h:0.5,content:'火害インプット終了 / 論文2024年度推敲実施',tags:['火害'],memo:'推敲効果的！別日にやると尚良いと実感',jic_round:'2周目',shin_round:'',q_total:null,q_correct:null,q_rate:null,q_field:'',essay_year:'2024年度 問題Ⅰ',essay_status:'推敲済み',essay_memo:''},
+    {id:1,date:'2026-03-08',study:3.5,break_h:0.5,content:'凍害インプット完了 / 火害インプット途中',tags:['凍害','火害'],memo:'コンクリート・鉄筋の加熱・冷却時の温度閾値を要暗記。要テキスト確認。',jic_round:'2周目',shin_round:'',q_total:null,q_correct:null,q_rate:null,q_field:'',essay_year:'',essay_status:'',essay_memo:''},
+  ];
+  save();
+}
+
+load();seedIfEmpty();
+document.getElementById('inp-date').value=new Date().toISOString().slice(0,10);
+updateStats();renderSchedule();
 </script>
 
 </body>
