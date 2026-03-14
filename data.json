@@ -1,25 +1,7 @@
 {
   "logs": [
     {
-      "id": 1773526308711,
-      "date": "2026-03-15",
-      "study": 2,
-      "break_h": 0,
-      "content": "",
-      "tags": [],
-      "memo": "",
-      "jic_round": "",
-      "shin_round": "",
-      "q_total": null,
-      "q_correct": null,
-      "q_rate": null,
-      "q_field": "",
-      "essay_year": "",
-      "essay_status": "",
-      "essay_memo": ""
-    },
-    {
-      "id": 1773526157621,
+      "id": 1773526316081,
       "date": "2026-03-14",
       "study": 0,
       "break_h": 0,
