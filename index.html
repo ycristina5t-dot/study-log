@@ -436,12 +436,28 @@ async function ghLoad(){
     const j=await r.json();
     const data=JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\n/g,'')))));
     if(data.logs){
-      logs=migrate(data.logs);
+      // GitHubとLocalStorageをマージ（IDでdedup、日付降順ソート）
+      const ghLogs=migrate(data.logs);
+      const merged=mergeLogArrays(logs, ghLogs);
+      logs=merged;
       localStorage.setItem(SK,JSON.stringify(logs));
     }
-    if(data.chks){chks=data.chks;localStorage.setItem(CK,JSON.stringify(chks));}
+    if(data.chks){
+      // chksもマージ（どちらかがtrueなら保持）
+      const ghChks=data.chks||{};
+      Object.keys(ghChks).forEach(k=>{if(ghChks[k])chks[k]=true;});
+      localStorage.setItem(CK,JSON.stringify(chks));
+    }
     return true;
   }catch(e){console.error('ghLoad error',e);return false;}
+}
+
+// 2つのlogsをマージ：IDでdedup、日付降順ソート
+function mergeLogArrays(local, remote){
+  const map={};
+  // remoteを先に入れてlocalで上書き（localが新しいデータを持っている可能性）
+  [...remote,...local].forEach(l=>{ map[l.id]=l; });
+  return Object.values(map).sort((a,b)=>new Date(b.date)-new Date(a.date)||b.id-a.id);
 }
 
 // PAT モーダル
@@ -980,6 +996,8 @@ function renderHistory(){
     return true;
   });
   if(!filtered.length){c.innerHTML='<p style="text-align:center;color:var(--muted);padding:30px">記録がありません</p>';return;}
+  // 日付降順ソート
+  filtered.sort((a,b)=>new Date(b.date)-new Date(a.date)||b.id-a.id);
   c.innerHTML=filtered.map(l=>{
     const d=new Date(l.date);
     const tagsHtml=(l.tags||[]).map(t=>{const[bg,fg]=(TC[t]||'#f5f5f5,#555').split(',');return`<span class="log-tag" style="background:${bg};color:${fg}">${t}</span>`;}).join('');
