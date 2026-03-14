@@ -376,8 +376,15 @@ let logs=[], chks={};
 
 const openWeeks = new Set();
 
+function migrate(arr){
+  return arr.map(l=>({
+    ...l,
+    study:(l.study!==undefined)?l.study:(l.hours!==undefined?l.hours:0),
+    content:(l.content!==undefined)?l.content:(l.topics||''),
+  }));
+}
 function load(){
-  try{logs=JSON.parse(localStorage.getItem(SK))||[];}catch{logs=[];}
+  try{logs=migrate(JSON.parse(localStorage.getItem(SK))||[]);}catch{logs=[];}
   try{chks=JSON.parse(localStorage.getItem(CK))||{};}catch{chks={};}
 }
 
@@ -397,21 +404,22 @@ function showSyncBar(msg, color){
   setTimeout(()=>{bar.style.display='none';},3000);
 }
 
-async function ghSave(){
+async function ghSave(retry=true){
   const pat=localStorage.getItem(PAT_KEY);
   if(!pat)return;
   try{
     const headers={Authorization:`token ${pat}`,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'};
-    const r=await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}?ref=${GH_BRANCH}`,{headers});
-    if(!r.ok){showSyncBar('⚠️ GitHub保存失敗 ('+r.status+')',  '#ef9a9a');return;}
+    const r=await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}?ref=${GH_BRANCH}&t=${Date.now()}`,{headers});
+    if(!r.ok){showSyncBar('⚠️ GitHub保存失敗 ('+r.status+')','#ef9a9a');return;}
     const j=await r.json();
     const sha=j.sha;
-    const content=btoa(unescape(encodeURIComponent(JSON.stringify({logs,chks},null,2))));
+    const body=btoa(unescape(encodeURIComponent(JSON.stringify({logs,chks},null,2))));
     const res=await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}`,{
       method:'PUT',headers,
-      body:JSON.stringify({message:'update data',content,sha,branch:GH_BRANCH})
+      body:JSON.stringify({message:'update data',content:body,sha,branch:GH_BRANCH})
     });
     if(res.ok){showSyncBar('☁️ GitHubに保存しました','#43a047');}
+    else if(res.status===409&&retry){setTimeout(()=>ghSave(false),1000);}
     else{showSyncBar('⚠️ 保存失敗 ('+res.status+')','#ef9a9a');}
   }catch(e){showSyncBar('⚠️ ネットワークエラー','#ef9a9a');console.error(e);}
 }
@@ -428,11 +436,7 @@ async function ghLoad(){
     const j=await r.json();
     const data=JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\n/g,'')))));
     if(data.logs){
-      logs=data.logs.map(l=>({
-        ...l,
-        study:(l.study!==undefined)?l.study:(l.hours??0),
-        content:(l.content!==undefined)?l.content:(l.topics??''),
-      }));
+      logs=migrate(data.logs);
       localStorage.setItem(SK,JSON.stringify(logs));
     }
     if(data.chks){chks=data.chks;localStorage.setItem(CK,JSON.stringify(chks));}
