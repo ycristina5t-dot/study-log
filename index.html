@@ -427,7 +427,14 @@ async function ghLoad(){
     if(!r.ok)return false;
     const j=await r.json();
     const data=JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\n/g,'')))));
-    if(data.logs){logs=data.logs;localStorage.setItem(SK,JSON.stringify(logs));}
+    if(data.logs){
+      logs=data.logs.map(l=>({
+        ...l,
+        study:(l.study!==undefined)?l.study:(l.hours??0),
+        content:(l.content!==undefined)?l.content:(l.topics??''),
+      }));
+      localStorage.setItem(SK,JSON.stringify(logs));
+    }
     if(data.chks){chks=data.chks;localStorage.setItem(CK,JSON.stringify(chks));}
     return true;
   }catch(e){console.error('ghLoad error',e);return false;}
