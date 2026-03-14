@@ -14,7 +14,7 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:-apple-system,'Hiragino Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;}
-header{background:var(--primary);color:white;padding:12px 16px 8px;position:sticky;top:0;z-index:200;}
+header{background:var(--primary);color:white;padding:12px 16px 8px;position:sticky;top:0;z-index:200;position:relative;}
 header h1{font-size:14px;font-weight:700;}
 header p{font-size:10px;opacity:.75;margin-top:1px;}
 .main-tabs{display:flex;background:white;border-bottom:2px solid var(--border);position:sticky;top:48px;z-index:199;}
@@ -107,7 +107,6 @@ textarea{height:56px;resize:vertical;}
 .check-item input.essay-ck{accent-color:var(–purple);}
 .check-item input.misc-ck{accent-color:var(–accent);}
 .item-text{font-size:11px;line-height:1.5;}
-/* ★ チェック済みアイテムの打ち消し線 */
 .item-text.checked-text{text-decoration:line-through;color:var(–muted);opacity:.7;}
 .item-sub{font-size:10px;color:var(–muted);margin-top:1px;}
 .item-day{font-size:10px;font-weight:700;color:var(–purple);margin-bottom:1px;}
@@ -133,6 +132,9 @@ textarea{height:56px;resize:vertical;}
 .log-exam{font-size:11px;padding:4px 8px;border-radius:8px;margin-top:4px;}
 .log-essay{font-size:11px;padding:4px 8px;border-radius:8px;margin-top:4px;background:#f3e5f5;color:var(–purple);}
 .log-round{font-size:11px;padding:4px 8px;border-radius:8px;margin-top:4px;background:#e0f2f1;color:var(–teal);}
+
+/* ── 同期ステータスバー ── */
+#sync-bar{font-size:11px;text-align:center;padding:4px 8px;display:none;}
 </style>
 
 </head>
@@ -141,7 +143,29 @@ textarea{height:56px;resize:vertical;}
 <header>
   <h1>📘 コンクリート診断士2026 学習ログ</h1>
   <p>試験：2026年7月｜JIC3周+篠田5周+論文30本以上｜今日（3/14）論文② 火害スタート🔥</p>
+  <button onclick="openPAT()" style="position:absolute;right:10px;top:10px;background:rgba(255,255,255,.2);border:none;color:white;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;">⚙️ 同期</button>
 </header>
+
+<!-- 同期ステータスバー -->
+
+<div id="sync-bar"></div>
+
+<!-- PAT設定モーダル -->
+
+<div id="pat-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:999;align-items:center;justify-content:center;">
+  <div style="background:white;border-radius:12px;padding:20px;margin:20px;max-width:360px;width:100%;">
+    <div style="font-size:14px;font-weight:700;margin-bottom:10px;">🔑 GitHub同期設定</div>
+    <div style="font-size:11px;color:#777;margin-bottom:8px;">Personal Access Token（repo権限）を入力。このデバイスのみに保存されます。</div>
+    <input id="pat-inp" type="password" placeholder="ghp_xxxxxxxxxxxx"
+      style="width:100%;border:1px solid #ddd;border-radius:8px;padding:8px 10px;font-size:13px;margin-bottom:8px;">
+    <div id="pat-status" style="font-size:11px;margin-bottom:8px;min-height:18px;color:#777;"></div>
+    <div style="display:flex;gap:8px;">
+      <button onclick="savePAT()" style="flex:1;background:#2196F3;color:white;border:none;border-radius:8px;padding:10px;font-size:13px;font-weight:700;cursor:pointer;">保存して同期</button>
+      <button onclick="closePAT()" style="background:#eee;border:none;border-radius:8px;padding:10px;font-size:13px;cursor:pointer;">閉じる</button>
+    </div>
+    <button onclick="clearPAT()" style="width:100%;margin-top:8px;background:none;border:1px solid #ffcdd2;color:#e53935;border-radius:8px;padding:8px;font-size:11px;cursor:pointer;">🗑 Token削除</button>
+  </div>
+</div>
 
 <div class="main-tabs">
   <div class="main-tab active" onclick="showMain('log',this)">📝 記録</div>
@@ -343,19 +367,95 @@ textarea{height:56px;resize:vertical;}
 </div>
 
 <script>
+// ── GitHub設定 ──
+const GH_OWNER='ycristina5t-dot', GH_REPO='study-log', GH_FILE='data.json', GH_BRANCH='main';
+const PAT_KEY='gh_pat_cl';
+
 const SK='cl-logs-v6', CK='cl-chks-v6';
 let logs=[], chks={};
 
-// ★ 開閉状態を管理するSet（週IDを保持）
 const openWeeks = new Set();
 
 function load(){
   try{logs=JSON.parse(localStorage.getItem(SK))||[];}catch{logs=[];}
   try{chks=JSON.parse(localStorage.getItem(CK))||{};}catch{chks={};}
 }
+
 function save(){
   localStorage.setItem(SK,JSON.stringify(logs));
   localStorage.setItem(CK,JSON.stringify(chks));
+  ghSave();
+}
+
+// ── GitHub同期 ──
+function showSyncBar(msg, color){
+  const bar=document.getElementById('sync-bar');
+  bar.textContent=msg;
+  bar.style.background=color||'#e3f2fd';
+  bar.style.color=color?'white':'#1565c0';
+  bar.style.display='block';
+  setTimeout(()=>{bar.style.display='none';},3000);
+}
+
+async function ghSave(){
+  const pat=localStorage.getItem(PAT_KEY);
+  if(!pat)return;
+  try{
+    const headers={Authorization:`token ${pat}`,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'};
+    const r=await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}?ref=${GH_BRANCH}`,{headers});
+    if(!r.ok){showSyncBar('⚠️ GitHub保存失敗 ('+r.status+')',  '#ef9a9a');return;}
+    const j=await r.json();
+    const sha=j.sha;
+    const content=btoa(unescape(encodeURIComponent(JSON.stringify({logs,chks},null,2))));
+    const res=await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}`,{
+      method:'PUT',headers,
+      body:JSON.stringify({message:'update data',content,sha,branch:GH_BRANCH})
+    });
+    if(res.ok){showSyncBar('☁️ GitHubに保存しました','#43a047');}
+    else{showSyncBar('⚠️ 保存失敗 ('+res.status+')','#ef9a9a');}
+  }catch(e){showSyncBar('⚠️ ネットワークエラー','#ef9a9a');console.error(e);}
+}
+
+async function ghLoad(){
+  const pat=localStorage.getItem(PAT_KEY);
+  if(!pat)return false;
+  try{
+    const r=await fetch(
+      `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}?ref=${GH_BRANCH}&t=${Date.now()}`,
+      {headers:{Authorization:`token ${pat}`,'Accept':'application/vnd.github.v3+json'}}
+    );
+    if(!r.ok)return false;
+    const j=await r.json();
+    const data=JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\n/g,'')))));
+    if(data.logs){logs=data.logs;localStorage.setItem(SK,JSON.stringify(logs));}
+    if(data.chks){chks=data.chks;localStorage.setItem(CK,JSON.stringify(chks));}
+    return true;
+  }catch(e){console.error('ghLoad error',e);return false;}
+}
+
+// PAT モーダル
+function openPAT(){
+  const m=document.getElementById('pat-modal');
+  m.style.display='flex';
+  const cur=localStorage.getItem(PAT_KEY)||'';
+  document.getElementById('pat-inp').value=cur?'（設定済み）':'';
+  document.getElementById('pat-status').textContent=cur?'✅ Token設定済み':'未設定';
+}
+function closePAT(){document.getElementById('pat-modal').style.display='none';}
+async function savePAT(){
+  const val=document.getElementById('pat-inp').value.trim();
+  if(!val||val==='（設定済み）'){closePAT();return;}
+  localStorage.setItem(PAT_KEY,val);
+  document.getElementById('pat-status').textContent='⏳ 接続確認中...';
+  const ok=await ghLoad();
+  document.getElementById('pat-status').textContent=ok?'✅ 同期成功！':'❌ 失敗（Token or リポジトリを確認）';
+  if(ok){updateStats();renderSchedule();renderHistory();setTimeout(closePAT,1500);}
+}
+function clearPAT(){
+  if(!confirm('Token削除しますか？'))return;
+  localStorage.removeItem(PAT_KEY);
+  document.getElementById('pat-inp').value='';
+  document.getElementById('pat-status').textContent='削除しました';
 }
 
 // ── SCHEDULE DATA ──
@@ -409,37 +509,29 @@ const MONTHS=[
           {text:'コンクリートの変状：初期欠陥①②③', sub:'JIC 2周目 ▶ 変状 > 初期欠陥'},
         ],
         shin:[{text:'2周目スタート：1章＋2章前半 精読', sub:'1章（変状） / 2.1中性化 / 2.2塩害 / 2.3ASR / 2.4凍害'}],
-        essays:[
-          {day:'4/5（日）論文⑤【2周目】', text:'テーマ：塩害　初稿\n翌日4/6（月）推敲'},
-        ],misc:[]},
+        essays:[{day:'4/5（日）論文⑤【2周目】', text:'テーマ：塩害　初稿\n翌日4/6（月）推敲'}],misc:[]},
       { id:'w4b', label:'4/7〜4/13', open:false,
         jic:[
           {text:'補修工法：表面被覆①・含浸①②・電気化学①②', sub:'JIC 2周目 ▶ 補修後半'},
           {text:'コンクリートの変状：経年劣化①②③④', sub:'JIC 2周目 ▶ 変状 > 経年劣化'},
         ],
-        shin:[{text:'2章後半＋3章前半 精読', sub:'2.5化学的侵食 / 2.6風化・老化 / 2.7疲労 / 2.8火災 / 3.1構造物の調査 / 3.2規格・基準 / 3.3圧縮強度'}],
-        essays:[
-          {day:'4/12（日）論文⑥【2周目】', text:'テーマ：ASR　初稿\n翌日4/13（月）推敲'},
-        ],misc:[]},
+        shin:[{text:'2章後半＋3章前半 精読', sub:'2.5化学的侵食 / 2.6風化・老化 / 2.7疲労 / 2.8火災 / 3.1〜3.3'}],
+        essays:[{day:'4/12（日）論文⑥【2周目】', text:'テーマ：ASR　初稿\n翌日4/13（月）推敲'}],misc:[]},
       { id:'w4c', label:'4/14〜4/20', open:false,
         jic:[
           {text:'増厚①・その他補強①・維持管理①', sub:'JIC 2周目 ▶ 補強・維持管理'},
           {text:'コンクリートの変状：構造的変状①', sub:'JIC 2周目 ▶ 変状 > 構造的変状'},
           {text:'コンクリート年表・計算ドリル開始', sub:'JIC 2周目 ▶ 年表・計算（前半5種）'},
         ],
-        shin:[{text:'3章後半＋4章前半 精読', sub:'3.4ひび割れ等 / 3.5鉄筋腐食 / 3.6配合 / 3.7ASR / 3.8複合 / 4.1中性化 / 4.2塩害 / 4.3ASR'}],
-        essays:[
-          {day:'4/18（土）論文⑦【2周目】', text:'テーマ：化学的侵食　初稿\n翌日4/19（日）推敲'},
-        ],misc:[]},
+        shin:[{text:'3章後半＋4章前半 精読', sub:'3.4〜3.8 / 4.1〜4.3'}],
+        essays:[{day:'4/18（土）論文⑦【2周目】', text:'テーマ：化学的侵食　初稿\n翌日4/19（日）推敲'}],misc:[]},
       { id:'w4d', label:'4/21〜4/30', open:false,
         jic:[
           {text:'計算ドリル後半（5種）完了', sub:'JIC 2周目 ▶ 計算後半5種'},
           {text:'★ JIC 2周目 完了！→ 3周目スタート', sub:'JIC 3周目 ▶ 劣化メカニズムから再スタート'},
         ],
-        shin:[{text:'4章後半＋5・6章 精読 → ★2周目完了', sub:'4.4凍害〜4.11複合 / 5章補修・補強（5.1〜5.4） / 6章道路橋・トンネル（6.1・6.2）'}],
-        essays:[
-          {day:'4/25（土）論文⑧【2周目】', text:'テーマ：疲労　初稿\n翌日4/26（日）推敲　★2周目完了（累計8本）'},
-        ],misc:[],
+        shin:[{text:'4章後半＋5・6章 精読 → ★2周目完了', sub:'4.4〜4.11 / 5章 / 6章'}],
+        essays:[{day:'4/25（土）論文⑧【2周目】', text:'テーマ：疲労　初稿\n翌日4/26（日）推敲　★2周目完了（累計8本）'}],misc:[],
         note:'4月末でJIC 2周目完了・3周目開始。篠田2周目完了。論文累計12本目標。'},
     ]},
   { id:'m5', color:'#C62828', label:'5月（5/1〜5/31）　JIC3周目 + 篠田3〜4周目 + 論文10本',
@@ -450,7 +542,7 @@ const MONTHS=[
           {text:'JIC 3周目：劣化メカニズム全種 高速復習', sub:'JIC 3周目 ▶ 劣化メカニズム（課題中心）'},
           {text:'JIC 3周目：調査手法前半', sub:'JIC 3周目 ▶ 強度・ひび割れ・鉄筋・配合'},
         ],
-        shin:[{text:'3周目：2章 劣化の機構 弱点精読', sub:'2.1〜2.8 苦手箇所に絞って深読み（特に凍害・ASR・化学的侵食）'}],
+        shin:[{text:'3周目：2章 劣化の機構 弱点精読', sub:'2.1〜2.8 苦手箇所（特に凍害・ASR・化学的侵食）'}],
         essays:[
           {day:'5/2（土）論文⑨【3周目】', text:'テーマ：火害　初稿＋当日軽め推敲'},
           {day:'5/9（土）論文⑩【3周目】', text:'テーマ：凍害　初稿＋当日軽め推敲'},
@@ -461,8 +553,8 @@ const MONTHS=[
           {text:'JIC 3周目：補修・補強・維持管理', sub:'JIC 3周目 ▶ 補修系全種'},
         ],
         shin:[
-          {text:'3周目：3章 調査手法 弱点精読', sub:'3.3圧縮強度 / 3.4ひび割れ等 / 3.5鉄筋腐食 / 3.7ASR 苦手を中心に'},
-          {text:'3周目完了 → 4周目スタート：4章 評価・判定', sub:'4.1〜4.11 弱点テーマのみ読み込む'},
+          {text:'3周目：3章 調査手法 弱点精読', sub:'3.3〜3.5 / 3.7 苦手を中心に'},
+          {text:'3周目完了 → 4周目スタート：4章 評価・判定', sub:'4.1〜4.11 弱点テーマのみ'},
         ],
         essays:[
           {day:'5/16（土）論文⑪【3周目】', text:'テーマ：中性化　初稿＋当日軽め推敲'},
@@ -473,11 +565,11 @@ const MONTHS=[
           {text:'JIC 3周目：計算ドリル全10種 + 年表', sub:'JIC 3周目 ▶ 計算・年表（小テスト含む）'},
           {text:'★ JIC 3周目 完了！', sub:'過去問（四択）2022〜2024年度 開始'},
         ],
-        shin:[{text:'4周目完了：5・6章 弱点確認', sub:'5章補修・補強（5.1工法選定・5.2補修・5.3補強・5.4維持管理） / 6章道路橋・トンネル'}],
+        shin:[{text:'4周目完了：5・6章 弱点確認', sub:'5章補修・補強 / 6章道路橋・トンネル'}],
         essays:[
           {day:'5/23（土）論文⑬【3周目】', text:'テーマ：ASR　初稿＋さっと確認'},
           {day:'5/24（日）論文⑭【3周目】', text:'テーマ：化学的侵食　★3周目完了（累計14本）'},
-          {day:'5/30（土）論文⑮【4周目】', text:'テーマ：疲労　ポイント確認のみ（推敲ほぼなし）'},
+          {day:'5/30（土）論文⑮【4周目】', text:'テーマ：疲労　ポイント確認のみ'},
           {day:'5/31（日）論文⑯【4周目】', text:'過去問2024年度 問題Ⅰ　ポイント確認'},
         ],misc:[],
         note:'5月末でJIC 3周完了・篠田4周完了。論文累計21本目標。計算ドリル全10種必須。'},
@@ -487,14 +579,14 @@ const MONTHS=[
     weeks:[
       { id:'w6a', label:'6/1〜6/7　論文メイン🔥', open:false,
         jic:[{text:'過去問 択一：2022〜2024年度（苦手のみ）', sub:'過去問 > 2024・2023・2022年度'}],
-        shin:[{text:'5周目スタート：1〜3章 高速通読', sub:'1章変状 / 2章劣化の機構 / 3章調査手法（全体を最終確認）'}],
+        shin:[{text:'5周目スタート：1〜3章 高速通読', sub:'1章変状 / 2章劣化の機構 / 3章調査手法'}],
         essays:[
           {day:'6/6（土）論文⑰【4周目】', text:'過去問2023年度 問題Ⅱ　ポイント確認のみ'},
           {day:'6/7（日）論文⑱【4周目】', text:'過去問2022年度 問題Ⅰ　ポイント確認のみ'},
         ],misc:[]},
       { id:'w6b', label:'6/8〜6/14　論文メイン🔥', open:false,
         jic:[{text:'過去問 択一：2019〜2021年度（弱点のみ）', sub:'過去問 > 2021・2020・2019年度'}],
-        shin:[{text:'5周目：4〜6章 弱点テーマ精読', sub:'4章評価・判定（苦手のみ） / 5章補修・補強 / 6章道路橋・トンネル'}],
+        shin:[{text:'5周目：4〜6章 弱点テーマ精読', sub:'4章評価・判定（苦手のみ） / 5章 / 6章'}],
         essays:[
           {day:'6/9（火）論文⑲【4周目】', text:'過去問2021年度　平日演習\n★4周目完了（累計19本）'},
           {day:'6/13（土）論文⑳【5周目】', text:'苦手テーマ①　推敲なし・時間計測'},
@@ -515,14 +607,13 @@ const MONTHS=[
     weeks:[
       { id:'wbuf', label:'6/21〜試験前', open:true,
         jic:[{text:'JIC 弱点箇所のみ最終確認', sub:'新しいインプットは一切しない'}],
-        shin:[{text:'弱点ページのみ最終確認', sub:'2章（劣化）・3章（調査）・4章（評価）の苦手箇所のみ。新規インプット禁止'}],
+        shin:[{text:'弱点ページのみ最終確認', sub:'2章・3章・4章の苦手箇所のみ。新規インプット禁止'}],
         essays:[{day:'6/21（日）〜 論文㉖〜㉛', text:'弱点テーマを6本（推敲なし・書き切るだけ）\n最終累計31本達成'}],
         misc:[{text:'年表・計算式の最終見直し', sub:'暗記カード・数値の確認'}],
         note:'余裕を持った仕上げ期間。追加インプットは禁止。確認のみ。'},
     ]},
 ];
 
-// ── 初期オープン状態をセット ──
 MONTHS.forEach(mo=>mo.weeks.forEach(wk=>{if(wk.open)openWeeks.add(wk.id);}));
 
 // ── RENDER ──
@@ -545,7 +636,6 @@ function renderSchedule(){
       const total=allKeys.length;
       const done=allKeys.filter(k=>chks[k]).length;
       const pct=total?Math.round(done/total*100):0;
-      // ★ openWeeks で開閉状態を判定
       const isOpen=openWeeks.has(wk.id);
 
       const mkItem=(key,cls,inner)=>`
@@ -604,7 +694,6 @@ function renderSchedule(){
   });
 }
 
-// ★ チェック変更：状態保存→ヘッダー更新＋自動ログ生成/削除
 function ck(key, val){
   chks[key]=val;
   if(val){ autoLog(key); }
@@ -619,7 +708,6 @@ function ck(key, val){
   }
 }
 
-// チェックキーからタスク情報を取得
 function getTaskData(key){
   for(const mo of MONTHS){
     for(const wk of mo.weeks){
@@ -644,9 +732,8 @@ function getTaskData(key){
   return null;
 }
 
-// 自動ログ生成（チェックON）
 function autoLog(key){
-  if(logs.find(l=>l.from_schedule===key)) return; // 重複防止
+  if(logs.find(l=>l.from_schedule===key)) return;
   const task=getTaskData(key);
   if(!task) return;
   const today=new Date().toISOString().slice(0,10);
@@ -671,7 +758,6 @@ function autoLog(key){
   updateStats();
 }
 
-// 自動ログ削除（チェックOFF）
 function removeAutoLog(key){
   const before=logs.length;
   logs=logs.filter(l=>l.from_schedule!==key);
@@ -689,14 +775,12 @@ function findWeekId(key){
 }
 
 function updateWeekHeader(wkId){
-  // 対象週のデータを取得
   let wkData=null, moColor='#999';
   for(const mo of MONTHS){
     const found=mo.weeks.find(w=>w.id===wkId);
     if(found){wkData=found;moColor=mo.color;break;}
   }
   if(!wkData)return;
-
   const allKeys=[
     ...wkData.jic.map((_,i)=>wkId+'j'+i),
     ...wkData.shin.map((_,i)=>wkId+'s'+i),
@@ -707,16 +791,12 @@ function updateWeekHeader(wkId){
   const done=allKeys.filter(k=>chks[k]).length;
   const pct=total?Math.round(done/total*100):0;
   const isOpen=openWeeks.has(wkId);
-
-  // ヘッダーのバッジを更新
   const card=document.querySelector(`[onclick="toggleWeek('${wkId}')"]`)?.closest('.week-card');
   if(!card)return;
   const badges=card.querySelector('.week-badges');
   if(badges){
-    // done/totalカウント更新
     const countSpan=badges.querySelector('span[style*="muted"]');
     if(countSpan)countSpan.textContent=`${done}/${total}`;
-    // ✅完了バッジ
     let doneBadge=badges.querySelector('.badge-done');
     if(done===total&&total>0){
       if(!doneBadge){
@@ -728,28 +808,19 @@ function updateWeekHeader(wkId){
     }else{
       if(doneBadge)doneBadge.remove();
     }
-    // ▲▼
     const arrow=badges.querySelector('span:last-child');
     if(arrow)arrow.textContent=isOpen?'▲':'▼';
   }
-  // プログレスバー更新
   const fill=card.querySelector('.week-prog-fill');
   if(fill)fill.style.width=pct+'%';
 }
 
-// ★ 開閉トグル：openWeeks を更新してから body の display を切り替え
 function toggleWeek(wkId){
   const body=document.getElementById('wb-'+wkId);
   if(!body)return;
   const isOpen=openWeeks.has(wkId);
-  if(isOpen){
-    openWeeks.delete(wkId);
-    body.style.display='none';
-  }else{
-    openWeeks.add(wkId);
-    body.style.display='block';
-  }
-  // ヘッダーの▲▼だけ更新
+  if(isOpen){openWeeks.delete(wkId);body.style.display='none';}
+  else{openWeeks.add(wkId);body.style.display='block';}
   updateWeekHeader(wkId);
 }
 
@@ -818,7 +889,7 @@ function clearForm(){
 
 // ── STATS ──
 function updateStats(){
-  const total=logs.reduce((s,l)=>s+l.study,0);
+  const total=logs.reduce((s,l)=>s+(l.study||0),0);
   const days=new Set(logs.map(l=>l.date)).size;
   const essays=logs.filter(l=>l.essay_year).length;
   document.getElementById('st-total').textContent=total.toFixed(1);
@@ -832,7 +903,6 @@ const DOW=['日','月','火','水','木','金','土'];
 const MONS=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
 const TC={中性化:'#e3f2fd,#1565c0',塩害:'#ffebee,#c62828',ASR:'#e8f5e9,#2e7d32',凍害:'#e0f7fa,#00796b',疲労:'#fff3e0,#e65100',火害:'#fff8e1,#f57f17','化学的侵食':'#f3e5f5,#6a1b9a',調査手法:'#e8eaf6,#283593','補修・補強':'#fbe9e7,#bf360c',計算:'#e0f2f1,#00695c',過去問:'#ede7f6,#4527a0',篠田:'#e0f2f1,#00695c'};
 
-// チェック済みタスクを全スケジュールから収集
 function getCheckedTasks(){
   const result=[];
   MONTHS.forEach(mo=>{
@@ -847,11 +917,9 @@ function getCheckedTasks(){
         cat.list.forEach((it,i)=>{
           const key=wk.id+cat.prefix+i;
           if(chks[key]){
-            result.push({
-              key, wkLabel:wk.label, moLabel:mo.label.split('　')[0],
+            result.push({key, wkLabel:wk.label, moLabel:mo.label.split('　')[0],
               catLabel:cat.label, cls:cat.cls, color:cat.color,
-              text:it.text, sub:it.sub||'', day:it.day||''
-            });
+              text:it.text, sub:it.sub||'', day:it.day||''});
           }
         });
       });
@@ -864,20 +932,12 @@ function renderHistory(){
   const period=document.getElementById('fil-period').value,type=document.getElementById('fil-type').value;
   const c=document.getElementById('log-list');
 
-  // ── チェック済みタスク表示 ──
   if(type==='checked'){
     document.getElementById('fil-period').style.display='none';
     const tasks=getCheckedTasks();
-    if(!tasks.length){
-      c.innerHTML='<p style="text-align:center;color:var(--muted);padding:30px">チェック済みのタスクがまだありません</p>';
-      return;
-    }
-    // 月ごとにグループ化
+    if(!tasks.length){c.innerHTML='<p style="text-align:center;color:var(--muted);padding:30px">チェック済みのタスクがまだありません</p>';return;}
     const grouped={};
-    tasks.forEach(t=>{
-      if(!grouped[t.moLabel])grouped[t.moLabel]=[];
-      grouped[t.moLabel].push(t);
-    });
+    tasks.forEach(t=>{if(!grouped[t.moLabel])grouped[t.moLabel]=[];grouped[t.moLabel].push(t);});
     c.innerHTML=Object.entries(grouped).map(([mo,items])=>`
       <div style="font-size:11px;font-weight:700;color:var(--muted);margin:10px 0 5px;padding-left:4px;">${mo}</div>
       ${items.map(t=>`
@@ -915,12 +975,8 @@ function renderHistory(){
     const examHtml=l.q_total?`<div class="log-exam" style="background:#e3f2fd;color:#1565c0">択一：${l.q_correct}/${l.q_total}問（${l.q_rate}%）${l.q_field?' | '+l.q_field:''}</div>`:'';
     const essayHtml=l.essay_year?`<div class="log-essay">✍️ ${l.essay_year}${l.essay_status?' ['+l.essay_status+']':''}</div>`:'';
     const roundHtml=(l.jic_round||l.shin_round)?`<div class="log-round">🔄 JIC:${l.jic_round||'─'}　篠田:${l.shin_round||'─'}</div>`:'';
-    // 自動ログ用バッジ・スタイル
-    const autoLabel=l.auto
-      ?'<span style="font-size:10px;background:#e0f7fa;color:#00796b;border-radius:6px;padding:2px 6px;margin-left:4px;">📅 予定より</span>'
-      :'';
-    const autoTimeBtn='';
-    const borderStyle=l.auto?'border-left:3px solid #00796b;':''
+    const autoLabel=l.auto?'<span style="font-size:10px;background:#e0f7fa;color:#00796b;border-radius:6px;padding:2px 6px;margin-left:4px;">📅 予定より</span>':'';
+    const borderStyle=l.auto?'border-left:3px solid #00796b;':'';
     return`<div class="log-item" style="${borderStyle}">
       <div class="log-head">
         <div class="log-date-block">
@@ -930,7 +986,6 @@ function renderHistory(){
         </div>
         <div class="log-right">
           <span class="log-hrs" id="hrs-${l.id}" onclick="editHours(${l.id},this)" style="cursor:pointer;${l.study===0?'background:#fff3e0;color:#e65100;border:1.5px dashed #ffcc80;':''}" title="タップして時間を編集">${l.study===0?'─ h':'📚 '+l.study+'h'}</span>
-          ${autoTimeBtn}
           ${l.essay_year?'<span class="badge badge-essay">✍️</span>':''}
           <button class="del-btn" data-del-id="${l.id}" onclick="delLog(${l.id})">🗑</button>
         </div>
@@ -942,8 +997,8 @@ function renderHistory(){
     </div>`;
   }).join('');
 }
+
 function delLog(id){
-  // confirm()はモバイルでブロックされるためインライン確認に変更
   const btn=document.querySelector(`[data-del-id="${id}"]`);
   if(!btn) return;
   if(btn.dataset.confirmed==='1'){
@@ -952,29 +1007,19 @@ function delLog(id){
   } else {
     btn.dataset.confirmed='1';
     btn.textContent='確認';
-    btn.style.color='#fff';
-    btn.style.background='#e53935';
-    btn.style.borderRadius='6px';
-    btn.style.padding='2px 5px';
-    btn.style.fontSize='10px';
+    btn.style.color='#fff';btn.style.background='#e53935';
+    btn.style.borderRadius='6px';btn.style.padding='2px 5px';btn.style.fontSize='10px';
     setTimeout(()=>{
-      if(btn.dataset.confirmed==='1'){
-        btn.dataset.confirmed='0';
-        btn.textContent='🗑';
-        btn.style='';
-      }
+      if(btn.dataset.confirmed==='1'){btn.dataset.confirmed='0';btn.textContent='🗑';btn.style='';}
     },2500);
   }
 }
 
-// 履歴の時間バッジをタップしてインライン編集
 function editHours(id, el){
-  // すでに入力中なら無視
   if(el.querySelector('input')) return;
   const log=logs.find(l=>l.id===id);
   if(!log) return;
   const cur=log.study||0;
-  // バッジをinputに差し替え
   el.style.padding='2px 4px';
   el.innerHTML=`<input id="hi-${id}" type="number" step="0.5" min="0" value="${cur||''}"
     style="width:48px;border:none;outline:none;background:transparent;font-size:12px;font-weight:700;color:var(--accent);text-align:center;"
@@ -990,21 +1035,15 @@ function commitHours(id){
   if(!inp) return;
   const val=parseFloat(inp.value);
   const log=logs.find(l=>l.id===id);
-  if(log){
-    log.study=(!isNaN(val)&&val>=0)?val:log.study;
-  }
-  save();
-  updateStats();
-  renderHistory();
+  if(log){log.study=(!isNaN(val)&&val>=0)?val:log.study;}
+  save();updateStats();renderHistory();
 }
 
 function uncheckTask(key){
   chks[key]=false;
   save();
-  // スケジュールタブのヘッダーも更新
   const wkId=findWeekId(key);
   if(wkId) updateWeekHeader(wkId);
-  // チェック済み一覧を再描画
   renderHistory();
 }
 
@@ -1018,6 +1057,7 @@ function exportCSV(){
 function seedIfEmpty(){
   if(logs.length)return;
   logs=[
+    {id:5,date:'2026-03-12',study:3.0,break_h:0.5,content:'調査手法（超音波・電磁波レーダー・電磁誘導）インプット',tags:['調査手法'],memo:'',jic_round:'2周目',shin_round:'',q_total:null,q_correct:null,q_rate:null,q_field:'',essay_year:'',essay_status:'',essay_memo:''},
     {id:4,date:'2026-03-11',study:3.0,break_h:0.5,content:'調査手法（コア・超音波）インプット',tags:['調査手法'],memo:'',jic_round:'2周目',shin_round:'',q_total:null,q_correct:null,q_rate:null,q_field:'',essay_year:'',essay_status:'',essay_memo:''},
     {id:3,date:'2026-03-10',study:3.0,break_h:0.5,content:'火害劣化メカニズム終了、調査手法「強度」インプット / 論文推敲2024提出済',tags:['火害','調査手法'],memo:'',jic_round:'2周目',shin_round:'',q_total:null,q_correct:null,q_rate:null,q_field:'',essay_year:'2024年度 問題Ⅰ',essay_status:'提出済み',essay_memo:''},
     {id:2,date:'2026-03-09',study:2.5,break_h:0.5,content:'火害インプット終了 / 論文2024年度推敲実施',tags:['火害'],memo:'推敲効果的！別日にやると尚良いと実感',jic_round:'2周目',shin_round:'',q_total:null,q_correct:null,q_rate:null,q_field:'',essay_year:'2024年度 問題Ⅰ',essay_status:'推敲済み',essay_memo:''},
@@ -1026,9 +1066,27 @@ function seedIfEmpty(){
   save();
 }
 
-load();seedIfEmpty();
-document.getElementById('inp-date').value=new Date().toISOString().slice(0,10);
-updateStats();renderSchedule();
+// ── 起動 ──
+async function init(){
+  load();
+  seedIfEmpty();
+  document.getElementById('inp-date').value=new Date().toISOString().slice(0,10);
+  updateStats();
+  renderSchedule();
+  // GitHubから最新データを取得
+  const pat=localStorage.getItem(PAT_KEY);
+  if(pat){
+    showSyncBar('⏳ GitHubから同期中...','#1565c0');
+    const ok=await ghLoad();
+    if(ok){
+      showSyncBar('✅ 同期完了','#43a047');
+      updateStats();renderSchedule();
+    } else {
+      showSyncBar('⚠️ GitHub同期失敗（Token確認してください）','#ef9a9a');
+    }
+  }
+}
+init();
 </script>
 
 </body>
