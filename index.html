@@ -604,19 +604,78 @@ function renderSchedule(){
   });
 }
 
-// ★ チェック変更：状態保存→ヘッダーだけ更新（週カード閉じない）
+// ★ チェック変更：状態保存→ヘッダー更新＋自動ログ生成/削除
 function ck(key, val){
   chks[key]=val;
+  if(val){ autoLog(key); }
+  else { removeAutoLog(key); }
   save();
-  // どの週IDか特定して、その週カードのヘッダー＋プログレスバーだけ更新
   const wkId=findWeekId(key);
   if(wkId) updateWeekHeader(wkId);
-  // チェック済みテキストの打ち消し線を即反映
   const item=event.target.closest('.check-item');
   if(item){
     const txt=item.querySelector('.item-text');
     if(txt){txt.classList.toggle('checked-text',val);}
   }
+}
+
+// チェックキーからタスク情報を取得
+function getTaskData(key){
+  for(const mo of MONTHS){
+    for(const wk of mo.weeks){
+      const cats=[
+        {list:wk.jic,      prefix:'j', catLabel:'📘 JIC講座',   tag:'調査手法'},
+        {list:wk.shin,     prefix:'s', catLabel:'📗 篠田レジュメ',tag:'篠田'},
+        {list:wk.essays,   prefix:'e', catLabel:'✍️ 論文演習',  tag:'論文'},
+        {list:wk.misc||[], prefix:'m', catLabel:'📌 その他',    tag:''},
+      ];
+      for(const cat of cats){
+        for(let i=0;i<cat.list.length;i++){
+          if(key===wk.id+cat.prefix+i){
+            const it=cat.list[i];
+            return {text:it.text, sub:it.sub||'', day:it.day||'',
+                    catLabel:cat.catLabel, tag:cat.tag,
+                    wkLabel:wk.label, moColor:mo.color};
+          }
+        }
+      }
+    }
+  }
+  return null;
+}
+
+// 自動ログ生成（チェックON）
+function autoLog(key){
+  if(logs.find(l=>l.from_schedule===key)) return; // 重複防止
+  const task=getTaskData(key);
+  if(!task) return;
+  const today=new Date().toISOString().slice(0,10);
+  const tags=task.tag?[task.tag]:[];
+  const isEssay=(task.catLabel==='✍️ 論文演習');
+  logs.unshift({
+    id: Date.now(),
+    date: today,
+    study: 0,
+    break_h: 0,
+    content: task.text.replace(/\n/g,' '),
+    tags,
+    memo: task.sub.replace(/\n/g,' '),
+    jic_round:'', shin_round:'',
+    q_total:null, q_correct:null, q_rate:null, q_field:'',
+    essay_year: isEssay?(task.day||task.text.split('\n')[0]):'',
+    essay_status: isEssay?'初稿':'',
+    essay_memo:'',
+    from_schedule: key,
+    auto: true,
+  });
+  updateStats();
+}
+
+// 自動ログ削除（チェックOFF）
+function removeAutoLog(key){
+  const before=logs.length;
+  logs=logs.filter(l=>l.from_schedule!==key);
+  if(logs.length!==before) updateStats();
 }
 
 function findWeekId(key){
@@ -856,7 +915,13 @@ function renderHistory(){
     const examHtml=l.q_total?`<div class="log-exam" style="background:#e3f2fd;color:#1565c0">択一：${l.q_correct}/${l.q_total}問（${l.q_rate}%）${l.q_field?' | '+l.q_field:''}</div>`:'';
     const essayHtml=l.essay_year?`<div class="log-essay">✍️ ${l.essay_year}${l.essay_status?' ['+l.essay_status+']':''}</div>`:'';
     const roundHtml=(l.jic_round||l.shin_round)?`<div class="log-round">🔄 JIC:${l.jic_round||'─'}　篠田:${l.shin_round||'─'}</div>`:'';
-    return`<div class="log-item">
+    // 自動ログ用バッジ・スタイル
+    const autoLabel=l.auto
+      ?'<span style="font-size:10px;background:#e0f7fa;color:#00796b;border-radius:6px;padding:2px 6px;margin-left:4px;">📅 予定より</span>'
+      :'';
+    const autoTimeBtn='';
+    const borderStyle=l.auto?'border-left:3px solid #00796b;':''
+    return`<div class="log-item" style="${borderStyle}">
       <div class="log-head">
         <div class="log-date-block">
           <div class="log-mon">${MONS[d.getMonth()]}</div>
@@ -864,19 +929,74 @@ function renderHistory(){
           <div class="log-dow">${DOW[d.getDay()]}</div>
         </div>
         <div class="log-right">
-          <span class="log-hrs">📚 ${l.study}h</span>
+          <span class="log-hrs" id="hrs-${l.id}" onclick="editHours(${l.id},this)" style="cursor:pointer;${l.study===0?'background:#fff3e0;color:#e65100;border:1.5px dashed #ffcc80;':''}" title="タップして時間を編集">${l.study===0?'─ h':'📚 '+l.study+'h'}</span>
+          ${autoTimeBtn}
           ${l.essay_year?'<span class="badge badge-essay">✍️</span>':''}
-          <button class="del-btn" onclick="delLog(${l.id})">🗑</button>
+          <button class="del-btn" data-del-id="${l.id}" onclick="delLog(${l.id})">🗑</button>
         </div>
       </div>
-      <div class="log-content">${l.content||'─'}</div>
+      <div class="log-content">${l.content||'─'}${autoLabel}</div>
       <div class="log-tags">${tagsHtml}</div>
       ${l.memo?`<div class="log-memo">💬 ${l.memo}</div>`:''}
       ${roundHtml}${examHtml}${essayHtml}
     </div>`;
   }).join('');
 }
-function delLog(id){if(!confirm('削除しますか？'))return;logs=logs.filter(l=>l.id!==id);save();updateStats();renderHistory();}
+function delLog(id){
+  // confirm()はモバイルでブロックされるためインライン確認に変更
+  const btn=document.querySelector(`[data-del-id="${id}"]`);
+  if(!btn) return;
+  if(btn.dataset.confirmed==='1'){
+    logs=logs.filter(l=>l.id!==id);
+    save();updateStats();renderHistory();
+  } else {
+    btn.dataset.confirmed='1';
+    btn.textContent='確認';
+    btn.style.color='#fff';
+    btn.style.background='#e53935';
+    btn.style.borderRadius='6px';
+    btn.style.padding='2px 5px';
+    btn.style.fontSize='10px';
+    setTimeout(()=>{
+      if(btn.dataset.confirmed==='1'){
+        btn.dataset.confirmed='0';
+        btn.textContent='🗑';
+        btn.style='';
+      }
+    },2500);
+  }
+}
+
+// 履歴の時間バッジをタップしてインライン編集
+function editHours(id, el){
+  // すでに入力中なら無視
+  if(el.querySelector('input')) return;
+  const log=logs.find(l=>l.id===id);
+  if(!log) return;
+  const cur=log.study||0;
+  // バッジをinputに差し替え
+  el.style.padding='2px 4px';
+  el.innerHTML=`<input id="hi-${id}" type="number" step="0.5" min="0" value="${cur||''}"
+    style="width:48px;border:none;outline:none;background:transparent;font-size:12px;font-weight:700;color:var(--accent);text-align:center;"
+    onclick="event.stopPropagation()"
+    onblur="commitHours(${id})"
+    onkeydown="if(event.key==='Enter')commitHours(${id});if(event.key==='Escape')renderHistory();">`;
+  const inp=document.getElementById('hi-'+id);
+  if(inp){inp.focus();inp.select();}
+}
+
+function commitHours(id){
+  const inp=document.getElementById('hi-'+id);
+  if(!inp) return;
+  const val=parseFloat(inp.value);
+  const log=logs.find(l=>l.id===id);
+  if(log){
+    log.study=(!isNaN(val)&&val>=0)?val:log.study;
+  }
+  save();
+  updateStats();
+  renderHistory();
+}
 
 function uncheckTask(key){
   chks[key]=false;
