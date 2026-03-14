@@ -14,7 +14,7 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:-apple-system,'Hiragino Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;}
-header{background:var(--primary);color:white;padding:12px 16px 8px;position:sticky;top:0;z-index:200;position:relative;}
+header{background:var(--primary);color:white;padding:12px 16px 8px;position:sticky;top:0;z-index:200;}
 header h1{font-size:14px;font-weight:700;}
 header p{font-size:10px;opacity:.75;margin-top:1px;}
 .main-tabs{display:flex;background:white;border-bottom:2px solid var(--border);position:sticky;top:48px;z-index:199;}
@@ -140,7 +140,7 @@ textarea{height:56px;resize:vertical;}
 </head>
 <body>
 
-<header>
+<header style="position:relative;">
   <h1>📘 コンクリート診断士2026 学習ログ</h1>
   <p>試験：2026年7月｜JIC3周+篠田5周+論文30本以上｜今日（3/14）論文② 火害スタート🔥</p>
   <button onclick="openPAT()" style="position:absolute;right:10px;top:10px;background:rgba(255,255,255,.2);border:none;color:white;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;">⚙️ 同期</button>
