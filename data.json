@@ -1,6 +1,28 @@
 {
   "logs": [
     {
+      "id": 1773525237840,
+      "date": "2026-03-14",
+      "study": 0,
+      "break_h": 0,
+      "content": "テーマ：火害　初稿 翌日3/15（日）推敲（結論先出し・目的明示を確認）",
+      "tags": [
+        "論文"
+      ],
+      "memo": "",
+      "jic_round": "",
+      "shin_round": "",
+      "q_total": null,
+      "q_correct": null,
+      "q_rate": null,
+      "q_field": "",
+      "essay_year": "★ 3/14（土）論文②【2周目】",
+      "essay_status": "初稿",
+      "essay_memo": "",
+      "from_schedule": "w3ae0",
+      "auto": true
+    },
+    {
       "id": 1773276800791,
       "date": "2026-03-12",
       "type": "study",
@@ -59,6 +81,6 @@
     "w3aj1": true,
     "w3as0": true,
     "w3aj0": true,
-    "w3ae0": false
+    "w3ae0": true
   }
 }
