@@ -1,6 +1,28 @@
 {
   "logs": [
     {
+      "id": 1773566896256,
+      "date": "2026-03-15",
+      "study": 0,
+      "break_h": 0,
+      "content": "1章 変状の種類と原因 通読",
+      "tags": [
+        "篠田"
+      ],
+      "memo": "1.1豆板 / 1.2コールドジョイント / 1.3初期欠陥3 / 1.4エフロレッセンス / 1.5汚れ / 1.6ひび割れ",
+      "jic_round": "",
+      "shin_round": "",
+      "q_total": null,
+      "q_correct": null,
+      "q_rate": null,
+      "q_field": "",
+      "essay_year": "",
+      "essay_status": "",
+      "essay_memo": "",
+      "from_schedule": "w3as0",
+      "auto": true
+    },
+    {
       "id": 1773529007022,
       "date": "2026-03-15",
       "study": 1,
@@ -109,7 +131,7 @@
   ],
   "chks": {
     "w3aj1": true,
-    "w3as0": false,
+    "w3as0": true,
     "w3aj0": true,
     "w3ae0": true
   }
