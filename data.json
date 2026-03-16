@@ -1,28 +1,6 @@
 {
   "logs": [
     {
-      "id": 1773697631838,
-      "date": "2026-03-16",
-      "study": 0,
-      "break_h": 0,
-      "content": "調査手法：配合・微細構造・化学成分①②",
-      "tags": [
-        "調査手法"
-      ],
-      "memo": "JIC 2周目 ▶ 調査 > 配合①②",
-      "jic_round": "",
-      "shin_round": "",
-      "q_total": null,
-      "q_correct": null,
-      "q_rate": null,
-      "q_field": "",
-      "essay_year": "",
-      "essay_status": "",
-      "essay_memo": "",
-      "from_schedule": "w3bj0",
-      "auto": true
-    },
-    {
       "id": 1773566896256,
       "date": "2026-03-15",
       "study": 1.5,
