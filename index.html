@@ -378,6 +378,21 @@ let logs=[], chks={};
 
 const openWeeks = new Set();
 
+// 月曜始まりで今日がどの週に属するかを返す
+function getCurrentWeekId(){
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  for(const mo of MONTHS){
+    for(const wk of mo.weeks){
+      if(!wk.wStart||!wk.wEnd) continue;
+      const s=new Date(wk.wStart), e=new Date(wk.wEnd);
+      e.setHours(23,59,59,999);
+      if(today>=s && today<=e) return wk.id;
+    }
+  }
+  return null;
+}
+
 function migrate(arr){
   return arr.map(l=>({
     ...l,
@@ -415,7 +430,10 @@ async function ghSave(retry=true){
     if(!r.ok){showSyncBar('⚠️ GitHub保存失敗 ('+r.status+')','#ef9a9a');return;}
     const j=await r.json();
     const sha=j.sha;
-    const body=btoa(unescape(encodeURIComponent(JSON.stringify({logs,chks},null,2))));
+    const str=JSON.stringify({logs,chks},null,2);
+    const bytes2=new TextEncoder().encode(str);
+    let bin='';for(let i=0;i<bytes2.length;i++)bin+=String.fromCharCode(bytes2[i]);
+    const body=btoa(bin);
     const res=await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}`,{
       method:'PUT',headers,
       body:JSON.stringify({message:'update data',content:body,sha,branch:GH_BRANCH})
@@ -436,7 +454,10 @@ async function ghLoad(){
     );
     if(!r.ok)return false;
     const j=await r.json();
-    const data=JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\n/g,'')))));
+    const raw=atob(j.content.replace(/\n/g,''));
+    const bytes=new Uint8Array(raw.length);
+    for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);
+    const data=JSON.parse(new TextDecoder().decode(bytes));
     if(data.logs){
       // GitHubとLocalStorageをマージ（IDでdedup、日付降順ソート）
       const ghLogs=migrate(data.logs);
@@ -489,22 +510,24 @@ function clearPAT(){
 
 // ── SCHEDULE DATA ──
 const MONTHS=[
-  { id:'m3', color:'#F9A825', label:'3月（3/12〜3/31）　JIC2周目後半 + 篠田1周目開始 + 論文3本',
+  // ── 3月 ──
+  { id:'m3', color:'#F9A825', label:'3月（〜3/29）　JIC2周目 + 篠田1周目 + 論文3本',
     daily:'平日：2.5〜3h（50分×3）　/　週末：3.5〜4h（50分×4〜5）',
     weeks:[
-      { id:'w3a', label:'今週 3/12〜3/14（木〜土）', open:true,
+      { id:'w_past', label:'3/9〜3/15（先週）', wStart:'2026-03-09', wEnd:'2026-03-15', open:false,
         jic:[
           {text:'調査手法：ひび割れ②・空洞・剥離の調査完了', sub:'JIC 2周目 ▶ 調査 > ひび割れ②'},
           {text:'調査手法：鉄筋・かぶり・埋設物', sub:'JIC 2周目 ▶ 調査 > 鉄筋①'},
         ],
         shin:[
-          {text:'1章 変状の種類と原因 通読', sub:'1.1豆板 / 1.2コールドジョイント / 1.3初期欠陥3 / 1.4エフロレッセンス / 1.5汚れ / 1.6ひび割れ'},
+          {text:'1章 変状の種類と原因 通読', sub:'1.1豆板 / 1.2コールドジョイント / 1.3初期欠陥 / 1.4エフロレッセンス / 1.5汚れ / 1.6ひび割れ'},
         ],
         essays:[
-          {day:'★ 3/14（土）論文②【2周目】', text:'テーマ：火害　初稿\n翌日3/15（日）推敲（結論先出し・目的明示を確認）'},
+          {day:'3/14（土）論文②【2周目】初稿', text:'テーマ：火害'},
+          {day:'3/15（日）論文②【2周目】推敲', text:'結論先出し・目的明示を確認'},
         ],
         misc:[]},
-      { id:'w3b', label:'3/17〜3/22', open:false,
+      { id:'w1', label:'3/16〜3/22', wStart:'2026-03-16', wEnd:'2026-03-22', open:false,
         jic:[
           {text:'調査手法：配合・微細構造・化学成分①②', sub:'JIC 2周目 ▶ 調査 > 配合①②'},
           {text:'調査手法：中性化①・塩化物①②③', sub:'JIC 2周目 ▶ 中性化・塩化物'},
@@ -516,132 +539,144 @@ const MONTHS=[
           {day:'3/22（日）論文③【2周目】', text:'テーマ：凍害　初稿\n翌日3/23（月）推敲'},
         ],
         misc:[]},
-      { id:'w3c', label:'3/23〜3/31', open:false,
+      { id:'w2', label:'3/23〜3/29', wStart:'2026-03-23', wEnd:'2026-03-29', open:false,
         jic:[
           {text:'調査手法：ASR①②③・火害①・その他①②', sub:'JIC 2周目 ▶ 調査 残り完了'},
           {text:'変状・劣化と調査方法（テキスト）', sub:'JIC 2周目 ▶ 変状・劣化の調査方法'},
         ],
         shin:[
-          {text:'3〜6章 通読 → ★1周目完了', sub:'3章調査手法 / 4章評価・判定 / 5章補修・補強 / 6章道路橋・トンネル'},
+          {text:'3〜4章 前半 通読', sub:'3章調査手法 / 4.1中性化 / 4.2塩害 / 4.3ASR'},
         ],
         essays:[
           {day:'3/28（土）論文④【2周目】', text:'テーマ：中性化　初稿\n翌日3/29（日）推敲'},
-        ],misc:[],
+        ],
+        misc:[],
         note:'3月末でJIC 2周目 調査手法パート完了を目指す。篠田1周目完了。'},
     ]},
-  { id:'m4', color:'#EF6C00', label:'4月（4/1〜4/30）　JIC2周目完了→3周目 + 篠田2周目 + 論文8本',
+  // ── 4月 ──
+  { id:'m4', color:'#EF6C00', label:'4月（3/30〜5/3）　JIC2周目完了→3周目 + 篠田2周目 + 論文8本',
     daily:'平日：2.5〜3h（50分×3）　/　週末：3.5〜4h（50分×4〜5）＋論文1〜2本',
     weeks:[
-      { id:'w4a', label:'4/1〜4/6', open:false,
+      { id:'w3', label:'3/30〜4/5', wStart:'2026-03-30', wEnd:'2026-04-05', open:false,
         jic:[
           {text:'補修工法：ひび割れ①②③・断面修復①', sub:'JIC 2周目 ▶ 補修パート'},
           {text:'コンクリートの変状：初期欠陥①②③', sub:'JIC 2周目 ▶ 変状 > 初期欠陥'},
         ],
-        shin:[{text:'2周目スタート：1章＋2章前半 精読', sub:'1章（変状） / 2.1中性化 / 2.2塩害 / 2.3ASR / 2.4凍害'}],
-        essays:[{day:'4/5（日）論文⑤【2周目】', text:'テーマ：塩害　初稿\n翌日4/6（月）推敲'}],misc:[]},
-      { id:'w4b', label:'4/7〜4/13', open:false,
+        shin:[{text:'4〜6章 通読 → ★篠田1周目完了', sub:'4章評価・判定 / 5章補修・補強 / 6章道路橋・トンネル'}],
+        essays:[{day:'4/4（土）論文⑤【2周目】', text:'テーマ：塩害　初稿\n翌日4/5（日）推敲'}],misc:[]},
+      { id:'w4', label:'4/6〜4/12', wStart:'2026-04-06', wEnd:'2026-04-12', open:false,
         jic:[
           {text:'補修工法：表面被覆①・含浸①②・電気化学①②', sub:'JIC 2周目 ▶ 補修後半'},
           {text:'コンクリートの変状：経年劣化①②③④', sub:'JIC 2周目 ▶ 変状 > 経年劣化'},
         ],
-        shin:[{text:'2章後半＋3章前半 精読', sub:'2.5化学的侵食 / 2.6風化・老化 / 2.7疲労 / 2.8火災 / 3.1〜3.3'}],
-        essays:[{day:'4/12（日）論文⑥【2周目】', text:'テーマ：ASR　初稿\n翌日4/13（月）推敲'}],misc:[]},
-      { id:'w4c', label:'4/14〜4/20', open:false,
+        shin:[{text:'篠田2周目スタート：1〜2章前半 精読', sub:'1章（変状） / 2.1中性化 / 2.2塩害 / 2.3ASR / 2.4凍害'}],
+        essays:[{day:'4/11（土）論文⑥【2周目】', text:'テーマ：ASR　初稿\n翌日4/12（日）推敲'}],misc:[]},
+      { id:'w5', label:'4/13〜4/19', wStart:'2026-04-13', wEnd:'2026-04-19', open:false,
         jic:[
           {text:'増厚①・その他補強①・維持管理①', sub:'JIC 2周目 ▶ 補強・維持管理'},
           {text:'コンクリートの変状：構造的変状①', sub:'JIC 2周目 ▶ 変状 > 構造的変状'},
-          {text:'コンクリート年表・計算ドリル開始', sub:'JIC 2周目 ▶ 年表・計算（前半5種）'},
         ],
-        shin:[{text:'3章後半＋4章前半 精読', sub:'3.4〜3.8 / 4.1〜4.3'}],
+        shin:[{text:'2章後半〜3章前半 精読', sub:'2.5化学的侵食 / 2.6〜2.8 / 3.1〜3.4'}],
         essays:[{day:'4/18（土）論文⑦【2周目】', text:'テーマ：化学的侵食　初稿\n翌日4/19（日）推敲'}],misc:[]},
-      { id:'w4d', label:'4/21〜4/30', open:false,
+      { id:'w6', label:'4/20〜4/26', wStart:'2026-04-20', wEnd:'2026-04-26', open:false,
         jic:[
-          {text:'計算ドリル後半（5種）完了', sub:'JIC 2周目 ▶ 計算後半5種'},
+          {text:'コンクリート年表・計算ドリル全10種', sub:'JIC 2周目 ▶ 年表・計算（全種）'},
           {text:'★ JIC 2周目 完了！→ 3周目スタート', sub:'JIC 3周目 ▶ 劣化メカニズムから再スタート'},
         ],
-        shin:[{text:'4章後半＋5・6章 精読 → ★2周目完了', sub:'4.4〜4.11 / 5章 / 6章'}],
+        shin:[{text:'3章後半〜4章前半 精読', sub:'3.4〜3.8 / 4.1〜4.3'}],
         essays:[{day:'4/25（土）論文⑧【2周目】', text:'テーマ：疲労　初稿\n翌日4/26（日）推敲　★2周目完了（累計8本）'}],misc:[],
-        note:'4月末でJIC 2周目完了・3周目開始。篠田2周目完了。論文累計12本目標。'},
-    ]},
-  { id:'m5', color:'#C62828', label:'5月（5/1〜5/31）　JIC3周目 + 篠田3〜4周目 + 論文10本',
-    daily:'平日：2.5〜3h（50分×3）　/　週末：3.5〜4h（50分×4〜5）＋論文2本',
-    weeks:[
-      { id:'w5a', label:'5/1〜5/10', open:false,
+        note:'4月末でJIC 2周目完了。篠田2周目継続中。論文累計8本。'},
+      { id:'w7', label:'4/27〜5/3', wStart:'2026-04-27', wEnd:'2026-05-03', open:false,
         jic:[
           {text:'JIC 3周目：劣化メカニズム全種 高速復習', sub:'JIC 3周目 ▶ 劣化メカニズム（課題中心）'},
+        ],
+        shin:[{text:'4章後半〜6章 精読 → ★2周目完了', sub:'4.4〜4.11 / 5章補修・補強 / 6章道路橋・トンネル'}],
+        essays:[{day:'5/2（土）論文⑨【3周目】', text:'テーマ：火害　初稿＋当日軽め推敲'}],misc:[]},
+    ]},
+  // ── 5月 ──
+  { id:'m5', color:'#C62828', label:'5月（5/4〜6/1）　JIC3周目 + 篠田3〜4周目 + 論文10本',
+    daily:'平日：2.5〜3h（50分×3）　/　週末：3.5〜4h（50分×4〜5）＋論文2本',
+    weeks:[
+      { id:'w8', label:'5/4〜5/10', wStart:'2026-05-04', wEnd:'2026-05-10', open:false,
+        jic:[
           {text:'JIC 3周目：調査手法前半', sub:'JIC 3周目 ▶ 強度・ひび割れ・鉄筋・配合'},
         ],
-        shin:[{text:'3周目：2章 劣化の機構 弱点精読', sub:'2.1〜2.8 苦手箇所（特に凍害・ASR・化学的侵食）'}],
+        shin:[{text:'篠田3周目スタート：2章 劣化の機構 弱点精読', sub:'2.1〜2.8 苦手箇所（特に凍害・ASR・化学的侵食）'}],
         essays:[
-          {day:'5/2（土）論文⑨【3周目】', text:'テーマ：火害　初稿＋当日軽め推敲'},
           {day:'5/9（土）論文⑩【3周目】', text:'テーマ：凍害　初稿＋当日軽め推敲'},
         ],misc:[]},
-      { id:'w5b', label:'5/11〜5/20', open:false,
+      { id:'w9', label:'5/11〜5/17', wStart:'2026-05-11', wEnd:'2026-05-17', open:false,
         jic:[
           {text:'JIC 3周目：調査手法後半・変状', sub:'JIC 3周目 ▶ 中性化・塩化物・ASR・火害・変状'},
-          {text:'JIC 3周目：補修・補強・維持管理', sub:'JIC 3周目 ▶ 補修系全種'},
         ],
-        shin:[
-          {text:'3周目：3章 調査手法 弱点精読', sub:'3.3〜3.5 / 3.7 苦手を中心に'},
-          {text:'3周目完了 → 4周目スタート：4章 評価・判定', sub:'4.1〜4.11 弱点テーマのみ'},
-        ],
+        shin:[{text:'3章 調査手法 弱点精読', sub:'3.3〜3.5 / 3.7 苦手を中心に'}],
         essays:[
           {day:'5/16（土）論文⑪【3周目】', text:'テーマ：中性化　初稿＋当日軽め推敲'},
           {day:'5/17（日）論文⑫【3周目】', text:'テーマ：塩害　初稿＋さっと確認'},
         ],misc:[]},
-      { id:'w5c', label:'5/21〜5/31', open:false,
+      { id:'w10', label:'5/18〜5/24', wStart:'2026-05-18', wEnd:'2026-05-24', open:false,
         jic:[
-          {text:'JIC 3周目：計算ドリル全10種 + 年表', sub:'JIC 3周目 ▶ 計算・年表（小テスト含む）'},
-          {text:'★ JIC 3周目 完了！', sub:'過去問（四択）2022〜2024年度 開始'},
+          {text:'JIC 3周目：補修・補強・維持管理', sub:'JIC 3周目 ▶ 補修系全種'},
         ],
-        shin:[{text:'4周目完了：5・6章 弱点確認', sub:'5章補修・補強 / 6章道路橋・トンネル'}],
+        shin:[
+          {text:'篠田3周目完了 → 4周目スタート：4章 評価・判定', sub:'4.1〜4.11 弱点テーマのみ'},
+        ],
         essays:[
           {day:'5/23（土）論文⑬【3周目】', text:'テーマ：ASR　初稿＋さっと確認'},
           {day:'5/24（日）論文⑭【3周目】', text:'テーマ：化学的侵食　★3周目完了（累計14本）'},
+        ],misc:[]},
+      { id:'w11', label:'5/25〜5/31', wStart:'2026-05-25', wEnd:'2026-05-31', open:false,
+        jic:[
+          {text:'JIC 3周目：計算ドリル全10種 + 年表', sub:'JIC 3周目 ▶ 計算・年表（小テスト含む）'},
+          {text:'★ JIC 3周目 完了！過去問（四択）開始', sub:'過去問（四択）2022〜2024年度 開始'},
+        ],
+        shin:[{text:'篠田4周目：5・6章 弱点確認', sub:'5章補修・補強 / 6章道路橋・トンネル'}],
+        essays:[
           {day:'5/30（土）論文⑮【4周目】', text:'テーマ：疲労　ポイント確認のみ'},
           {day:'5/31（日）論文⑯【4周目】', text:'過去問2024年度 問題Ⅰ　ポイント確認'},
         ],misc:[],
-        note:'5月末でJIC 3周完了・篠田4周完了。論文累計21本目標。計算ドリル全10種必須。'},
+        note:'5月末でJIC 3周完了・篠田4周完了。論文累計16本目標。計算ドリル全10種必須。'},
     ]},
-  { id:'m6', color:'#2E7D32', label:'6月（6/1〜6/20）　論文メイン🔥 + 篠田5周目 + 過去問択一',
+  // ── 6月 ──
+  { id:'m6', color:'#2E7D32', label:'6月（6/1〜6/21）　論文メイン🔥 + 篠田5周目 + 過去問択一',
     daily:'平日：2.5〜3h（論文 or 択一）　/　週末：3.5〜4h＋論文2〜3本',
     weeks:[
-      { id:'w6a', label:'6/1〜6/7　論文メイン🔥', open:false,
+      { id:'w12', label:'6/1〜6/7', wStart:'2026-06-01', wEnd:'2026-06-07', open:false,
         jic:[{text:'過去問 択一：2022〜2024年度（苦手のみ）', sub:'過去問 > 2024・2023・2022年度'}],
-        shin:[{text:'5周目スタート：1〜3章 高速通読', sub:'1章変状 / 2章劣化の機構 / 3章調査手法'}],
+        shin:[{text:'篠田5周目スタート：1〜3章 高速通読', sub:'1章変状 / 2章劣化の機構 / 3章調査手法'}],
         essays:[
           {day:'6/6（土）論文⑰【4周目】', text:'過去問2023年度 問題Ⅱ　ポイント確認のみ'},
           {day:'6/7（日）論文⑱【4周目】', text:'過去問2022年度 問題Ⅰ　ポイント確認のみ'},
         ],misc:[]},
-      { id:'w6b', label:'6/8〜6/14　論文メイン🔥', open:false,
+      { id:'w13', label:'6/8〜6/14', wStart:'2026-06-08', wEnd:'2026-06-14', open:false,
         jic:[{text:'過去問 択一：2019〜2021年度（弱点のみ）', sub:'過去問 > 2021・2020・2019年度'}],
-        shin:[{text:'5周目：4〜6章 弱点テーマ精読', sub:'4章評価・判定（苦手のみ） / 5章 / 6章'}],
+        shin:[{text:'篠田5周目：4〜6章 弱点テーマ精読', sub:'4章評価・判定（苦手のみ） / 5章 / 6章'}],
         essays:[
-          {day:'6/9（火）論文⑲【4周目】', text:'過去問2021年度　平日演習\n★4周目完了（累計19本）'},
-          {day:'6/13（土）論文⑳【5周目】', text:'苦手テーマ①　推敲なし・時間計測'},
-          {day:'6/14（日）論文㉑【5周目】', text:'苦手テーマ②　推敲なし・時間計測'},
+          {day:'6/13（土）論文⑲【5周目】', text:'苦手テーマ①　推敲なし・時間計測'},
+          {day:'6/14（日）論文⑳【5周目】', text:'苦手テーマ②　推敲なし・時間計測'},
         ],misc:[]},
-      { id:'w6c', label:'6/15〜6/20　最終仕上げ', open:false,
+      { id:'w14', label:'6/15〜6/21', wStart:'2026-06-15', wEnd:'2026-06-21', open:false,
         jic:[{text:'苦手分野 択一 最終確認', sub:'弱点分野のみ絞って確認'}],
-        shin:[{text:'★ 5周目完了！全章 キーワード最終確認', sub:'1〜6章 重要数値・キーワード・判定基準を総ざらい'}],
+        shin:[{text:'★ 篠田5周目完了！全章 キーワード最終確認', sub:'1〜6章 重要数値・キーワード・判定基準を総ざらい'}],
         essays:[
-          {day:'6/15（月）論文㉒【5周目】', text:'苦手テーマ③　推敲なし'},
-          {day:'6/18（木）論文㉓【5周目】', text:'苦手テーマ④　推敲なし'},
-          {day:'6/20（土）論文㉔㉕【5周目】', text:'本番想定2本・時間計測（推敲なし）\n★5周目完了（累計25本）'},
+          {day:'6/15（月）論文㉑【5周目】', text:'苦手テーマ③　推敲なし'},
+          {day:'6/18（木）論文㉒【5周目】', text:'苦手テーマ④　推敲なし'},
+          {day:'6/20（土）論文㉓㉔【5周目】', text:'本番想定2本・時間計測（推敲なし）\n★5周目完了（累計24本）'},
         ],misc:[],
         note:'6月は論文が完全主役。択一は1日30分以内。書く量を最大化する。'},
     ]},
-  { id:'mbuf', color:'#1a3a5c', label:'バッファ（6/21〜試験前）　最終確認のみ',
+  // ── Buffer ──
+  { id:'mbuf', color:'#1a3a5c', label:'バッファ（6/22〜試験前）　最終確認のみ',
     daily:'1〜1.5h（確認のみ。詰め込み禁止）',
     weeks:[
-      { id:'wbuf', label:'6/21〜試験前', open:true,
+      { id:'wbuf', label:'6/22〜7/12（試験前）', wStart:'2026-06-22', wEnd:'2026-07-12', open:true,
         jic:[{text:'JIC 弱点箇所のみ最終確認', sub:'新しいインプットは一切しない'}],
         shin:[{text:'弱点ページのみ最終確認', sub:'2章・3章・4章の苦手箇所のみ。新規インプット禁止'}],
-        essays:[{day:'6/21（日）〜 論文㉖〜㉛', text:'弱点テーマを6本（推敲なし・書き切るだけ）\n最終累計31本達成'}],
+        essays:[{day:'6/22（月）〜 論文㉕〜㉛', text:'弱点テーマを7本（推敲なし・書き切るだけ）\n最終累計31本達成'}],
         misc:[{text:'年表・計算式の最終見直し', sub:'暗記カード・数値の確認'}],
         note:'余裕を持った仕上げ期間。追加インプットは禁止。確認のみ。'},
     ]},
-];
+]
 
 MONTHS.forEach(mo=>mo.weeks.forEach(wk=>{if(wk.open)openWeeks.add(wk.id);}));
 
@@ -698,6 +733,7 @@ function renderSchedule(){
         <div class="week-header" onclick="toggleWeek('${wk.id}')">
           <span class="week-title" style="color:${mo.color}">${wk.label}</span>
           <span class="week-badges">
+            ${wk.id===getCurrentWeekId()?'<span class="badge" style="background:#fff3e0;color:#e65100;">📅今週</span>':''}
             ${wk.essays.length?`<span class="badge badge-essay">✍️${wk.essays.length}</span>`:''}
             ${wk.jic.length?`<span class="badge badge-jic">JIC${wk.jic.length}</span>`:''}
             ${wk.shin.length?`<span class="badge badge-shin">篠${wk.shin.length}</span>`:''}
@@ -1086,14 +1122,22 @@ function exportCSV(){
 }
 
 function seedIfEmpty(){
-  if(logs.length)return;
-  logs=[
+  // IDで確認して不足分だけ追加（既存データがある端末でも動く）
+  const BASE=[
+    {id:9,date:'2026-03-15',study:1.0,break_h:0,content:'火害　推敲（結論先出し・目的明示を確認）',tags:['論文','火害'],memo:'',jic_round:'',shin_round:'',q_total:null,q_correct:null,q_rate:null,q_field:'',essay_year:'2024年度 問題Ⅰ',essay_status:'推敲済み',essay_memo:''},
+    {id:8,date:'2026-03-15',study:1.5,break_h:0.5,content:'1章 変状の種類と原因 通読',tags:['篠田'],memo:'1.1豆板 / 1.2コールドジョイント / 1.3初期欠陥 / 1.4エフロレッセンス / 1.5汚れ / 1.6ひび割れ',jic_round:'',shin_round:'1周目',q_total:null,q_correct:null,q_rate:null,q_field:'',essay_year:'',essay_status:'',essay_memo:''},
+    {id:7,date:'2026-03-14',study:2.0,break_h:0.5,content:'テーマ：火害　初稿',tags:['論文','火害'],memo:'翌日3/15（日）推敲（結論先出し・目的明示を確認）',jic_round:'',shin_round:'',q_total:null,q_correct:null,q_rate:null,q_field:'',essay_year:'★ 3/14（土）論文②【2周目】',essay_status:'初稿',essay_memo:''},
+    {id:6,date:'2026-03-13',study:3.0,break_h:0.5,content:'調査手法（ひび割れ②・空洞・剥離・鉄筋・かぶり）インプット',tags:['調査手法'],memo:'',jic_round:'2周目',shin_round:'',q_total:null,q_correct:null,q_rate:null,q_field:'',essay_year:'',essay_status:'',essay_memo:''},
     {id:5,date:'2026-03-12',study:3.0,break_h:0.5,content:'調査手法（超音波・電磁波レーダー・電磁誘導）インプット',tags:['調査手法'],memo:'',jic_round:'2周目',shin_round:'',q_total:null,q_correct:null,q_rate:null,q_field:'',essay_year:'',essay_status:'',essay_memo:''},
     {id:4,date:'2026-03-11',study:3.0,break_h:0.5,content:'調査手法（コア・超音波）インプット',tags:['調査手法'],memo:'',jic_round:'2周目',shin_round:'',q_total:null,q_correct:null,q_rate:null,q_field:'',essay_year:'',essay_status:'',essay_memo:''},
     {id:3,date:'2026-03-10',study:3.0,break_h:0.5,content:'火害劣化メカニズム終了、調査手法「強度」インプット / 論文推敲2024提出済',tags:['火害','調査手法'],memo:'',jic_round:'2周目',shin_round:'',q_total:null,q_correct:null,q_rate:null,q_field:'',essay_year:'2024年度 問題Ⅰ',essay_status:'提出済み',essay_memo:''},
     {id:2,date:'2026-03-09',study:2.5,break_h:0.5,content:'火害インプット終了 / 論文2024年度推敲実施',tags:['火害'],memo:'推敲効果的！別日にやると尚良いと実感',jic_round:'2周目',shin_round:'',q_total:null,q_correct:null,q_rate:null,q_field:'',essay_year:'2024年度 問題Ⅰ',essay_status:'推敲済み',essay_memo:''},
     {id:1,date:'2026-03-08',study:3.5,break_h:0.5,content:'凍害インプット完了 / 火害インプット途中',tags:['凍害','火害'],memo:'コンクリート・鉄筋の加熱・冷却時の温度閾値を要暗記。要テキスト確認。',jic_round:'2周目',shin_round:'',q_total:null,q_correct:null,q_rate:null,q_field:'',essay_year:'',essay_status:'',essay_memo:''},
   ];
+  const existingIds=new Set(logs.map(l=>l.id));
+  const missing=BASE.filter(l=>!existingIds.has(l.id));
+  if(missing.length===0)return;
+  logs=[...logs,...missing].sort((a,b)=>new Date(b.date)-new Date(a.date)||b.id-a.id);
   save();
 }
 
@@ -1104,6 +1148,9 @@ async function init(){
   document.getElementById('inp-date').value=new Date().toISOString().slice(0,10);
   updateStats();
   renderSchedule();
+  // 今週を自動で開く（月曜始まり）
+  const cwId=getCurrentWeekId();
+  if(cwId){openWeeks.add(cwId);renderSchedule();}
   // GitHubから最新データを取得
   const pat=localStorage.getItem(PAT_KEY);
   if(pat){
