@@ -1,6 +1,28 @@
 {
   "logs": [
     {
+      "id": 1773697713311,
+      "date": "2026-03-16",
+      "study": 0,
+      "break_h": 0,
+      "content": "調査手法：配合・微細構造・化学成分①②",
+      "tags": [
+        "調査手法"
+      ],
+      "memo": "JIC 2周目 ▶ 調査 > 配合①②",
+      "jic_round": "",
+      "shin_round": "",
+      "q_total": null,
+      "q_correct": null,
+      "q_rate": null,
+      "q_field": "",
+      "essay_year": "",
+      "essay_status": "",
+      "essay_memo": "",
+      "from_schedule": "w1j0",
+      "auto": true
+    },
+    {
       "id": 1773697631838,
       "date": "2026-03-16",
       "study": 0,
@@ -20,6 +42,28 @@
       "essay_status": "",
       "essay_memo": "",
       "from_schedule": "w3bj0",
+      "auto": true
+    },
+    {
+      "id": 1773566896256,
+      "date": "2026-03-15",
+      "study": 1.5,
+      "break_h": 0,
+      "content": "1章 変状の種類と原因 通読",
+      "tags": [
+        "篠田"
+      ],
+      "memo": "1.1豆板 / 1.2コールドジョイント / 1.3初期欠陥3 / 1.4エフロレッセンス / 1.5汚れ / 1.6ひび割れ",
+      "jic_round": "",
+      "shin_round": "",
+      "q_total": null,
+      "q_correct": null,
+      "q_rate": null,
+      "q_field": "",
+      "essay_year": "",
+      "essay_status": "",
+      "essay_memo": "",
+      "from_schedule": "w3as0",
       "auto": true
     },
     {
@@ -43,9 +87,50 @@
       "essay_memo": ""
     },
     {
+      "id": 9,
+      "date": "2026-03-15",
+      "study": 1,
+      "break_h": 0,
+      "content": "火害　推敲（結論先出し・目的明示を確認）",
+      "tags": [
+        "論文",
+        "火害"
+      ],
+      "memo": "",
+      "jic_round": "",
+      "shin_round": "",
+      "q_total": null,
+      "q_correct": null,
+      "q_rate": null,
+      "q_field": "",
+      "essay_year": "2024年度 問題Ⅰ",
+      "essay_status": "推敲済み",
+      "essay_memo": ""
+    },
+    {
+      "id": 8,
+      "date": "2026-03-15",
+      "study": 1.5,
+      "break_h": 0.5,
+      "content": "1章 変状の種類と原因 通読",
+      "tags": [
+        "篠田"
+      ],
+      "memo": "1.1豆板 / 1.2コールドジョイント / 1.3初期欠陥 / 1.4エフロレッセンス / 1.5汚れ / 1.6ひび割れ",
+      "jic_round": "",
+      "shin_round": "1周目",
+      "q_total": null,
+      "q_correct": null,
+      "q_rate": null,
+      "q_field": "",
+      "essay_year": "",
+      "essay_status": "",
+      "essay_memo": ""
+    },
+    {
       "id": 1773526316081,
       "date": "2026-03-14",
-      "study": 0,
+      "study": 2,
       "break_h": 0,
       "content": "テーマ：火害　初稿 翌日3/15（日）推敲（結論先出し・目的明示を確認）",
       "tags": [
@@ -85,6 +170,47 @@
       "essay_memo": "",
       "from_schedule": "w3as0",
       "auto": true
+    },
+    {
+      "id": 7,
+      "date": "2026-03-14",
+      "study": 2,
+      "break_h": 0.5,
+      "content": "テーマ：火害　初稿",
+      "tags": [
+        "論文",
+        "火害"
+      ],
+      "memo": "翌日3/15（日）推敲（結論先出し・目的明示を確認）",
+      "jic_round": "",
+      "shin_round": "",
+      "q_total": null,
+      "q_correct": null,
+      "q_rate": null,
+      "q_field": "",
+      "essay_year": "★ 3/14（土）論文②【2周目】",
+      "essay_status": "初稿",
+      "essay_memo": ""
+    },
+    {
+      "id": 6,
+      "date": "2026-03-13",
+      "study": 3,
+      "break_h": 0.5,
+      "content": "調査手法（ひび割れ②・空洞・剥離・鉄筋・かぶり）インプット",
+      "tags": [
+        "調査手法"
+      ],
+      "memo": "",
+      "jic_round": "2周目",
+      "shin_round": "",
+      "q_total": null,
+      "q_correct": null,
+      "q_rate": null,
+      "q_field": "",
+      "essay_year": "",
+      "essay_status": "",
+      "essay_memo": ""
     },
     {
       "id": 1773276800791,
@@ -151,64 +277,44 @@
     {
       "id": 3,
       "date": "2026-03-10",
-      "study": 3,
-      "break_h": 0.5,
-      "content": "火害劣化メカニズム終了、調査手法「強度」インプット / 論文推敲2024提出済",
+      "type": "study",
+      "hours": 3,
+      "topics": "火害劣化メカニズム終了、調査手法「強度」インプット / 論文推敲2024提出済",
       "tags": [
         "火害",
-        "調査手法"
+        "論文"
       ],
       "memo": "",
-      "jic_round": "2周目",
-      "shin_round": "",
-      "q_total": null,
-      "q_correct": null,
-      "q_rate": null,
-      "q_field": "",
-      "essay_year": "2024年度 問題Ⅰ",
-      "essay_status": "提出済み",
-      "essay_memo": ""
+      "study": 3,
+      "content": "火害劣化メカニズム終了、調査手法「強度」インプット / 論文推敲2024提出済"
     },
     {
       "id": 2,
       "date": "2026-03-09",
-      "study": 2.5,
-      "break_h": 0.5,
-      "content": "火害インプット終了 / 論文2024年度推敲実施",
+      "type": "study",
+      "hours": 2.5,
+      "topics": "火害インプット終了 / 論文2024年度推敲実施",
       "tags": [
-        "火害"
+        "火害",
+        "論文"
       ],
       "memo": "推敲効果的！別日にやると尚良いと実感",
-      "jic_round": "2周目",
-      "shin_round": "",
-      "q_total": null,
-      "q_correct": null,
-      "q_rate": null,
-      "q_field": "",
-      "essay_year": "2024年度 問題Ⅰ",
-      "essay_status": "推敲済み",
-      "essay_memo": ""
+      "study": 2.5,
+      "content": "火害インプット終了 / 論文2024年度推敲実施"
     },
     {
       "id": 1,
       "date": "2026-03-08",
-      "study": 3.5,
-      "break_h": 0.5,
-      "content": "凍害インプット完了 / 火害インプット途中",
+      "type": "study",
+      "hours": 3.5,
+      "topics": "凍害インプット完了 / 火害インプット途中",
       "tags": [
         "凍害",
         "火害"
       ],
       "memo": "コンクリート・鉄筋の加熱・冷却時の温度閾値を要暗記。要テキスト確認。",
-      "jic_round": "2周目",
-      "shin_round": "",
-      "q_total": null,
-      "q_correct": null,
-      "q_rate": null,
-      "q_field": "",
-      "essay_year": "",
-      "essay_status": "",
-      "essay_memo": ""
+      "study": 3.5,
+      "content": "凍害インプット完了 / 火害インプット途中"
     }
   ],
   "chks": {
@@ -216,6 +322,7 @@
     "w3as0": true,
     "w3aj0": true,
     "w3ae0": true,
+    "w1j0": true,
     "w3bj0": true
   }
 }
