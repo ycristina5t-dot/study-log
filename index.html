@@ -146,11 +146,7 @@ textarea{height:56px;resize:vertical;}
   <button onclick="openPAT()" style="position:absolute;right:10px;top:10px;background:rgba(255,255,255,.2);border:none;color:white;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;">⚙️ 同期</button>
 </header>
 
-<!-- 同期ステータスバー -->
-
 <div id="sync-bar"></div>
-
-<!-- PAT設定モーダル -->
 
 <div id="pat-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:999;align-items:center;justify-content:center;">
   <div style="background:white;border-radius:12px;padding:20px;margin:20px;max-width:360px;width:100%;">
@@ -305,7 +301,6 @@ textarea{height:56px;resize:vertical;}
 
 <div id="page-schedule" class="page">
 <div class="sched-wrap">
-
   <div class="overview-grid">
     <div class="ov-card" style="background:var(--indigo)">
       <h4>📘 JIC講座（最低3周）</h4>
@@ -347,7 +342,6 @@ textarea{height:56px;resize:vertical;}
   <div id="m5" class="month-page"></div>
   <div id="m6" class="month-page"></div>
   <div id="mbuf" class="month-page"></div>
-
 </div>
 </div>
 
@@ -369,6 +363,20 @@ textarea{height:56px;resize:vertical;}
 </div>
 
 <script>
+// ══════════════════════════════════════
+// ✅ JST日付ヘルパー（UTC→JSTズレ修正）
+// new Date().toISOString() はUTC基準のため、
+// 日本時間（UTC+9）では深夜0〜9時に前日付になるバグが発生する。
+// この関数はローカル時刻から正しいJST日付文字列(YYYY-MM-DD)を返す。
+// ══════════════════════════════════════
+function todayJST() {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
 // ── GitHub設定 ──
 const GH_OWNER='ycristina5t-dot', GH_REPO='study-log', GH_FILE='data.json', GH_BRANCH='main';
 const PAT_KEY='gh_pat_cl';
@@ -378,7 +386,6 @@ let logs=[], chks={};
 
 const openWeeks = new Set();
 
-// 月曜始まりで今日がどの週に属するかを返す
 function getCurrentWeekId(){
   const today = new Date();
   today.setHours(0,0,0,0);
@@ -459,14 +466,12 @@ async function ghLoad(){
     for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);
     const data=JSON.parse(new TextDecoder().decode(bytes));
     if(data.logs){
-      // GitHubとLocalStorageをマージ（IDでdedup、日付降順ソート）
       const ghLogs=migrate(data.logs);
       const merged=mergeLogArrays(logs, ghLogs);
       logs=merged;
       localStorage.setItem(SK,JSON.stringify(logs));
     }
     if(data.chks){
-      // chksもマージ（どちらかがtrueなら保持）
       const ghChks=data.chks||{};
       Object.keys(ghChks).forEach(k=>{if(ghChks[k])chks[k]=true;});
       localStorage.setItem(CK,JSON.stringify(chks));
@@ -475,15 +480,12 @@ async function ghLoad(){
   }catch(e){console.error('ghLoad error',e);return false;}
 }
 
-// 2つのlogsをマージ：IDでdedup、日付降順ソート
 function mergeLogArrays(local, remote){
   const map={};
-  // remoteを先に入れてlocalで上書き（localが新しいデータを持っている可能性）
   [...remote,...local].forEach(l=>{ map[l.id]=l; });
   return Object.values(map).sort((a,b)=>new Date(b.date)-new Date(a.date)||b.id-a.id);
 }
 
-// PAT モーダル
 function openPAT(){
   const m=document.getElementById('pat-modal');
   m.style.display='flex';
@@ -510,7 +512,6 @@ function clearPAT(){
 
 // ── SCHEDULE DATA ──
 const MONTHS=[
-  // ── 3月 ──
   { id:'m3', color:'#F9A825', label:'3月（〜3/29）　JIC2周目 + 篠田1周目 + 論文3本',
     daily:'平日：2.5〜3h（50分×3）　/　週末：3.5〜4h（50分×4〜5）',
     weeks:[
@@ -553,7 +554,6 @@ const MONTHS=[
         misc:[],
         note:'3月末でJIC 2周目 調査手法パート完了を目指す。篠田1周目完了。'},
     ]},
-  // ── 4月 ──
   { id:'m4', color:'#EF6C00', label:'4月（3/30〜5/3）　JIC2周目完了→3周目 + 篠田2周目 + 論文8本',
     daily:'平日：2.5〜3h（50分×3）　/　週末：3.5〜4h（50分×4〜5）＋論文1〜2本',
     weeks:[
@@ -593,34 +593,23 @@ const MONTHS=[
         shin:[{text:'4章後半〜6章 精読 → ★2周目完了', sub:'4.4〜4.11 / 5章補修・補強 / 6章道路橋・トンネル'}],
         essays:[{day:'5/2（土）論文⑨【3周目】', text:'テーマ：火害　初稿＋当日軽め推敲'}],misc:[]},
     ]},
-  // ── 5月 ──
   { id:'m5', color:'#C62828', label:'5月（5/4〜6/1）　JIC3周目 + 篠田3〜4周目 + 論文10本',
     daily:'平日：2.5〜3h（50分×3）　/　週末：3.5〜4h（50分×4〜5）＋論文2本',
     weeks:[
       { id:'w8', label:'5/4〜5/10', wStart:'2026-05-04', wEnd:'2026-05-10', open:false,
-        jic:[
-          {text:'JIC 3周目：調査手法前半', sub:'JIC 3周目 ▶ 強度・ひび割れ・鉄筋・配合'},
-        ],
+        jic:[{text:'JIC 3周目：調査手法前半', sub:'JIC 3周目 ▶ 強度・ひび割れ・鉄筋・配合'}],
         shin:[{text:'篠田3周目スタート：2章 劣化の機構 弱点精読', sub:'2.1〜2.8 苦手箇所（特に凍害・ASR・化学的侵食）'}],
-        essays:[
-          {day:'5/9（土）論文⑩【3周目】', text:'テーマ：凍害　初稿＋当日軽め推敲'},
-        ],misc:[]},
+        essays:[{day:'5/9（土）論文⑩【3周目】', text:'テーマ：凍害　初稿＋当日軽め推敲'}],misc:[]},
       { id:'w9', label:'5/11〜5/17', wStart:'2026-05-11', wEnd:'2026-05-17', open:false,
-        jic:[
-          {text:'JIC 3周目：調査手法後半・変状', sub:'JIC 3周目 ▶ 中性化・塩化物・ASR・火害・変状'},
-        ],
+        jic:[{text:'JIC 3周目：調査手法後半・変状', sub:'JIC 3周目 ▶ 中性化・塩化物・ASR・火害・変状'}],
         shin:[{text:'3章 調査手法 弱点精読', sub:'3.3〜3.5 / 3.7 苦手を中心に'}],
         essays:[
           {day:'5/16（土）論文⑪【3周目】', text:'テーマ：中性化　初稿＋当日軽め推敲'},
           {day:'5/17（日）論文⑫【3周目】', text:'テーマ：塩害　初稿＋さっと確認'},
         ],misc:[]},
       { id:'w10', label:'5/18〜5/24', wStart:'2026-05-18', wEnd:'2026-05-24', open:false,
-        jic:[
-          {text:'JIC 3周目：補修・補強・維持管理', sub:'JIC 3周目 ▶ 補修系全種'},
-        ],
-        shin:[
-          {text:'篠田3周目完了 → 4周目スタート：4章 評価・判定', sub:'4.1〜4.11 弱点テーマのみ'},
-        ],
+        jic:[{text:'JIC 3周目：補修・補強・維持管理', sub:'JIC 3周目 ▶ 補修系全種'}],
+        shin:[{text:'篠田3周目完了 → 4周目スタート：4章 評価・判定', sub:'4.1〜4.11 弱点テーマのみ'}],
         essays:[
           {day:'5/23（土）論文⑬【3周目】', text:'テーマ：ASR　初稿＋さっと確認'},
           {day:'5/24（日）論文⑭【3周目】', text:'テーマ：化学的侵食　★3周目完了（累計14本）'},
@@ -637,7 +626,6 @@ const MONTHS=[
         ],misc:[],
         note:'5月末でJIC 3周完了・篠田4周完了。論文累計16本目標。計算ドリル全10種必須。'},
     ]},
-  // ── 6月 ──
   { id:'m6', color:'#2E7D32', label:'6月（6/1〜6/21）　論文メイン🔥 + 篠田5周目 + 過去問択一',
     daily:'平日：2.5〜3h（論文 or 択一）　/　週末：3.5〜4h＋論文2〜3本',
     weeks:[
@@ -665,7 +653,6 @@ const MONTHS=[
         ],misc:[],
         note:'6月は論文が完全主役。択一は1日30分以内。書く量を最大化する。'},
     ]},
-  // ── Buffer ──
   { id:'mbuf', color:'#1a3a5c', label:'バッファ（6/22〜試験前）　最終確認のみ',
     daily:'1〜1.5h（確認のみ。詰め込み禁止）',
     weeks:[
@@ -676,7 +663,7 @@ const MONTHS=[
         misc:[{text:'年表・計算式の最終見直し', sub:'暗記カード・数値の確認'}],
         note:'余裕を持った仕上げ期間。追加インプットは禁止。確認のみ。'},
     ]},
-]
+];
 
 MONTHS.forEach(mo=>mo.weeks.forEach(wk=>{if(wk.open)openWeeks.add(wk.id);}));
 
@@ -801,7 +788,8 @@ function autoLog(key){
   if(logs.find(l=>l.from_schedule===key)) return;
   const task=getTaskData(key);
   if(!task) return;
-  const today=new Date().toISOString().slice(0,10);
+  // ✅ 修正：todayJST() を使用（旧: new Date().toISOString().slice(0,10)）
+  const today = todayJST();
   const tags=task.tag?[task.tag]:[];
   const isEssay=(task.catLabel==='✍️ 論文演習');
   logs.unshift({
@@ -1034,7 +1022,6 @@ function renderHistory(){
     return true;
   });
   if(!filtered.length){c.innerHTML='<p style="text-align:center;color:var(--muted);padding:30px">記録がありません</p>';return;}
-  // 日付降順ソート
   filtered.sort((a,b)=>new Date(b.date)-new Date(a.date)||b.id-a.id);
   c.innerHTML=filtered.map(l=>{
     const d=new Date(l.date);
@@ -1118,11 +1105,14 @@ function exportCSV(){
   const h=['日付','学習時間','休憩','内容','タグ','メモ','JIC周回','篠田周回','択一問題数','択一正答数','択一正答率','択一分野','論文年度','論文ステータス','論文メモ'];
   const r=logs.map(l=>[l.date,l.study,l.break_h,l.content,(l.tags||[]).join('|'),l.memo,l.jic_round||'',l.shin_round||'',l.q_total||'',l.q_correct||'',l.q_rate!=null?l.q_rate+'%':'',l.q_field||'',l.essay_year||'',l.essay_status||'',l.essay_memo||'']);
   const csv=[h,...r].map(row=>row.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
-  const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);a.download=`study_log_${new Date().toISOString().slice(0,10)}.csv`;a.click();
+  const a=document.createElement('a');
+  // ✅ 修正：todayJST() を使用（旧: new Date().toISOString().slice(0,10)）
+  a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);
+  a.download=`study_log_${todayJST()}.csv`;
+  a.click();
 }
 
 function seedIfEmpty(){
-  // IDで確認して不足分だけ追加（既存データがある端末でも動く）
   const BASE=[
     {id:9,date:'2026-03-15',study:1.0,break_h:0,content:'火害　推敲（結論先出し・目的明示を確認）',tags:['論文','火害'],memo:'',jic_round:'',shin_round:'',q_total:null,q_correct:null,q_rate:null,q_field:'',essay_year:'2024年度 問題Ⅰ',essay_status:'推敲済み',essay_memo:''},
     {id:8,date:'2026-03-15',study:1.5,break_h:0.5,content:'1章 変状の種類と原因 通読',tags:['篠田'],memo:'1.1豆板 / 1.2コールドジョイント / 1.3初期欠陥 / 1.4エフロレッセンス / 1.5汚れ / 1.6ひび割れ',jic_round:'',shin_round:'1周目',q_total:null,q_correct:null,q_rate:null,q_field:'',essay_year:'',essay_status:'',essay_memo:''},
@@ -1145,13 +1135,12 @@ function seedIfEmpty(){
 async function init(){
   load();
   seedIfEmpty();
-  document.getElementById('inp-date').value=new Date().toISOString().slice(0,10);
+  // ✅ 修正：todayJST() を使用（旧: new Date().toISOString().slice(0,10)）
+  document.getElementById('inp-date').value = todayJST();
   updateStats();
   renderSchedule();
-  // 今週を自動で開く（月曜始まり）
   const cwId=getCurrentWeekId();
   if(cwId){openWeeks.add(cwId);renderSchedule();}
-  // GitHubから最新データを取得
   const pat=localStorage.getItem(PAT_KEY);
   if(pat){
     showSyncBar('⏳ GitHubから同期中...','#1565c0');
