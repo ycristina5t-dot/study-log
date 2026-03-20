@@ -1,28 +1,6 @@
 {
   "logs": [
     {
-      "id": 1774039329940,
-      "date": "2026-03-20",
-      "study": 0,
-      "break_h": 0,
-      "content": "2章 劣化の機構 通読",
-      "tags": [
-        "篠田"
-      ],
-      "memo": "2.1中性化 / 2.2塩害 / 2.3ASR / 2.4凍害 / 2.5化学的侵食 / 2.6風化・老化 / 2.7疲労 / 2.8火災",
-      "jic_round": "",
-      "shin_round": "",
-      "q_total": null,
-      "q_correct": null,
-      "q_rate": null,
-      "q_field": "",
-      "essay_year": "",
-      "essay_status": "",
-      "essay_memo": "",
-      "from_schedule": "w1s0",
-      "auto": true
-    },
-    {
       "id": 1773945293829,
       "date": "2026-03-19",
       "study": 3,
@@ -410,6 +388,6 @@
     "w3bj0": true,
     "w3bj1": true,
     "w1j1": true,
-    "w1s0": true
+    "w1s0": false
   }
 }
