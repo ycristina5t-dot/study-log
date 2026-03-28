@@ -1,6 +1,24 @@
 {
   "logs": [
     {
+      "id": 1774656032363,
+      "date": "2026-03-27",
+      "study": 2.5,
+      "break_h": 0,
+      "content": "",
+      "tags": [],
+      "memo": "",
+      "jic_round": "",
+      "shin_round": "",
+      "q_total": null,
+      "q_correct": null,
+      "q_rate": null,
+      "q_field": "",
+      "essay_year": "",
+      "essay_status": "",
+      "essay_memo": ""
+    },
+    {
       "id": 1774656020865,
       "date": "2026-03-26",
       "study": 3,
