@@ -1,6 +1,50 @@
 {
   "logs": [
     {
+      "id": 1774898483115,
+      "date": "2026-03-30",
+      "study": 0,
+      "break_h": 0,
+      "content": "3〜4章 前半 通読",
+      "tags": [
+        "篠田"
+      ],
+      "memo": "3章調査手法 / 4.1中性化 / 4.2塩害 / 4.3ASR",
+      "jic_round": "",
+      "shin_round": "",
+      "q_total": null,
+      "q_correct": null,
+      "q_rate": null,
+      "q_field": "",
+      "essay_year": "",
+      "essay_status": "",
+      "essay_memo": "",
+      "from_schedule": "w2s0",
+      "auto": true
+    },
+    {
+      "id": 1774898482719,
+      "date": "2026-03-30",
+      "study": 0,
+      "break_h": 0,
+      "content": "テーマ：中性化　初稿 翌日3/29（日）推敲",
+      "tags": [
+        "論文"
+      ],
+      "memo": "",
+      "jic_round": "",
+      "shin_round": "",
+      "q_total": null,
+      "q_correct": null,
+      "q_rate": null,
+      "q_field": "",
+      "essay_year": "3/28（土）論文④【2周目】",
+      "essay_status": "初稿",
+      "essay_memo": "",
+      "from_schedule": "w2e0",
+      "auto": true
+    },
+    {
       "id": 1774656053077,
       "date": "2026-03-28",
       "study": 0,
@@ -613,6 +657,8 @@
     "w1s0": true,
     "w1e0": true,
     "w2j0": true,
-    "w2j1": true
+    "w2j1": true,
+    "w2e0": true,
+    "w2s0": true
   }
 }
