@@ -1,28 +1,6 @@
 {
   "logs": [
     {
-      "id": 1774898483115,
-      "date": "2026-03-30",
-      "study": 0,
-      "break_h": 0,
-      "content": "3〜4章 前半 通読",
-      "tags": [
-        "篠田"
-      ],
-      "memo": "3章調査手法 / 4.1中性化 / 4.2塩害 / 4.3ASR",
-      "jic_round": "",
-      "shin_round": "",
-      "q_total": null,
-      "q_correct": null,
-      "q_rate": null,
-      "q_field": "",
-      "essay_year": "",
-      "essay_status": "",
-      "essay_memo": "",
-      "from_schedule": "w2s0",
-      "auto": true
-    },
-    {
       "id": 1774898482719,
       "date": "2026-03-30",
       "study": 0,
@@ -659,6 +637,6 @@
     "w2j0": true,
     "w2j1": true,
     "w2e0": true,
-    "w2s0": true
+    "w2s0": false
   }
 }
