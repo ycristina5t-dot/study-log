@@ -1,6 +1,28 @@
 {
   "logs": [
     {
+      "id": 1774985030371,
+      "date": "2026-03-31",
+      "study": 0,
+      "break_h": 0,
+      "content": "結論先出し・目的明示を確認",
+      "tags": [
+        "論文"
+      ],
+      "memo": "",
+      "jic_round": "",
+      "shin_round": "",
+      "q_total": null,
+      "q_correct": null,
+      "q_rate": null,
+      "q_field": "",
+      "essay_year": "3/15（日）論文②【2周目】推敲",
+      "essay_status": "初稿",
+      "essay_memo": "",
+      "from_schedule": "w_paste1",
+      "auto": true
+    },
+    {
       "id": 1774985029336,
       "date": "2026-03-31",
       "study": 0,
@@ -774,6 +796,7 @@
     "w_pastj1": true,
     "w_pastj0": true,
     "w_pasts0": true,
-    "w_paste0": true
+    "w_paste0": true,
+    "w_paste1": true
   }
 }
