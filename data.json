@@ -1,6 +1,94 @@
 {
   "logs": [
     {
+      "id": 1774985029336,
+      "date": "2026-03-31",
+      "study": 0,
+      "break_h": 0,
+      "content": "テーマ：火害",
+      "tags": [
+        "論文"
+      ],
+      "memo": "",
+      "jic_round": "",
+      "shin_round": "",
+      "q_total": null,
+      "q_correct": null,
+      "q_rate": null,
+      "q_field": "",
+      "essay_year": "3/14（土）論文②【2周目】初稿",
+      "essay_status": "初稿",
+      "essay_memo": "",
+      "from_schedule": "w_paste0",
+      "auto": true
+    },
+    {
+      "id": 1774985029071,
+      "date": "2026-03-31",
+      "study": 0,
+      "break_h": 0,
+      "content": "1章 変状の種類と原因 通読",
+      "tags": [
+        "篠田"
+      ],
+      "memo": "1.1豆板 / 1.2コールドジョイント / 1.3初期欠陥 / 1.4エフロレッセンス / 1.5汚れ / 1.6ひび割れ",
+      "jic_round": "",
+      "shin_round": "",
+      "q_total": null,
+      "q_correct": null,
+      "q_rate": null,
+      "q_field": "",
+      "essay_year": "",
+      "essay_status": "",
+      "essay_memo": "",
+      "from_schedule": "w_pasts0",
+      "auto": true
+    },
+    {
+      "id": 1774985028805,
+      "date": "2026-03-31",
+      "study": 0,
+      "break_h": 0,
+      "content": "調査手法：ひび割れ②・空洞・剥離の調査完了",
+      "tags": [
+        "調査手法"
+      ],
+      "memo": "JIC 2周目 ▶ 調査 > ひび割れ②",
+      "jic_round": "",
+      "shin_round": "",
+      "q_total": null,
+      "q_correct": null,
+      "q_rate": null,
+      "q_field": "",
+      "essay_year": "",
+      "essay_status": "",
+      "essay_memo": "",
+      "from_schedule": "w_pastj0",
+      "auto": true
+    },
+    {
+      "id": 1774985028523,
+      "date": "2026-03-31",
+      "study": 0,
+      "break_h": 0,
+      "content": "調査手法：鉄筋・かぶり・埋設物",
+      "tags": [
+        "調査手法"
+      ],
+      "memo": "JIC 2周目 ▶ 調査 > 鉄筋①",
+      "jic_round": "",
+      "shin_round": "",
+      "q_total": null,
+      "q_correct": null,
+      "q_rate": null,
+      "q_field": "",
+      "essay_year": "",
+      "essay_status": "",
+      "essay_memo": "",
+      "from_schedule": "w_pastj1",
+      "auto": true
+    },
+    {
       "id": 1774985013529,
       "date": "2026-03-31",
       "study": 0,
@@ -682,6 +770,10 @@
     "w2j1": true,
     "w2e0": true,
     "w2s0": true,
-    "w3j0": true
+    "w3j0": true,
+    "w_pastj1": true,
+    "w_pastj0": true,
+    "w_pasts0": true,
+    "w_paste0": true
   }
 }
